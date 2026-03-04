@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { Eye } from 'lucide-vue-next'
 import type { KeyConcept, ContentBlock } from '~/types/chapter'
 
 const props = defineProps<{
@@ -11,6 +12,8 @@ const props = defineProps<{
   blocks?: ContentBlock[]
   index: number
   keyConcepts?: KeyConcept[]
+  isActive?: boolean
+  partColor?: string
 }>()
 
 const sectionRef = ref<HTMLElement | null>(null)
@@ -48,12 +51,24 @@ const hasRichBlocks = computed(() => props.blocks && props.blocks.length > 0)
     <!-- Section divider (skip first section) -->
     <div v-if="index > 0" class="section-divider my-10" />
 
-    <!-- Numbered heading -->
+    <!-- Numbered heading with active indicator -->
     <h2 class="font-display text-lg lg:text-xl font-semibold text-white mb-5 flex items-baseline gap-3">
-      <span class="text-xs font-mono text-white/20 tabular-nums">
+      <span
+        class="text-xs font-mono tabular-nums transition-colors duration-300"
+        :class="isActive ? 'text-white/50' : 'text-white/20'"
+      >
         {{ String(index + 1).padStart(2, '0') }}
       </span>
       {{ heading }}
+      <!-- Active viz indicator -->
+      <span
+        v-if="isActive"
+        class="inline-flex items-center gap-1 text-[9px] uppercase tracking-widest font-medium ml-auto opacity-0 lg:opacity-100 transition-opacity duration-500"
+        :style="{ color: partColor ?? '#14b8a6' }"
+      >
+        <Eye class="w-2.5 h-2.5" />
+        Viz
+      </span>
     </h2>
 
     <!-- Rich content blocks (new textbook format) -->

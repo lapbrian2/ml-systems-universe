@@ -62,10 +62,11 @@ body {
 
 /* ── Glass panels ── */
 .glass-panel {
-  background: rgba(15, 19, 37, 0.6);
+  background: linear-gradient(135deg, rgba(15, 19, 37, 0.7) 0%, rgba(10, 14, 26, 0.6) 100%);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
 }
 
 /* ── Section dividers ── */
@@ -96,7 +97,17 @@ body {
 
 /* ── Viz panel subtle glow ── */
 .viz-panel-glow {
-  box-shadow: inset -1px 0 0 rgba(20, 184, 166, 0.05);
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.04);
+}
+
+/* ── Viz mesh background animation ── */
+.viz-mesh-bg {
+  animation: meshFloat 12s ease-in-out infinite alternate;
+}
+@keyframes meshFloat {
+  0% { transform: scale(1) translate(0, 0); }
+  50% { transform: scale(1.05) translate(-1%, 1%); }
+  100% { transform: scale(1) translate(1%, -1%); }
 }
 
 /* ── Concept card hover ── */
@@ -123,11 +134,12 @@ body {
   position: fixed;
   top: 0;
   left: 0;
+  width: 100%;
   height: 2px;
-  background: var(--color-primary);
   transform-origin: left;
   z-index: 100;
   transition: transform 0.1s linear;
+  box-shadow: 0 0 12px rgba(20, 184, 166, 0.3);
 }
 
 /* ── Phase badge ── */
@@ -180,28 +192,39 @@ body {
   position: relative;
   border-radius: 10px;
   padding: 16px 18px;
-  border-left: 4px solid;
-  background: rgba(15, 19, 37, 0.6);
-  backdrop-filter: blur(12px);
+  border-left: 3px solid;
   border-top: 1px solid rgba(255, 255, 255, 0.04);
   border-right: 1px solid rgba(255, 255, 255, 0.04);
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 .callout-box--note {
   border-left-color: #14b8a6;
-  background: rgba(20, 184, 166, 0.04);
+  background: linear-gradient(135deg, rgba(20, 184, 166, 0.06) 0%, rgba(20, 184, 166, 0.02) 100%);
+}
+.callout-box--note:hover {
+  box-shadow: 0 0 20px rgba(20, 184, 166, 0.06);
 }
 .callout-box--warning {
   border-left-color: #ff6b6b;
-  background: rgba(255, 107, 107, 0.04);
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.06) 0%, rgba(255, 107, 107, 0.02) 100%);
+}
+.callout-box--warning:hover {
+  box-shadow: 0 0 20px rgba(255, 107, 107, 0.06);
 }
 .callout-box--tip {
   border-left-color: #22c55e;
-  background: rgba(34, 197, 94, 0.04);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.06) 0%, rgba(34, 197, 94, 0.02) 100%);
+}
+.callout-box--tip:hover {
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.06);
 }
 .callout-box--example {
   border-left-color: #a855f7;
-  background: rgba(168, 85, 247, 0.04);
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.06) 0%, rgba(168, 85, 247, 0.02) 100%);
+}
+.callout-box--example:hover {
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.06);
 }
 
 /* ── Code blocks ── */
@@ -260,6 +283,7 @@ body {
   overflow-x: auto;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(10, 14, 26, 0.4);
 }
 .data-table {
   width: 100%;
@@ -274,16 +298,23 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: rgba(255, 255, 255, 0.7);
-  background: rgba(20, 184, 166, 0.08);
+  background: linear-gradient(90deg, rgba(20, 184, 166, 0.1) 0%, rgba(20, 184, 166, 0.04) 100%);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 .data-table td {
   padding: 10px 14px;
   color: rgba(255, 255, 255, 0.55);
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  line-height: 1.5;
 }
 .data-table tr:nth-child(even) td {
   background: rgba(255, 255, 255, 0.015);
+}
+.data-table tbody tr {
+  transition: background 0.2s ease;
+}
+.data-table tbody tr:hover td {
+  background: rgba(255, 255, 255, 0.03);
 }
 .data-table tr:last-child td {
   border-bottom: none;
@@ -301,8 +332,13 @@ body {
 .definition-box {
   border-radius: 10px;
   padding: 14px 16px;
-  background: rgba(15, 19, 37, 0.5);
+  background: linear-gradient(135deg, rgba(15, 19, 37, 0.6) 0%, rgba(20, 184, 166, 0.03) 100%);
   border: 1px solid rgba(20, 184, 166, 0.12);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.definition-box:hover {
+  border-color: rgba(20, 184, 166, 0.22);
+  box-shadow: 0 0 16px rgba(20, 184, 166, 0.05);
 }
 
 /* ── Figure blocks ── */

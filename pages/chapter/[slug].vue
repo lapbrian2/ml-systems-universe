@@ -194,29 +194,42 @@ const vizComponent = computed(() => {
           relative w-full lg:w-1/2
           h-[40vh] lg:h-screen
           lg:sticky lg:top-0 lg:self-start
-          bg-cosmic-surface viz-panel-glow
+          viz-panel-glow
           flex items-center justify-center
           overflow-hidden
         "
+        :style="{
+          background: `linear-gradient(135deg, #0a0e1a 0%, ${partColor}06 50%, #0a0e1a 100%)`,
+        }"
       >
+        <!-- Animated mesh gradient background -->
+        <div
+          class="absolute inset-0 pointer-events-none viz-mesh-bg"
+          :style="{
+            background: `
+              radial-gradient(ellipse 60% 50% at 20% 30%, ${partColor}0a 0%, transparent 70%),
+              radial-gradient(ellipse 50% 60% at 80% 70%, ${partColor}08 0%, transparent 70%),
+              radial-gradient(ellipse 40% 40% at 50% 50%, ${partColor}05 0%, transparent 60%)
+            `,
+          }"
+        />
+
         <!-- Grid pattern overlay -->
         <div
-          class="absolute inset-0 pointer-events-none opacity-[0.03]"
+          class="absolute inset-0 pointer-events-none opacity-[0.025]"
           :style="{
             backgroundImage: `
-              linear-gradient(${partColor}40 1px, transparent 1px),
-              linear-gradient(90deg, ${partColor}40 1px, transparent 1px)
+              linear-gradient(${partColor}50 1px, transparent 1px),
+              linear-gradient(90deg, ${partColor}50 1px, transparent 1px)
             `,
             backgroundSize: '40px 40px',
           }"
         />
 
-        <!-- Radial glow centered -->
+        <!-- Edge glow on divider -->
         <div
-          class="absolute inset-0 pointer-events-none"
-          :style="{
-            background: `radial-gradient(circle at 50% 50%, ${partColor}08 0%, transparent 70%)`,
-          }"
+          class="absolute top-0 right-0 bottom-0 w-px hidden lg:block"
+          :style="{ background: `linear-gradient(180deg, transparent 10%, ${partColor}20 50%, transparent 90%)` }"
         />
 
         <!-- Viz component -->
@@ -246,6 +259,16 @@ const vizComponent = computed(() => {
           </div>
         </div>
 
+        <!-- Viz overlay instructions -->
+        <VizOverlay
+          v-if="chapter && content"
+          :chapter-id="chapter.id"
+          :active-section="activeSection"
+          :part-color="partColor"
+          :viz-title="chapter.title"
+          :section-count="content.sections.length"
+        />
+
         <!-- Bottom fade into content on mobile -->
         <div class="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-cosmic-bg to-transparent lg:hidden" />
       </aside>
@@ -274,6 +297,8 @@ const vizComponent = computed(() => {
               :blocks="section.blocks"
               :index="idx"
               :key-concepts="section.keyConcepts"
+              :is-active="activeSection === idx"
+              :part-color="partColor"
             />
 
             <!-- Key takeaways -->

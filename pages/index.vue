@@ -22,8 +22,17 @@ function getPartProgress(partId: string) {
   <div class="min-h-screen bg-cosmic-bg">
     <!-- Hero -->
     <header class="relative overflow-hidden">
+      <!-- Multi-color mesh gradient -->
+      <div
+        class="absolute inset-0 pointer-events-none"
+        style="background:
+          radial-gradient(ellipse 60% 50% at 70% 30%, rgba(20,184,166,0.08) 0%, transparent 70%),
+          radial-gradient(ellipse 50% 40% at 20% 60%, rgba(168,85,247,0.04) 0%, transparent 60%),
+          radial-gradient(ellipse 40% 50% at 90% 80%, rgba(236,72,153,0.03) 0%, transparent 60%)
+        "
+      />
       <!-- Grid pattern -->
-      <div class="absolute inset-0 pointer-events-none opacity-[0.04]"
+      <div class="absolute inset-0 pointer-events-none opacity-[0.03]"
         :style="{
           backgroundImage: `
             linear-gradient(rgba(20,184,166,0.3) 1px, transparent 1px),
@@ -31,11 +40,6 @@ function getPartProgress(partId: string) {
           `,
           backgroundSize: '60px 60px',
         }"
-      />
-      <!-- Radial glow -->
-      <div
-        class="absolute inset-0 pointer-events-none"
-        style="background: radial-gradient(ellipse 80% 50% at 70% 40%, rgba(20,184,166,0.06) 0%, transparent 70%)"
       />
 
       <div class="max-w-5xl mx-auto px-6 py-20 lg:py-28 relative z-10">
