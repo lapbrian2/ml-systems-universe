@@ -40,4 +40,8 @@ export default defineNuxtConfig({
   components: [
     { path: '~/components', pathPrefix: false },
   ],
+
+  nitro: {
+    preset: 'vercel',
+  },
 })

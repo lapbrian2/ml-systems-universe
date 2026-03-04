@@ -24,3 +24,4 @@ logs
 !.env.example
 .next/
 .output/
+.vercel/
