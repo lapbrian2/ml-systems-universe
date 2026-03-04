@@ -32,20 +32,20 @@ watch(() => props.latex, () => {
 
 <template>
   <ClientOnly>
-    <div class="my-6 rounded-lg border border-white/[0.04] bg-white/[0.015] px-6 py-5 flex items-center justify-center gap-4">
+    <div class="my-6 rounded-lg border border-white/[0.04] bg-white/[0.015] px-4 sm:px-6 py-4">
       <!-- Equation -->
       <div
-        class="katex-display-wrapper flex-1 text-center overflow-x-auto"
+        class="katex-display-wrapper text-center overflow-x-auto"
         v-html="renderedHtml"
       />
 
-      <!-- Label -->
-      <span
+      <!-- Label (below equation, not beside it) -->
+      <p
         v-if="label"
-        class="text-xs text-white/30 font-mono shrink-0"
+        class="text-[11px] text-white/30 font-mono text-center mt-3 leading-relaxed break-words"
       >
         ({{ label }})
-      </span>
+      </p>
     </div>
 
     <template #fallback>
