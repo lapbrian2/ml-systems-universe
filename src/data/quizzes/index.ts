@@ -1,74 +1,53 @@
 import type { ChapterQuiz } from '@/types/quiz';
 import { ch01Quiz } from './ch01-quiz';
+import { ch02Quiz } from './ch02-quiz';
+import { ch03Quiz } from './ch03-quiz';
+import { ch04Quiz } from './ch04-quiz';
+import { ch05Quiz } from './ch05-quiz';
+import { ch06Quiz } from './ch06-quiz';
+import { ch07Quiz } from './ch07-quiz';
+import { ch08Quiz } from './ch08-quiz';
+import { ch09Quiz } from './ch09-quiz';
+import { ch10Quiz } from './ch10-quiz';
+import { ch11Quiz } from './ch11-quiz';
+import { ch12Quiz } from './ch12-quiz';
+import { ch13Quiz } from './ch13-quiz';
+import { ch14Quiz } from './ch14-quiz';
+import { ch15Quiz } from './ch15-quiz';
+import { ch16Quiz } from './ch16-quiz';
+import { ch17Quiz } from './ch17-quiz';
+import { ch18Quiz } from './ch18-quiz';
+import { ch19Quiz } from './ch19-quiz';
+import { ch20Quiz } from './ch20-quiz';
+import { ch21Quiz } from './ch21-quiz';
 
 // Registry of all chapter quizzes
-// Chapters without dedicated quiz files get auto-generated placeholder quizzes
 const QUIZ_REGISTRY: Record<string, ChapterQuiz> = {
   ch01: ch01Quiz,
+  ch02: ch02Quiz,
+  ch03: ch03Quiz,
+  ch04: ch04Quiz,
+  ch05: ch05Quiz,
+  ch06: ch06Quiz,
+  ch07: ch07Quiz,
+  ch08: ch08Quiz,
+  ch09: ch09Quiz,
+  ch10: ch10Quiz,
+  ch11: ch11Quiz,
+  ch12: ch12Quiz,
+  ch13: ch13Quiz,
+  ch14: ch14Quiz,
+  ch15: ch15Quiz,
+  ch16: ch16Quiz,
+  ch17: ch17Quiz,
+  ch18: ch18Quiz,
+  ch19: ch19Quiz,
+  ch20: ch20Quiz,
+  ch21: ch21Quiz,
 };
 
-// Generate a placeholder quiz for chapters that don't have one yet
-function generatePlaceholderQuiz(chapterId: string, title: string): ChapterQuiz {
-  return {
-    chapterId,
-    title: `${title} Quiz`,
-    description: `Test your understanding of ${title.toLowerCase()}.`,
-    passingScore: 70,
-    selectCount: 3,
-    pool: [
-      {
-        id: `${chapterId}-placeholder-q1`,
-        question: `What is the primary focus of the "${title}" chapter?`,
-        options: [
-          'Understanding theoretical foundations',
-          'Building practical ML systems',
-          'Both theoretical and practical aspects of this topic',
-          'None of the above',
-        ],
-        correctIndex: 2,
-        explanation: `This chapter covers both the theory and practice of ${title.toLowerCase()} in the context of ML systems engineering.`,
-        difficulty: 'easy',
-      },
-      {
-        id: `${chapterId}-placeholder-q2`,
-        question: 'Why is systems thinking important in this context?',
-        options: [
-          'It is not important',
-          'It helps understand how components interact across the ML stack',
-          'It only matters for large companies',
-          'It is only relevant for research',
-        ],
-        correctIndex: 1,
-        explanation:
-          'Systems thinking reveals how decisions in one area affect the entire ML pipeline, from data to deployment.',
-        difficulty: 'easy',
-      },
-      {
-        id: `${chapterId}-placeholder-q3`,
-        question: 'What is a key engineering trade-off discussed in this chapter?',
-        options: [
-          'There are no trade-offs',
-          'Speed vs. accuracy',
-          'Performance vs. resource constraints vs. reliability',
-          'Cost is the only consideration',
-        ],
-        correctIndex: 2,
-        explanation:
-          'ML systems engineering always involves balancing multiple competing requirements including performance, cost, reliability, and maintainability.',
-        difficulty: 'medium',
-      },
-    ],
-  };
-}
-
-// Import CHAPTERS for auto-generating placeholder quizzes
-import { CHAPTERS } from '@/data/chapters';
-
 export function getQuizForChapter(chapterId: string): ChapterQuiz {
-  if (QUIZ_REGISTRY[chapterId]) return QUIZ_REGISTRY[chapterId];
-
-  const chapter = CHAPTERS.find(ch => ch.id === chapterId);
-  return generatePlaceholderQuiz(chapterId, chapter?.title || 'Unknown');
+  return QUIZ_REGISTRY[chapterId];
 }
 
 export { QUIZ_REGISTRY };
