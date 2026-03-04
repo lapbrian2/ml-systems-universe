@@ -7,7 +7,6 @@ import { BlendFunction } from 'postprocessing';
 import * as THREE from 'three';
 
 import StarField from './StarField';
-import NebulaParticles from './NebulaParticles';
 import ChapterNode from './ChapterNode';
 import ConnectionLines from './ConnectionLines';
 import CameraController from './CameraController';
@@ -87,9 +86,8 @@ export default function UniverseScene({ onChapterSelect }: UniverseSceneProps) {
       <pointLight position={[0, 10, 10]} color="#4a6aff" intensity={2} distance={60} />
       <pointLight position={[-10, -5, 5]} color="#00c896" intensity={1.5} distance={50} />
 
-      {/* Background layers */}
+      {/* Background */}
       <StarField />
-      <NebulaParticles />
 
       {/* Chapter nodes */}
       {CHAPTERS.map((chapter) => {

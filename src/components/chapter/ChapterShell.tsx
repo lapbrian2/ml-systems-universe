@@ -9,9 +9,11 @@ import KeyTakeaways from './KeyTakeaways';
 import GlossarySidebar from './GlossarySidebar';
 import ChapterNav from './ChapterNav';
 import StickyVisualization from './StickyVisualization';
+import Quiz from '@/components/quiz/Quiz';
 import { useScrollSpy } from '@/hooks/useScrollSpy';
 import { useProgressStore } from '@/lib/progress-store';
 import { getNextChapter, getPrevChapter, getPartForChapter } from '@/lib/chapter-utils';
+import { getQuizForChapter } from '@/data/quizzes';
 import type { ChapterMeta, ChapterSection, GlossaryTerm } from '@/types/chapter';
 
 interface ChapterShellProps {
@@ -25,6 +27,7 @@ export default function ChapterShell({ chapter, sections, glossary, keyTakeaways
   const part = getPartForChapter(chapter.id);
   const nextCh = getNextChapter(chapter.slug);
   const prevCh = getPrevChapter(chapter.slug);
+  const quiz = getQuizForChapter(chapter.id);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   const sectionIds = useMemo(
@@ -64,6 +67,22 @@ export default function ChapterShell({ chapter, sections, glossary, keyTakeaways
     return () => observer.disconnect();
   }, [chapter.id, markChapterRead]);
 
+  // Keyboard shortcuts: N=next, P=prev, U=universe
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.key === 'n' && nextCh) {
+        window.location.href = `/chapter/${nextCh.slug}`;
+      } else if (e.key === 'p' && prevCh) {
+        window.location.href = `/chapter/${prevCh.slug}`;
+      } else if (e.key === 'u') {
+        window.location.href = '/';
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [nextCh, prevCh]);
+
   const partColor = part?.color || '#4a6aff';
 
   return (
@@ -102,6 +121,8 @@ export default function ChapterShell({ chapter, sections, glossary, keyTakeaways
           quizPassed={progress.phases.quiz.passed}
           partColor={partColor}
         />
+
+        <Quiz quiz={quiz} partColor={partColor} />
 
         <ChapterNav prevChapter={prevCh} nextChapter={nextCh} />
 
