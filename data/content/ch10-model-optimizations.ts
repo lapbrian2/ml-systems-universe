@@ -463,3 +463,11 @@ export const keyTakeaways: string[] = [
   'Combined optimization pipelines achieve better results than any single technique, but the order of application matters.',
   'Always benchmark optimizations end-to-end on target hardware, as theoretical speedups rarely match real-world measurements.',
 ];
+
+export const learningObjectives: string[] = [
+  'Compare post-training quantization and quantization-aware training in terms of accuracy and deployment effort',
+  'Explain structured vs. unstructured pruning and their implications for hardware acceleration',
+  'Implement a knowledge distillation pipeline to compress a large teacher model into a smaller student',
+  'Analyze how operator fusion reduces memory traffic and improves inference throughput',
+  'Design a combined optimization pipeline that sequences quantization, pruning, and distillation effectively',
+];

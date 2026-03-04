@@ -494,3 +494,11 @@ export const keyTakeaways: string[] = [
   'Differential privacy provides formal mathematical guarantees about privacy at the cost of some model utility.',
   'Production ML security must address conventional threats alongside ML-specific vulnerabilities including model theft and supply chain attacks.',
 ];
+
+export const learningObjectives: string[] = [
+  'Classify adversarial attacks on ML systems including evasion, poisoning, and model extraction techniques',
+  'Compare defense strategies such as adversarial training, input validation, and certified robustness',
+  'Explain how federated learning preserves privacy while enabling collaborative model training',
+  'Analyze differential privacy guarantees and the privacy-utility trade-off in ML systems',
+  'Design a defense-in-depth security strategy for a production ML deployment',
+];

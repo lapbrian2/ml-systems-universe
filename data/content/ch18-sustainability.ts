@@ -141,3 +141,11 @@ export const keyTakeaways: string[] = [
   'Green AI advocates treating computational efficiency as a first-class research metric alongside accuracy.',
   'Carbon-aware computing can significantly reduce emissions by scheduling workloads when renewable energy is abundant.',
 ];
+
+export const learningObjectives: string[] = [
+  'Estimate the carbon footprint of ML training using power consumption, duration, and grid carbon intensity',
+  'Compare the environmental impact of training vs. inference across the full model lifecycle',
+  'Evaluate energy efficiency techniques including architecture selection, mixed precision, and early stopping',
+  'Implement carbon tracking in ML workflows using tools like CodeCarbon and ML CO2 Impact',
+  'Design carbon-aware computing strategies that schedule workloads to minimize environmental impact',
+];

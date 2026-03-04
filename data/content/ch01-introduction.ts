@@ -428,3 +428,11 @@ export const keyTakeaways: string[] = [
   'Embedded ML and TinyML bring unique systems challenges around extreme resource constraints.',
   'Understanding trade-offs is the most important skill for an ML systems engineer.',
 ];
+
+export const learningObjectives: string[] = [
+  'Explain why ML systems engineering extends far beyond model development',
+  'Identify the key components of a production ML system and their interdependencies',
+  'Describe the complete ML lifecycle from problem formulation to model retirement',
+  'Analyze the trade-offs between accuracy, latency, throughput, and cost in ML systems',
+  'Articulate the "hidden technical debt" concept and its implications for system design',
+];

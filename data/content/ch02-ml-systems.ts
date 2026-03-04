@@ -434,3 +434,11 @@ export const keyTakeaways: string[] = [
   'Tail latency (p99) matters more than average latency for user-facing ML systems.',
   'The full ML stack spans from hardware accelerators through frameworks, infrastructure, and application-level tooling.',
 ];
+
+export const learningObjectives: string[] = [
+  'Identify and describe the core components of a machine learning system architecture',
+  'Explain how data, model, and serving layers interact in production ML systems',
+  'Compare monolithic vs. microservices architectures for ML deployment',
+  'Evaluate system design trade-offs for scalability, reliability, and maintainability',
+  'Design a high-level ML system architecture for a given application scenario',
+];

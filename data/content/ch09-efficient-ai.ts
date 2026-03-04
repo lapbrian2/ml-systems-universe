@@ -428,3 +428,11 @@ export const keyTakeaways: string[] = [
   'Transfer learning from pre-trained models is the most effective efficiency strategy for most practical applications.',
   'Resource budget analysis must consider the full lifecycle cost, including training, serving, and engineering effort.',
 ];
+
+export const learningObjectives: string[] = [
+  'Analyze the five dimensions of ML efficiency: FLOPs, memory, latency, energy, and monetary cost',
+  'Apply the roofline model to determine whether an operation is compute-bound or memory-bound',
+  'Evaluate efficient model design strategies including transfer learning and architecture search',
+  'Compare resource budget trade-offs across training, inference, and full lifecycle costs',
+  'Design an efficiency-first ML system that meets target quality within a given resource budget',
+];

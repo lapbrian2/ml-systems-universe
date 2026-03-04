@@ -230,16 +230,21 @@ body {
 /* ── Code blocks ── */
 .code-block {
   position: relative;
-  background: #0c1020;
+  background: linear-gradient(180deg, #0d1225 0%, #0a0e1a 100%);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.code-block:hover {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
 }
 .code-block__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 14px;
+  padding: 10px 16px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   background: rgba(255, 255, 255, 0.02);
 }
@@ -248,31 +253,34 @@ body {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.35);
 }
 .code-block__copy {
   appearance: none;
   border: none;
   background: rgba(255, 255, 255, 0.06);
   color: rgba(255, 255, 255, 0.4);
-  padding: 3px 10px;
+  padding: 4px 12px;
   border-radius: 6px;
   font-size: 11px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 .code-block__copy:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.8);
 }
-.code-block pre {
+.code-block__pre {
   margin: 0;
-  padding: 16px;
+  padding: 18px;
   overflow-x: auto;
   font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
   font-size: 13px;
-  line-height: 1.6;
-  color: #e2e8f0;
+  line-height: 1.7;
+  color: #c9d1d9;
+  tab-size: 2;
+  white-space: pre;
+  word-break: normal;
+  word-wrap: normal;
 }
 .code-block code {
   font-family: inherit;
@@ -385,4 +393,39 @@ body {
   color: rgba(255, 255, 255, 0.3);
   font-style: italic;
   white-space: nowrap;
+}
+
+/* ── Content typography polish ── */
+.content-blocks p + p {
+  margin-top: 0;
+}
+
+/* ── Smooth focus ring for interactive elements ── */
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid rgba(20, 184, 166, 0.5);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Scrollbar for code blocks ── */
+.code-block__pre::-webkit-scrollbar {
+  height: 4px;
+}
+.code-block__pre::-webkit-scrollbar-track {
+  background: transparent;
+}
+.code-block__pre::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+}
+.code-block__pre::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ── Mobile TOC safe area ── */
+@media (max-width: 1279px) {
+  main {
+    padding-bottom: 80px !important;
+  }
 }

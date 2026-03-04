@@ -474,3 +474,11 @@ export const keyTakeaways: string[] = [
   'MLOps automates the pipeline from code changes through training, validation, and deployment with continuous integration and delivery.',
   'Bayesian optimization is significantly more sample-efficient than grid or random search for hyperparameter tuning.',
 ];
+
+export const learningObjectives: string[] = [
+  'Describe the complete model lifecycle from ideation through deployment and retirement',
+  'Compare experiment tracking approaches and their role in reproducibility',
+  'Design a model versioning and registry strategy for team collaboration',
+  'Analyze CI/CD pipeline requirements specific to machine learning workflows',
+  'Implement model governance practices including approval gates and audit trails',
+];

@@ -140,3 +140,11 @@ export const keyTakeaways: string[] = [
   'Accessibility applications of ML break down barriers for people with disabilities across speech, vision, and language.',
   'Humanitarian AI must navigate challenges of data scarcity, infrastructure limitations, and cultural context in deployment.',
 ];
+
+export const learningObjectives: string[] = [
+  'Evaluate ML applications in healthcare including medical imaging, drug discovery, and clinical decision support',
+  'Analyze the unique engineering constraints of deploying ML in resource-limited social impact settings',
+  'Describe how ML systems contribute to climate science, weather prediction, and energy optimization',
+  'Compare accessibility applications of ML across speech, vision, and language modalities',
+  'Design an ML solution for a social impact scenario that accounts for regulatory, ethical, and deployment constraints',
+];

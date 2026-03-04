@@ -130,3 +130,11 @@ export const keyTakeaways: string[] = [
   'Responsible engineering that considers fairness, security, privacy, and sustainability is a core requirement, not an optional extra.',
   'Continuous learning through hands-on practice, community engagement, and staying current with research is essential in this rapidly evolving field.',
 ];
+
+export const learningObjectives: string[] = [
+  'Synthesize the key themes of ML systems engineering across algorithms, hardware, data, and operations',
+  'Evaluate trade-offs between competing objectives in end-to-end ML system design decisions',
+  'Articulate the full lifecycle perspective from data collection through deployment, monitoring, and retirement',
+  'Identify career paths and professional development strategies in the ML systems engineering field',
+  'Design a personal learning roadmap that integrates hands-on practice with emerging research trends',
+];

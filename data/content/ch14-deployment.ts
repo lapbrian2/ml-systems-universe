@@ -477,3 +477,11 @@ export const keyTakeaways: string[] = [
   'Federated learning enables distributed model improvement while keeping user data private on each device.',
   'Model-hardware co-design produces better results than generic optimization by matching architecture to specific hardware capabilities.',
 ];
+
+export const learningObjectives: string[] = [
+  'Explain the memory and power constraints of microcontroller deployment and their impact on model design',
+  'Compare edge deployment strategies including on-device inference, federated learning, and cloud offloading',
+  'Implement on-device inference optimizations including quantization, operator fusion, and memory planning',
+  'Evaluate federated learning protocols for privacy-preserving model training across distributed devices',
+  'Design an end-to-end edge ML system with appropriate model-hardware co-design trade-offs',
+];

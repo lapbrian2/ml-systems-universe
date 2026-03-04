@@ -452,3 +452,11 @@ export const keyTakeaways: string[] = [
   'Hardware-aware optimization tailors models to specific hardware, often yielding better accuracy-efficiency trade-offs than hardware-agnostic design.',
   'Software ecosystem maturity is as important as raw hardware performance for accelerator adoption and practical utility.',
 ];
+
+export const learningObjectives: string[] = [
+  'Explain GPU architecture fundamentals including streaming multiprocessors, tensor cores, and the memory hierarchy',
+  'Compare GPUs, TPUs, and FPGAs in terms of performance, flexibility, and cost for ML workloads',
+  'Analyze the memory wall bottleneck and its implications for ML system performance',
+  'Evaluate hardware-aware optimization techniques that tailor models to specific accelerator capabilities',
+  'Describe the hardware-software co-design approach and why it produces superior efficiency trade-offs',
+];

@@ -450,3 +450,11 @@ export const keyTakeaways: string[] = [
   'Gradient communication is often the bottleneck in distributed training, motivating compression and overlap techniques.',
   'Production training systems combine data, tensor, and pipeline parallelism in hybrid configurations matched to hardware topology.',
 ];
+
+export const learningObjectives: string[] = [
+  'Compare data parallelism, model parallelism, and pipeline parallelism strategies for distributed training',
+  'Explain how mixed precision training reduces memory usage and increases throughput with minimal quality loss',
+  'Analyze the communication overhead in distributed training and evaluate gradient compression techniques',
+  'Design a distributed training configuration that matches hardware topology and model requirements',
+  'Implement fault-tolerant training with checkpointing and automatic recovery mechanisms',
+];

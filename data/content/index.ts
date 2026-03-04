@@ -27,6 +27,7 @@ export interface ChapterContent {
   sections: ChapterSection[];
   glossary: GlossaryTerm[];
   keyTakeaways: string[];
+  learningObjectives?: string[];
 }
 
 const contentModules: Record<string, ChapterContent> = {

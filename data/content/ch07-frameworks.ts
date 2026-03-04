@@ -426,3 +426,11 @@ export const keyTakeaways: string[] = [
   'The trend toward ML compilers (torch.compile, XLA, TVM) is bridging the gap between framework flexibility and hardware performance.',
   'Computational graphs are the fundamental abstraction enabling automatic differentiation, optimization, and hardware-portable execution.',
 ];
+
+export const learningObjectives: string[] = [
+  'Compare PyTorch, TensorFlow, and JAX across key dimensions like ease of use and performance',
+  'Explain the computational graph paradigms: eager execution vs. traced compilation',
+  'Evaluate framework selection criteria based on project requirements and team expertise',
+  'Describe the role of ONNX in framework interoperability and model portability',
+  'Analyze framework ecosystem maturity including tooling, community, and deployment support',
+];

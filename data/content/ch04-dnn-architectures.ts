@@ -475,3 +475,11 @@ export const keyTakeaways: string[] = [
   'Architecture design involves balancing depth, width, and resolution, with compound scaling providing a principled approach.',
   'The choice of architecture has profound systems implications for memory usage, computational cost, and hardware utilization.',
 ];
+
+export const learningObjectives: string[] = [
+  'Compare CNN, RNN, and Transformer architectures in terms of structure and capabilities',
+  'Explain the self-attention mechanism and why it revolutionized sequence modeling',
+  'Analyze architectural trade-offs including parameter count, computational cost, and accuracy',
+  'Evaluate when to apply each architecture family based on data type and task requirements',
+  'Describe how modern architectures like Vision Transformers bridge the gap between vision and language',
+];

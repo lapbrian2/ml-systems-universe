@@ -146,3 +146,11 @@ export const keyTakeaways: string[] = [
   'AI governance requires organizational structures (ethics boards, review processes) alongside technical tools (model cards, audit trails).',
   'Proactive impact assessment before deployment is more effective and less costly than reacting to harm after it occurs.',
 ];
+
+export const learningObjectives: string[] = [
+  'Compare mathematical fairness definitions including demographic parity, equal opportunity, and calibration',
+  'Identify sources of bias at each stage of the ML pipeline from data collection through deployment',
+  'Apply explainability methods such as SHAP and LIME to interpret model predictions for stakeholders',
+  'Design an AI governance framework with model cards, audit trails, and ethics review processes',
+  'Evaluate the impossibility theorem and articulate the trade-offs inherent in fairness-aware system design',
+];

@@ -148,3 +148,11 @@ export const keyTakeaways: string[] = [
   'The integration of ML into every aspect of computing makes ML systems engineering a broadly essential skill.',
   'AI safety and alignment are increasingly critical as model capabilities grow, requiring both technical and governance approaches.',
 ];
+
+export const learningObjectives: string[] = [
+  'Explain how foundation models are trained, adapted, and served at scale in production systems',
+  'Analyze the systems engineering challenges of serving large language models including KV-cache management and speculative decoding',
+  'Compare emerging architectures such as Mixture of Experts and retrieval-augmented generation for efficient scaling',
+  'Apply scaling laws to make principled decisions about compute, data, and parameter allocation',
+  'Evaluate AI safety and alignment challenges that arise as model capabilities grow beyond predictable thresholds',
+];

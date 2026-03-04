@@ -446,3 +446,11 @@ export const keyTakeaways: string[] = [
   'Experiment tracking at scale becomes a critical organizational capability for collaboration and knowledge management.',
   'MLOps maturity progresses from manual processes through pipeline automation to full CI/CD for ML.',
 ];
+
+export const learningObjectives: string[] = [
+  'Design CI/CD pipelines that validate code, data, and model quality for ML systems',
+  'Compare experiment tracking platforms and implement structured logging for team-scale ML development',
+  'Implement monitoring and observability strategies that detect model degradation in production',
+  'Analyze data drift and concept drift detection methods and their appropriate response strategies',
+  'Evaluate MLOps platform architectures and select tools appropriate for organizational maturity level',
+];

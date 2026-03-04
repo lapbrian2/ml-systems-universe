@@ -434,3 +434,11 @@ export const keyTakeaways: string[] = [
   'Accurate benchmarking requires warmup runs, statistical rigor, controlled environments, and transparent reporting.',
   'Continuous benchmarking in CI/CD detects performance regressions and tracks optimization progress over time.',
 ];
+
+export const learningObjectives: string[] = [
+  'Explain the MLPerf benchmark suite and interpret training and inference benchmark results',
+  'Apply profiling tools to identify performance bottlenecks across the ML stack',
+  'Implement roofline analysis to classify operations as compute-bound or memory-bound',
+  'Design rigorous benchmark experiments with proper warmup, statistical analysis, and controlled environments',
+  'Evaluate the limitations of standard benchmarks and when custom benchmarks are necessary',
+];

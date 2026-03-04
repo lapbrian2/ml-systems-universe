@@ -500,3 +500,11 @@ export const keyTakeaways: string[] = [
   'On-the-fly data augmentation maximizes training data diversity without increasing storage requirements.',
   'Proactive data quality management through validation frameworks prevents costly downstream model failures.',
 ];
+
+export const learningObjectives: string[] = [
+  'Design data pipelines that handle ingestion, transformation, and storage at scale',
+  'Compare batch vs. streaming data processing architectures and their trade-offs',
+  'Implement data quality validation and monitoring strategies',
+  'Explain feature engineering best practices and feature store architectures',
+  'Evaluate data versioning and lineage tracking solutions for ML workflows',
+];

@@ -491,3 +491,11 @@ export const keyTakeaways: string[] = [
   'Model calibration enables reliable confidence-based routing and better human-AI decision collaboration.',
   'Continuous monitoring and automated retraining form a feedback loop that maintains robustness over time.',
 ];
+
+export const learningObjectives: string[] = [
+  'Explain how SRE principles apply to ML systems including SLOs for model quality and error budgets',
+  'Design graceful degradation strategies with fallback systems for ML service failures',
+  'Analyze types of distribution shift and implement appropriate detection and response mechanisms',
+  'Evaluate behavioral and metamorphic testing approaches for validating ML model correctness',
+  'Implement model calibration techniques to produce reliable confidence scores for downstream decision-making',
+];

@@ -286,6 +286,13 @@ const vizComponent = computed(() => {
             :part="part"
           />
 
+          <!-- Learning objectives -->
+          <LearningObjectives
+            v-if="content?.learningObjectives?.length"
+            :objectives="content.learningObjectives"
+            :part-color="partColor"
+          />
+
           <!-- Sections -->
           <div v-if="content">
             <SectionBlock
@@ -336,5 +343,17 @@ const vizComponent = computed(() => {
         </div>
       </main>
     </div>
+
+    <!-- Floating TOC -->
+    <ChapterTOC
+      v-if="content && chapter"
+      :sections="content.sections"
+      :active-section="activeSection"
+      :chapter-id="chapter.id"
+      :part-color="partColor"
+    />
+
+    <!-- Scroll to top -->
+    <ScrollToTop :part-color="partColor" />
   </div>
 </template>

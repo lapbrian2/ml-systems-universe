@@ -465,3 +465,11 @@ export const keyTakeaways: string[] = [
   'Modern optimizers like Adam provide robust training by combining momentum with adaptive per-parameter learning rates.',
   'The backward pass requires approximately twice the computation and memory of the forward pass, which impacts training system design.',
 ];
+
+export const learningObjectives: string[] = [
+  'Explain the fundamental principles of deep learning including backpropagation and gradient descent',
+  'Compare activation functions and their impact on network training dynamics',
+  'Analyze the role of loss functions in guiding model optimization',
+  'Implement a basic neural network training loop with forward and backward passes',
+  'Evaluate regularization techniques for preventing overfitting in deep models',
+];
