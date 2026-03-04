@@ -1,4 +1,5 @@
 {
+  "framework": null,
   "buildCommand": "npx nuxi build",
   "outputDirectory": ".vercel/output",
   "installCommand": "npm install"
