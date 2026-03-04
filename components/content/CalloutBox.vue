@@ -11,25 +11,21 @@ const props = defineProps<{
 const variantConfig = {
   note: {
     color: '#14b8a6',
-    bg: 'rgba(20, 184, 166, 0.05)',
     icon: Info,
     label: 'Note',
   },
   warning: {
     color: '#ff6b6b',
-    bg: 'rgba(255, 107, 107, 0.05)',
     icon: AlertTriangle,
     label: 'Warning',
   },
   tip: {
     color: '#22c55e',
-    bg: 'rgba(34, 197, 94, 0.05)',
     icon: Lightbulb,
     label: 'Tip',
   },
   example: {
     color: '#a855f7',
-    bg: 'rgba(168, 85, 247, 0.05)',
     icon: FlaskConical,
     label: 'Example',
   },
@@ -41,21 +37,23 @@ const displayTitle = computed(() => props.title ?? config.value.label)
 
 <template>
   <div
-    class="glass-panel rounded-lg p-4 pl-5"
-    :style="{
-      borderLeft: `4px solid ${config.color}`,
-      backgroundColor: config.bg,
-    }"
+    class="callout-box my-5 group"
+    :class="`callout-box--${variant}`"
   >
     <!-- Header -->
-    <div class="flex items-center gap-2 mb-2">
-      <component
-        :is="config.icon"
-        class="w-4 h-4 shrink-0"
-        :style="{ color: config.color }"
-      />
+    <div class="flex items-center gap-2.5 mb-2.5">
+      <div
+        class="w-6 h-6 rounded-md flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110"
+        :style="{ backgroundColor: `${config.color}15` }"
+      >
+        <component
+          :is="config.icon"
+          class="w-3.5 h-3.5"
+          :style="{ color: config.color }"
+        />
+      </div>
       <span
-        class="text-xs font-semibold uppercase tracking-wider"
+        class="text-[11px] font-bold uppercase tracking-wider"
         :style="{ color: config.color }"
       >
         {{ displayTitle }}
@@ -63,7 +61,7 @@ const displayTitle = computed(() => props.title ?? config.value.label)
     </div>
 
     <!-- Body -->
-    <p class="text-sm leading-[1.75] text-white/60 pl-6">
+    <p class="text-sm leading-[1.8] text-white/60 pl-[34px]">
       {{ text }}
     </p>
   </div>

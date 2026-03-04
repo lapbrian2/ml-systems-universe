@@ -22,39 +22,67 @@ const nextPart = computed(() => next.value ? getPartForChapter(next.value.id) : 
       <NuxtLink
         v-if="prev"
         :to="`/chapter/${prev.slug}`"
-        class="flex-1 glass-panel rounded-xl px-5 py-4 flex items-center gap-3 transition-all duration-200 hover:bg-white/[0.03] hover:border-white/10 group"
-        :aria-label="`Previous chapter: ${prev.title}`"
+        class="flex-1 glass-panel rounded-xl px-5 py-5 flex items-center gap-3 transition-all duration-300 hover:bg-white/[0.04] hover:border-white/10 group relative overflow-hidden"
+        :aria-label="`Previous: ${prev.title}`"
       >
-        <ArrowLeft class="w-4 h-4 text-white/25 group-hover:text-white/50 transition-colors shrink-0" />
+        <!-- Accent bar -->
+        <div
+          v-if="prevPart"
+          class="absolute left-0 top-0 bottom-0 w-[2px] opacity-30 group-hover:opacity-60 transition-opacity"
+          :style="{ backgroundColor: prevPart.color }"
+        />
+        <div
+          class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all duration-300 group-hover:-translate-x-0.5"
+          style="background: rgba(255,255,255,0.04);"
+        >
+          <ArrowLeft class="w-4 h-4 text-white/30 group-hover:text-white/60 transition-colors" />
+        </div>
         <div class="min-w-0">
-          <span class="text-[10px] text-white/30 uppercase tracking-wider">Previous</span>
-          <p class="text-sm font-medium text-white/70 group-hover:text-white/90 transition-colors truncate">
+          <span class="text-[10px] text-white/25 uppercase tracking-wider font-medium">Previous</span>
+          <p class="text-sm font-medium text-white/65 group-hover:text-white/90 transition-colors truncate mt-0.5">
             {{ prev.title }}
           </p>
         </div>
       </NuxtLink>
-
-      <!-- Spacer when no prev -->
       <div v-else class="flex-1" />
 
       <!-- Next chapter -->
       <NuxtLink
         v-if="next"
         :to="`/chapter/${next.slug}`"
-        class="flex-1 glass-panel rounded-xl px-5 py-4 flex items-center justify-end gap-3 text-right transition-all duration-200 hover:bg-white/[0.03] hover:border-white/10 group"
-        :aria-label="`Next chapter: ${next.title}`"
+        class="flex-1 glass-panel rounded-xl px-5 py-5 flex items-center justify-end gap-3 text-right transition-all duration-300 hover:bg-white/[0.04] hover:border-white/10 group relative overflow-hidden"
+        :aria-label="`Next: ${next.title}`"
       >
+        <!-- Accent bar -->
+        <div
+          v-if="nextPart"
+          class="absolute right-0 top-0 bottom-0 w-[2px] opacity-30 group-hover:opacity-60 transition-opacity"
+          :style="{ backgroundColor: nextPart.color }"
+        />
         <div class="min-w-0">
-          <span class="text-[10px] text-white/30 uppercase tracking-wider">Next</span>
-          <p class="text-sm font-medium text-white/70 group-hover:text-white/90 transition-colors truncate">
+          <span class="text-[10px] text-white/25 uppercase tracking-wider font-medium">Next</span>
+          <p class="text-sm font-medium text-white/65 group-hover:text-white/90 transition-colors truncate mt-0.5">
             {{ next.title }}
           </p>
         </div>
-        <ArrowRight class="w-4 h-4 text-white/25 group-hover:text-white/50 transition-colors shrink-0" />
+        <div
+          class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all duration-300 group-hover:translate-x-0.5"
+          :style="next && nextPart ? { background: `${nextPart.color}10` } : { background: 'rgba(255,255,255,0.04)' }"
+        >
+          <ArrowRight
+            class="w-4 h-4 transition-colors"
+            :style="next && nextPart ? { color: `${nextPart.color}80` } : { color: 'rgba(255,255,255,0.3)' }"
+          />
+        </div>
       </NuxtLink>
-
-      <!-- Spacer when no next -->
       <div v-else class="flex-1" />
     </div>
+
+    <!-- Keyboard hint -->
+    <p class="text-center text-[10px] text-white/15 mt-3 hidden lg:block">
+      Use <kbd class="px-1.5 py-0.5 rounded bg-white/[0.04] font-mono text-[9px]">←</kbd>
+      <kbd class="px-1.5 py-0.5 rounded bg-white/[0.04] font-mono text-[9px]">→</kbd>
+      to navigate
+    </p>
   </nav>
 </template>

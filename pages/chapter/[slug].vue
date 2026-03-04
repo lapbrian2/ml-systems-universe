@@ -3,7 +3,7 @@ import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowLeft } from 'lucide-vue-next'
-import { getChapterBySlug, getPartForChapter } from '~/lib/chapter-utils'
+import { getChapterBySlug, getPartForChapter, getNextChapter, getPrevChapter } from '~/lib/chapter-utils'
 import { getChapterContent } from '~/data/content'
 import { useProgressStore } from '~/stores/progress'
 import type { ChapterMeta, Part } from '~/types/chapter'
@@ -115,6 +115,27 @@ onMounted(async () => {
 
 onUnmounted(() => {
   gsapCtx?.revert()
+  if (import.meta.client) {
+    window.removeEventListener('keydown', handleKeyboard)
+  }
+})
+
+// ── Keyboard navigation ────────────────────────────────────────────
+function handleKeyboard(e: KeyboardEvent) {
+  if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
+  if (e.key === 'ArrowLeft') {
+    const prev = getPrevChapter(slug.value)
+    if (prev) navigateTo(`/chapter/${prev.slug}`)
+  } else if (e.key === 'ArrowRight') {
+    const next = getNextChapter(slug.value)
+    if (next) navigateTo(`/chapter/${next.slug}`)
+  }
+}
+
+onMounted(() => {
+  if (import.meta.client) {
+    window.addEventListener('keydown', handleKeyboard)
+  }
 })
 
 // ── Quiz complete handler ─────────────────────────────────────────────
