@@ -1,101 +1,115 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useCallback } from 'react';
+import dynamic from 'next/dynamic';
+import Link from 'next/link';
+import type { ChapterMeta } from '@/types/chapter';
+import InfoPanel from '@/components/universe/InfoPanel';
+import UniverseLegend from '@/components/universe/UniverseLegend';
+
+const UniverseScene = dynamic(
+  () => import('@/components/universe/UniverseScene'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="fixed inset-0 bg-[#05070f] flex flex-col items-center justify-center gap-4 z-50">
+        <p className="text-[11px] tracking-[0.25em] uppercase text-[#3a4a7a]">
+          Initializing ML Systems Universe
+        </p>
+        <div className="w-[200px] h-[1px] bg-[rgba(80,100,200,0.15)] relative overflow-hidden">
+          <div
+            className="absolute left-0 top-0 w-full h-full"
+            style={{
+              background:
+                'linear-gradient(to right, transparent, #4a6aff, transparent)',
+              animation: 'scan 1.2s ease-in-out infinite',
+            }}
+          />
+        </div>
+        <style>{`
+          @keyframes scan {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(100%); }
+          }
+        `}</style>
+      </div>
+    ),
+  }
+);
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [selectedChapter, setSelectedChapter] = useState<ChapterMeta | null>(
+    null
+  );
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const handleChapterSelect = useCallback((chapter: ChapterMeta) => {
+    setSelectedChapter(chapter);
+    setIsPanelOpen(true);
+  }, []);
+
+  const handlePanelClose = useCallback(() => {
+    setIsPanelOpen(false);
+    setSelectedChapter(null);
+  }, []);
+
+  return (
+    <main className="h-screen w-screen overflow-hidden relative">
+      {/* 3D Scene */}
+      <UniverseScene onChapterSelect={handleChapterSelect} />
+
+      {/* Header overlay */}
+      <div
+        className="fixed top-0 left-0 right-0 z-10 px-8 py-5 flex justify-between items-start pointer-events-none"
+        style={{
+          background:
+            'linear-gradient(to bottom, rgba(5,7,15,0.9) 0%, transparent 100%)',
+        }}
+      >
+        <div>
+          <p className="text-[13px] font-medium tracking-[0.15em] uppercase text-[#6b82c8]">
+            Harvard CS249r
+          </p>
+          <h1 className="text-xl font-bold text-white tracking-tight mt-0.5">
+            Machine Learning Systems
+          </h1>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        <div className="flex items-center gap-4">
+          <span className="text-xs text-[#3a4a7a] tracking-[0.1em]">
+            21 CHAPTERS &middot; INTERACTIVE 3D MAP
+          </span>
+          <Link
+            href="/dashboard"
+            className="pointer-events-auto px-3 py-1.5 rounded-md text-xs font-medium text-[#6b82c8] border border-[rgba(80,100,200,0.3)] hover:bg-[rgba(80,100,200,0.15)] hover:text-white transition-all"
+          >
+            Dashboard
+          </Link>
+        </div>
+      </div>
+
+      {/* Info Panel */}
+      <InfoPanel
+        chapter={selectedChapter}
+        isOpen={isPanelOpen}
+        onClose={handlePanelClose}
+      />
+
+      {/* Legend */}
+      <UniverseLegend isShifted={!isPanelOpen} />
+
+      {/* Instructions */}
+      <div className="fixed bottom-7 left-8 z-10 text-[11px] text-[#2a3555] leading-[1.8] tracking-[0.05em] pointer-events-none">
+        <div>
+          <span className="text-[#3a4a7a]">DRAG</span>&nbsp;&nbsp;Orbit the
+          graph
+        </div>
+        <div>
+          <span className="text-[#3a4a7a]">SCROLL</span>&nbsp;&nbsp;Zoom in/out
+        </div>
+        <div>
+          <span className="text-[#3a4a7a]">CLICK</span>&nbsp;&nbsp;Open chapter
+        </div>
+      </div>
+    </main>
   );
 }
