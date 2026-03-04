@@ -49,7 +49,13 @@ const hasRichBlocks = computed(() => props.blocks && props.blocks.length > 0)
 <template>
   <section :id="id" ref="sectionRef" class="relative">
     <!-- Section divider (skip first section) -->
-    <div v-if="index > 0" class="section-divider my-10" />
+    <div
+      v-if="index > 0"
+      class="my-10 h-px"
+      :style="{
+        background: `linear-gradient(90deg, transparent, ${partColor ?? '#14b8a6'}30 50%, transparent)`,
+      }"
+    />
 
     <!-- Numbered heading with active indicator -->
     <h2 class="font-display text-lg lg:text-xl font-semibold text-white mb-5 flex items-baseline gap-3">
@@ -93,10 +99,13 @@ const hasRichBlocks = computed(() => props.blocks && props.blocks.length > 0)
       <div
         v-for="concept in keyConcepts"
         :key="concept.term"
-        class="glass-panel concept-glow rounded-lg p-4 border-l-2 transition-shadow duration-300"
-        :style="{ borderLeftColor: 'var(--color-primary)' }"
+        class="glass-panel concept-glow rounded-lg p-4 border-l-2 transition-all duration-300"
+        :style="{ borderLeftColor: partColor ?? 'var(--color-primary)' }"
       >
-        <h4 class="text-xs font-semibold text-primary uppercase tracking-wider mb-1.5">
+        <h4
+          class="text-xs font-semibold uppercase tracking-wider mb-1.5"
+          :style="{ color: partColor ?? 'var(--color-primary)' }"
+        >
           {{ concept.term }}
         </h4>
         <p class="text-sm text-white/50 leading-relaxed">
