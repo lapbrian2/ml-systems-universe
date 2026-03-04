@@ -31,6 +31,23 @@ useHead({
   ),
 })
 
+useSeoMeta({
+  title: computed(() =>
+    chapter.value
+      ? `${chapter.value.title} | ML Systems Universe`
+      : 'ML Systems Universe'
+  ),
+  ogTitle: computed(() =>
+    chapter.value
+      ? `${chapter.value.title} — ML Systems Universe`
+      : 'ML Systems Universe'
+  ),
+  description: computed(() => chapter.value?.description ?? ''),
+  ogDescription: computed(() => chapter.value?.description ?? ''),
+  ogImage: '/og-default.png',
+  twitterCard: 'summary_large_image',
+})
+
 // 404 guard
 if (!chapter.value) {
   throw createError({ statusCode: 404, message: 'Chapter not found' })
@@ -213,12 +230,13 @@ const vizComponent = computed(() => {
       <aside
         class="
           relative w-full lg:w-1/2
-          h-[40vh] lg:h-screen
+          h-[45vh] min-h-[300px] lg:h-screen lg:min-h-0
           lg:sticky lg:top-0 lg:self-start
           viz-panel-glow
           flex items-center justify-center
           overflow-hidden
         "
+        style="touch-action: manipulation"
         :style="{
           background: `linear-gradient(135deg, #0a0e1a 0%, ${partColor}06 50%, #0a0e1a 100%)`,
         }"
@@ -327,6 +345,7 @@ const vizComponent = computed(() => {
               :key-concepts="section.keyConcepts"
               :is-active="activeSection === idx"
               :part-color="partColor"
+              :glossary="content.glossary"
             />
 
             <!-- Key takeaways -->

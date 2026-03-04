@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import type { ContentBlock } from '~/types/chapter'
+import type { ContentBlock, GlossaryTerm } from '~/types/chapter'
 
 defineProps<{
   blocks: ContentBlock[]
+  glossary?: GlossaryTerm[]
 }>()
 </script>
 
@@ -14,7 +15,12 @@ defineProps<{
         v-if="block.type === 'paragraph'"
         class="text-[14.5px] leading-[1.85] text-white/60 tracking-[0.005em]"
       >
-        {{ block.text }}
+        <GlossaryText
+          v-if="glossary && glossary.length > 0"
+          :text="block.text"
+          :terms="glossary"
+        />
+        <template v-else>{{ block.text }}</template>
       </p>
 
       <!-- Heading -->

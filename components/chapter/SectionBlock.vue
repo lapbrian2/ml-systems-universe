@@ -3,7 +3,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Eye } from 'lucide-vue-next'
-import type { KeyConcept, ContentBlock } from '~/types/chapter'
+import type { KeyConcept, ContentBlock, GlossaryTerm } from '~/types/chapter'
 
 const props = defineProps<{
   id: string
@@ -14,6 +14,7 @@ const props = defineProps<{
   keyConcepts?: KeyConcept[]
   isActive?: boolean
   partColor?: string
+  glossary?: GlossaryTerm[]
 }>()
 
 const sectionRef = ref<HTMLElement | null>(null)
@@ -78,7 +79,7 @@ const hasRichBlocks = computed(() => props.blocks && props.blocks.length > 0)
     </h2>
 
     <!-- Rich content blocks (new textbook format) -->
-    <ContentRenderer v-if="hasRichBlocks" :blocks="blocks!" />
+    <ContentRenderer v-if="hasRichBlocks" :blocks="blocks!" :glossary="glossary" />
 
     <!-- Legacy: plain text paragraphs -->
     <div v-else class="space-y-4">

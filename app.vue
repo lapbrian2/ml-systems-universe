@@ -24,6 +24,7 @@ nuxtApp.hook('page:finish', () => { isLoading.value = false })
     </Transition>
 
     <NuxtPage />
+    <CommandPalette />
   </div>
 </template>
 

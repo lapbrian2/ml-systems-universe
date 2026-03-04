@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted, shallowRef } from 'vue'
+import * as THREE from 'three'
+import { gsap } from 'gsap'
 
-/* ── Props & Emits ── */
+/* ── Props & Emits (preserved interface) ── */
 const props = defineProps<{
   activeSection: number
 }>()
@@ -10,213 +12,256 @@ const emit = defineEmits<{
   exerciseComplete: []
 }>()
 
-/* ── Types ── */
-interface Point {
-  x: number
-  y: number
-}
-
-interface OptimizerStep {
-  x: number
-  y: number
-  loss: number
-}
-
-interface TooltipState {
-  visible: boolean
-  x: number
-  y: number
-  title: string
-  description: string
-}
-
 /* ── Constants ── */
-const GRID_SIZE = 20
-const CONTOUR_LEVELS = 10
-const SVG_W = 800
-const SVG_H = 500
-const PLOT_X = 60
-const PLOT_Y = 40
-const PLOT_W = 680
-const PLOT_H = 400
+const SURFACE_SIZE = 6
+const SURFACE_SEGMENTS = 80
+const SURFACE_HALF = SURFACE_SIZE / 2
+const PATH_STEPS = 60
 
 /* ── Interaction state ── */
-const clickCount = ref(0)
+const interactionCount = ref(0)
 const exerciseEmitted = ref(false)
-const startingPoints = ref<Point[]>([])
-const sgdPaths = ref<OptimizerStep[][]>([])
-const adamPaths = ref<OptimizerStep[][]>([])
-const animationFrame = ref(0)
-const animTimer = ref<ReturnType<typeof setInterval> | null>(null)
-const tooltip = ref<TooltipState>({ visible: false, x: 0, y: 0, title: '', description: '' })
+const isUserInteracting = ref(false)
+let autoRotateTimer: ReturnType<typeof setTimeout> | null = null
+let pathTimeline: gsap.core.Tween | null = null
 
-/* ── Loss function: two minima landscape ── */
-function lossFunction(x: number, y: number): number {
-  // Normalize to [-3, 3]
-  const nx = (x / PLOT_W) * 6 - 3
-  const ny = (y / PLOT_H) * 6 - 3
-  // Two-basin surface
-  const basin1 = 3 * Math.exp(-((nx - 1) ** 2 + (ny - 1) ** 2) / 0.8)
-  const basin2 = 2.5 * Math.exp(-((nx + 0.8) ** 2 + (ny + 0.5) ** 2) / 1.2)
-  const ridge = 0.3 * Math.sin(nx * 2) * Math.cos(ny * 2)
-  return 4 - basin1 - basin2 + ridge + 0.1 * (nx * nx + ny * ny)
+/* ── Three.js objects (shallowRef prevents deep reactivity overhead) ── */
+const surfaceMesh = shallowRef<THREE.Mesh | null>(null)
+const sgdLineObj = shallowRef<THREE.Line | null>(null)
+const adamLineObj = shallowRef<THREE.Line | null>(null)
+const sgdBallObj = shallowRef<THREE.Mesh | null>(null)
+const adamBallObj = shallowRef<THREE.Mesh | null>(null)
+const globalMinMarker = shallowRef<THREE.Mesh | null>(null)
+const localMinMarker = shallowRef<THREE.Mesh | null>(null)
+const gridHelperObj = shallowRef<THREE.GridHelper | null>(null)
+
+/* ── Loss function (same two-basin landscape as original) ── */
+function lossFunction(x: number, z: number): number {
+  const basin1 = 3 * Math.exp(-((x - 1) ** 2 + (z - 1) ** 2) / 0.8)
+  const basin2 = 2.5 * Math.exp(-((x + 0.8) ** 2 + (z + 0.5) ** 2) / 1.2)
+  const ridge = 0.3 * Math.sin(x * 2) * Math.cos(z * 2)
+  return 4 - basin1 - basin2 + ridge + 0.1 * (x * x + z * z)
 }
 
-/* ── Gradient computation ── */
-function gradient(x: number, y: number): { dx: number; dy: number } {
-  const h = 0.5
-  const dx = (lossFunction(x + h, y) - lossFunction(x - h, y)) / (2 * h)
-  const dy = (lossFunction(x, y + h) - lossFunction(x, y - h)) / (2 * h)
-  return { dx, dy }
+/* ── Gradient (numerical, central differences) ── */
+function gradient(x: number, z: number): { dx: number; dz: number } {
+  const h = 0.01
+  return {
+    dx: (lossFunction(x + h, z) - lossFunction(x - h, z)) / (2 * h),
+    dz: (lossFunction(x, z + h) - lossFunction(x, z - h)) / (2 * h),
+  }
 }
 
-/* ── Contour paths ── */
-const contourData = computed(() => {
-  const points: { x: number; y: number; loss: number }[] = []
-  const step = PLOT_W / GRID_SIZE
-  for (let i = 0; i <= GRID_SIZE; i++) {
-    for (let j = 0; j <= GRID_SIZE; j++) {
-      const px = i * step
-      const py = j * step
-      points.push({ x: px, y: py, loss: lossFunction(px, py) })
-    }
+/* ── Loss-to-color mapping (deep blue -> teal -> yellow -> red) ── */
+function lossToColor(t: number): THREE.Color {
+  if (t < 0.25) {
+    return new THREE.Color().lerpColors(new THREE.Color('#0a1628'), new THREE.Color('#14b8a6'), t / 0.25)
   }
-  return points
-})
-
-const contourLevels = computed(() => {
-  const losses = contourData.value.map(p => p.loss)
-  const min = Math.min(...losses)
-  const max = Math.max(...losses)
-  const levels: number[] = []
-  for (let i = 0; i < CONTOUR_LEVELS; i++) {
-    levels.push(min + (max - min) * (i / (CONTOUR_LEVELS - 1)))
+  if (t < 0.5) {
+    return new THREE.Color().lerpColors(new THREE.Color('#14b8a6'), new THREE.Color('#eab308'), (t - 0.25) / 0.25)
   }
-  return levels
-})
-
-/* ── Build contour circles approximation ── */
-const contourCircles = computed(() => {
-  const circles: { cx: number; cy: number; r: number; level: number; opacity: number }[] = []
-  const minima = [
-    { x: (1 + 3) / 6 * PLOT_W, y: (1 + 3) / 6 * PLOT_H },
-    { x: (-0.8 + 3) / 6 * PLOT_W, y: (-0.5 + 3) / 6 * PLOT_H },
-  ]
-
-  for (const m of minima) {
-    for (let i = 1; i <= 8; i++) {
-      circles.push({
-        cx: m.x,
-        cy: m.y,
-        r: i * 22 + (m === minima[0] ? 0 : 5),
-        level: i,
-        opacity: 0.08 + (8 - i) * 0.03,
-      })
-    }
+  if (t < 0.75) {
+    return new THREE.Color().lerpColors(new THREE.Color('#eab308'), new THREE.Color('#ef4444'), (t - 0.5) / 0.25)
   }
-  return circles
-})
+  return new THREE.Color().lerpColors(new THREE.Color('#ef4444'), new THREE.Color('#7f1d1d'), (t - 0.75) / 0.25)
+}
 
-/* ── SGD simulation ── */
-function simulateSGD(startX: number, startY: number): OptimizerStep[] {
-  const path: OptimizerStep[] = []
-  let x = startX
-  let y = startY
-  const lr = 8
-  for (let i = 0; i < 40; i++) {
-    const loss = lossFunction(x, y)
-    path.push({ x, y, loss })
-    const g = gradient(x, y)
-    // Add noise for SGD
-    const noise = 4
-    x -= lr * g.dx + (Math.random() - 0.5) * noise
-    y -= lr * g.dy + (Math.random() - 0.5) * noise
-    x = Math.max(0, Math.min(PLOT_W, x))
-    y = Math.max(0, Math.min(PLOT_H, y))
+/* ── Seeded PRNG for deterministic SGD noise ── */
+function createSeededRandom(seed: number) {
+  let s = seed
+  return () => {
+    s = (s * 16807) % 2147483647
+    return (s - 1) / 2147483646
+  }
+}
+
+/* ── SGD simulation (wobblier, slower convergence) ── */
+function simulateSGD(): THREE.Vector3[] {
+  const path: THREE.Vector3[] = []
+  let x = 2.2, z = 2.0
+  const lr = 0.15
+  const rand = createSeededRandom(42)
+
+  for (let i = 0; i < PATH_STEPS; i++) {
+    const y = lossFunction(x, z) * 0.5 + 0.03
+    path.push(new THREE.Vector3(x, y, z))
+    const g = gradient(x, z)
+    x -= lr * g.dx + (rand() - 0.5) * 0.14
+    z -= lr * g.dz + (rand() - 0.5) * 0.14
+    x = Math.max(-SURFACE_HALF, Math.min(SURFACE_HALF, x))
+    z = Math.max(-SURFACE_HALF, Math.min(SURFACE_HALF, z))
   }
   return path
 }
 
-/* ── Adam simulation ── */
-function simulateAdam(startX: number, startY: number): OptimizerStep[] {
-  const path: OptimizerStep[] = []
-  let x = startX
-  let y = startY
-  const lr = 12
-  let mx = 0, my = 0
-  let vx = 0, vy = 0
+/* ── Adam simulation (smoother, faster convergence) ── */
+function simulateAdam(): THREE.Vector3[] {
+  const path: THREE.Vector3[] = []
+  let x = 2.2, z = 2.0
+  const lr = 0.2
+  let mx = 0, mz = 0, vx = 0, vz = 0
   const beta1 = 0.9, beta2 = 0.999, eps = 1e-8
 
-  for (let i = 0; i < 40; i++) {
-    const loss = lossFunction(x, y)
-    path.push({ x, y, loss })
-    const g = gradient(x, y)
+  for (let i = 0; i < PATH_STEPS; i++) {
+    const y = lossFunction(x, z) * 0.5 + 0.03
+    path.push(new THREE.Vector3(x, y, z))
+    const g = gradient(x, z)
     mx = beta1 * mx + (1 - beta1) * g.dx
-    my = beta1 * my + (1 - beta1) * g.dy
+    mz = beta1 * mz + (1 - beta1) * g.dz
     vx = beta2 * vx + (1 - beta2) * g.dx * g.dx
-    vy = beta2 * vy + (1 - beta2) * g.dy * g.dy
-    const mxHat = mx / (1 - Math.pow(beta1, i + 1))
-    const myHat = my / (1 - Math.pow(beta1, i + 1))
-    const vxHat = vx / (1 - Math.pow(beta2, i + 1))
-    const vyHat = vy / (1 - Math.pow(beta2, i + 1))
-    x -= lr * mxHat / (Math.sqrt(vxHat) + eps)
-    y -= lr * myHat / (Math.sqrt(vyHat) + eps)
-    x = Math.max(0, Math.min(PLOT_W, x))
-    y = Math.max(0, Math.min(PLOT_H, y))
+    vz = beta2 * vz + (1 - beta2) * g.dz * g.dz
+    const t = i + 1
+    x -= lr * (mx / (1 - beta1 ** t)) / (Math.sqrt(vx / (1 - beta2 ** t)) + eps)
+    z -= lr * (mz / (1 - beta1 ** t)) / (Math.sqrt(vz / (1 - beta2 ** t)) + eps)
+    x = Math.max(-SURFACE_HALF, Math.min(SURFACE_HALF, x))
+    z = Math.max(-SURFACE_HALF, Math.min(SURFACE_HALF, z))
   }
   return path
 }
 
-/* ── Click handler ── */
-function handleSurfaceClick(event: MouseEvent) {
-  const svg = (event.currentTarget as SVGElement)
-  const rect = svg.getBoundingClientRect()
-  const scaleX = SVG_W / rect.width
-  const scaleY = SVG_H / rect.height
-  const px = (event.clientX - rect.left) * scaleX - PLOT_X
-  const py = (event.clientY - rect.top) * scaleY - PLOT_Y
+/* ── Pre-compute paths ── */
+const sgdPath = simulateSGD()
+const adamPath = simulateAdam()
 
-  if (px < 0 || px > PLOT_W || py < 0 || py > PLOT_H) return
+/* ── Build surface mesh ── */
+function buildSurface(): THREE.Mesh {
+  const geom = new THREE.PlaneGeometry(SURFACE_SIZE, SURFACE_SIZE, SURFACE_SEGMENTS, SURFACE_SEGMENTS)
+  geom.rotateX(-Math.PI / 2)
 
-  startingPoints.value = [...startingPoints.value, { x: px, y: py }]
-  sgdPaths.value = [...sgdPaths.value, simulateSGD(px, py)]
-  adamPaths.value = [...adamPaths.value, simulateAdam(px, py)]
-  animationFrame.value = 0
+  const pos = geom.attributes.position as THREE.BufferAttribute
+  const count = pos.count
+  const colors = new Float32Array(count * 3)
+  const losses = new Float32Array(count)
+  let minL = Infinity, maxL = -Infinity
 
-  clickCount.value++
-  if (clickCount.value >= 3 && !exerciseEmitted.value) {
-    exerciseEmitted.value = true
-    emit('exerciseComplete')
+  for (let i = 0; i < count; i++) {
+    const l = lossFunction(pos.getX(i), pos.getZ(i))
+    losses[i] = l
+    if (l < minL) minL = l
+    if (l > maxL) maxL = l
   }
 
-  startAnimation()
+  const range = maxL - minL || 1
+  for (let i = 0; i < count; i++) {
+    pos.setY(i, losses[i] * 0.5)
+    const t = (losses[i] - minL) / range
+    const c = lossToColor(t)
+    colors[i * 3] = c.r
+    colors[i * 3 + 1] = c.g
+    colors[i * 3 + 2] = c.b
+  }
+
+  geom.setAttribute('color', new THREE.BufferAttribute(colors, 3))
+  geom.computeVertexNormals()
+  pos.needsUpdate = true
+
+  const mat = new THREE.MeshPhongMaterial({
+    vertexColors: true,
+    side: THREE.DoubleSide,
+    shininess: 40,
+    specular: new THREE.Color('#1a2a40'),
+    transparent: true,
+    opacity: 0.92,
+  })
+
+  return new THREE.Mesh(geom, mat)
 }
 
-function startAnimation() {
-  if (animTimer.value) clearInterval(animTimer.value)
-  animationFrame.value = 0
-  animTimer.value = setInterval(() => {
-    if (animationFrame.value < 39) {
-      animationFrame.value++
-    } else if (animTimer.value) {
-      clearInterval(animTimer.value)
-    }
-  }, 80)
+/* ── Build line from path ── */
+function buildLine(path: THREE.Vector3[], color: string): THREE.Line {
+  const geom = new THREE.BufferGeometry().setFromPoints(path)
+  geom.setDrawRange(0, 0) // Start hidden, animate in
+  const mat = new THREE.LineBasicMaterial({
+    color: new THREE.Color(color),
+    transparent: true,
+    opacity: 1,
+  })
+  return new THREE.Line(geom, mat)
 }
 
-/* ── Build visible path ── */
-function visiblePath(steps: OptimizerStep[]): string {
-  const visible = steps.slice(0, animationFrame.value + 1)
-  if (visible.length < 2) return ''
-  return visible.map((s, i) =>
-    `${i === 0 ? 'M' : 'L'} ${PLOT_X + s.x} ${PLOT_Y + s.y}`
-  ).join(' ')
+/* ── Build ball (current optimizer position) ── */
+function buildBall(color: string): THREE.Mesh {
+  const geom = new THREE.SphereGeometry(0.06, 12, 12)
+  const mat = new THREE.MeshStandardMaterial({
+    color: new THREE.Color(color),
+    emissive: new THREE.Color(color),
+    emissiveIntensity: 0.8,
+    transparent: true,
+    opacity: 0,
+  })
+  const mesh = new THREE.Mesh(geom, mat)
+  mesh.visible = false
+  return mesh
+}
+
+/* ── Build glowing minimum marker ── */
+function buildMinMarker(position: THREE.Vector3, color: string): THREE.Mesh {
+  const geom = new THREE.SphereGeometry(0.06, 10, 10)
+  const mat = new THREE.MeshStandardMaterial({
+    color: new THREE.Color(color),
+    emissive: new THREE.Color(color),
+    emissiveIntensity: 2,
+  })
+  const mesh = new THREE.Mesh(geom, mat)
+  mesh.position.copy(position)
+  return mesh
+}
+
+/* ── Build subtle grid ── */
+function buildGrid(): THREE.GridHelper {
+  const grid = new THREE.GridHelper(SURFACE_SIZE, 20, 0x14b8a6, 0x14b8a6)
+  // Dispose constructor's default material, replace with transparent one
+  const oldMat = grid.material
+  if (Array.isArray(oldMat)) oldMat.forEach((m) => m.dispose())
+  else oldMat.dispose()
+  grid.material = new THREE.LineBasicMaterial({
+    color: 0x14b8a6,
+    transparent: true,
+    opacity: 0.06,
+  })
+  grid.position.y = -0.05
+  return grid
+}
+
+/* ── Animate paths with GSAP (progressive draw range reveal) ── */
+function animatePaths() {
+  if (pathTimeline) pathTimeline.kill()
+
+  const progress = { value: 0 }
+  pathTimeline = gsap.to(progress, {
+    value: PATH_STEPS,
+    duration: 4,
+    ease: 'power2.out',
+    onUpdate() {
+      const count = Math.floor(progress.value)
+
+      // Extend line draw ranges
+      if (sgdLineObj.value) sgdLineObj.value.geometry.setDrawRange(0, count)
+      if (adamLineObj.value) adamLineObj.value.geometry.setDrawRange(0, count)
+
+      // Move SGD ball to current head of path
+      if (sgdBallObj.value && count > 0 && count <= sgdPath.length) {
+        const p = sgdPath[count - 1]
+        sgdBallObj.value.position.set(p.x, p.y + 0.02, p.z)
+        sgdBallObj.value.visible = true
+        ;(sgdBallObj.value.material as THREE.MeshStandardMaterial).opacity = 1
+      }
+
+      // Move Adam ball to current head of path
+      if (adamBallObj.value && count > 0 && count <= adamPath.length) {
+        const p = adamPath[count - 1]
+        adamBallObj.value.position.set(p.x, p.y + 0.02, p.z)
+        adamBallObj.value.visible = true
+        ;(adamBallObj.value.material as THREE.MeshStandardMaterial).opacity = 1
+      }
+    },
+  })
 }
 
 /* ── Section-based highlights ── */
 const sectionInfo = computed(() => {
   switch (props.activeSection) {
-    case 0: return { label: 'Click on the loss surface to place starting points', highlight: 'surface' }
+    case 0: return { label: 'Rotate and zoom the 3D loss landscape to explore', highlight: 'surface' }
     case 1: return { label: 'SGD: noisy gradient updates with momentum', highlight: 'sgd' }
     case 2: return { label: 'Adam: adaptive learning rates per parameter', highlight: 'adam' }
     case 3: return { label: 'Compare how optimizers navigate different landscapes', highlight: 'both' }
@@ -224,47 +269,120 @@ const sectionInfo = computed(() => {
   }
 })
 
-/* ── Show tooltip ── */
-function showOptimizerInfo(type: string, event: MouseEvent) {
-  const svg = (event.currentTarget as SVGElement).closest('svg')
-  if (!svg) return
-  const rect = svg.getBoundingClientRect()
-  const info = type === 'sgd'
-    ? { title: 'SGD (Stochastic Gradient Descent)', description: 'Updates weights using gradients from mini-batches. Noisy but can escape local minima. Learning rate is constant.' }
-    : { title: 'Adam Optimizer', description: 'Combines momentum and adaptive learning rates. Maintains per-parameter learning rates. Converges faster and more smoothly.' }
-  tooltip.value = {
-    visible: true,
-    x: event.clientX - rect.left,
-    y: event.clientY - rect.top,
-    ...info,
+/* ── Watch activeSection for path opacity highlighting ── */
+watch(() => props.activeSection, (section) => {
+  const hl = sectionInfo.value.highlight
+
+  // Animate SGD opacity
+  const sgdTarget = hl === 'adam' ? 0.15 : 1
+  if (sgdLineObj.value) {
+    gsap.to(sgdLineObj.value.material as THREE.LineBasicMaterial, {
+      opacity: sgdTarget, duration: 0.6, ease: 'power2.out',
+    })
+  }
+  if (sgdBallObj.value && sgdBallObj.value.visible) {
+    gsap.to(sgdBallObj.value.material as THREE.MeshStandardMaterial, {
+      opacity: sgdTarget, duration: 0.6, ease: 'power2.out',
+    })
+  }
+
+  // Animate Adam opacity
+  const adamTarget = hl === 'sgd' ? 0.15 : 1
+  if (adamLineObj.value) {
+    gsap.to(adamLineObj.value.material as THREE.LineBasicMaterial, {
+      opacity: adamTarget, duration: 0.6, ease: 'power2.out',
+    })
+  }
+  if (adamBallObj.value && adamBallObj.value.visible) {
+    gsap.to(adamBallObj.value.material as THREE.MeshStandardMaterial, {
+      opacity: adamTarget, duration: 0.6, ease: 'power2.out',
+    })
+  }
+
+  // Re-animate paths on section 1-3
+  if (section >= 1 && section <= 3) {
+    animatePaths()
+  }
+}, { immediate: false })
+
+/* ── Interaction tracking for exerciseComplete ── */
+function onControlsEnd() {
+  interactionCount.value++
+  if (interactionCount.value >= 3 && !exerciseEmitted.value) {
+    exerciseEmitted.value = true
+    emit('exerciseComplete')
+  }
+  // Resume auto-rotate after 3s of inactivity
+  if (autoRotateTimer) clearTimeout(autoRotateTimer)
+  autoRotateTimer = setTimeout(() => {
+    isUserInteracting.value = false
+  }, 3000)
+}
+
+function onControlsStart() {
+  isUserInteracting.value = true
+  if (autoRotateTimer) {
+    clearTimeout(autoRotateTimer)
+    autoRotateTimer = null
   }
 }
 
-function closeTooltip() {
-  tooltip.value.visible = false
-}
+/* ── Progress display ── */
+const explorationProgress = computed(() => Math.min(interactionCount.value, 3))
 
-/* ── Progress ── */
-const explorationProgress = computed(() => Math.min(clickCount.value, 3))
+/* ── Lifecycle ── */
+onMounted(() => {
+  surfaceMesh.value = buildSurface()
+  sgdLineObj.value = buildLine(sgdPath, '#f0a500')
+  adamLineObj.value = buildLine(adamPath, '#22c55e')
+  sgdBallObj.value = buildBall('#f0a500')
+  adamBallObj.value = buildBall('#22c55e')
+  globalMinMarker.value = buildMinMarker(
+    new THREE.Vector3(1, lossFunction(1, 1) * 0.5 + 0.06, 1),
+    '#14b8a6',
+  )
+  localMinMarker.value = buildMinMarker(
+    new THREE.Vector3(-0.8, lossFunction(-0.8, -0.5) * 0.5 + 0.06, -0.5),
+    '#a855f7',
+  )
+  gridHelperObj.value = buildGrid()
 
-/* ── Cleanup ── */
-onUnmounted(() => {
-  if (animTimer.value) clearInterval(animTimer.value)
+  // Delay path animation slightly so the scene renders first
+  setTimeout(animatePaths, 800)
 })
 
-watch(() => props.activeSection, () => {
-  tooltip.value.visible = false
+onUnmounted(() => {
+  if (pathTimeline) pathTimeline.kill()
+  if (autoRotateTimer) clearTimeout(autoRotateTimer)
+
+  // Dispose all Three.js resources
+  const dispose = (obj: THREE.Mesh | THREE.Line | THREE.GridHelper | null) => {
+    if (!obj) return
+    obj.geometry.dispose()
+    const mat = obj.material
+    if (Array.isArray(mat)) mat.forEach((m) => m.dispose())
+    else mat.dispose()
+  }
+
+  dispose(surfaceMesh.value)
+  dispose(sgdLineObj.value)
+  dispose(adamLineObj.value)
+  dispose(sgdBallObj.value)
+  dispose(adamBallObj.value)
+  dispose(globalMinMarker.value)
+  dispose(localMinMarker.value)
+  dispose(gridHelperObj.value)
 })
 </script>
 
 <template>
-  <div class="loss-surface" @click.self="closeTooltip">
+  <div class="loss-surface">
     <!-- Header -->
     <div class="loss-surface__header">
-      <span class="loss-surface__badge">Interactive</span>
+      <span class="loss-surface__badge">3D Interactive</span>
       <h3 class="loss-surface__title">Loss Surface &amp; Optimization</h3>
       <p class="loss-surface__subtitle">
-        Click to place starting points
+        Rotate &amp; zoom to explore
         <span
           class="loss-surface__progress"
           :class="{ 'loss-surface__progress--complete': explorationProgress >= 3 }"
@@ -274,266 +392,97 @@ watch(() => props.activeSection, () => {
       </p>
     </div>
 
-    <!-- SVG Visualization -->
+    <!-- 3D Canvas -->
     <div class="loss-surface__canvas">
-      <svg
-        :viewBox="`0 0 ${SVG_W} ${SVG_H}`"
-        class="loss-surface__svg"
-        preserveAspectRatio="xMidYMid meet"
-        @click="handleSurfaceClick"
-      >
-        <defs>
-          <filter id="ls-glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="4" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-          </filter>
-          <filter id="ls-glow-strong" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="8" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-          </filter>
-          <radialGradient id="ls-basin1" cx="67%" cy="67%">
-            <stop offset="0%" stop-color="#14b8a6" stop-opacity="0.3" />
-            <stop offset="60%" stop-color="#14b8a6" stop-opacity="0.05" />
-            <stop offset="100%" stop-color="#14b8a6" stop-opacity="0" />
-          </radialGradient>
-          <radialGradient id="ls-basin2" cx="37%" cy="42%">
-            <stop offset="0%" stop-color="#a855f7" stop-opacity="0.25" />
-            <stop offset="60%" stop-color="#a855f7" stop-opacity="0.04" />
-            <stop offset="100%" stop-color="#a855f7" stop-opacity="0" />
-          </radialGradient>
-          <linearGradient id="ls-sgd-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#f0a500" />
-            <stop offset="100%" stop-color="#ec4899" />
-          </linearGradient>
-          <linearGradient id="ls-adam-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#22c55e" />
-            <stop offset="100%" stop-color="#14b8a6" />
-          </linearGradient>
-        </defs>
-
-        <!-- Background grid -->
-        <rect :x="PLOT_X" :y="PLOT_Y" :width="PLOT_W" :height="PLOT_H" fill="#080c18" rx="8" />
-
-        <!-- Grid lines -->
-        <g opacity="0.06">
-          <line
-            v-for="i in 9"
-            :key="`gx-${i}`"
-            :x1="PLOT_X + (PLOT_W / 10) * i"
-            :y1="PLOT_Y"
-            :x2="PLOT_X + (PLOT_W / 10) * i"
-            :y2="PLOT_Y + PLOT_H"
-            stroke="#14b8a6"
-            stroke-width="0.5"
-          />
-          <line
-            v-for="i in 9"
-            :key="`gy-${i}`"
-            :x1="PLOT_X"
-            :y1="PLOT_Y + (PLOT_H / 10) * i"
-            :x2="PLOT_X + PLOT_W"
-            :y2="PLOT_Y + (PLOT_H / 10) * i"
-            stroke="#14b8a6"
-            stroke-width="0.5"
-          />
-        </g>
-
-        <!-- Contour rings -->
-        <g>
-          <ellipse
-            v-for="(c, i) in contourCircles"
-            :key="`contour-${i}`"
-            :cx="PLOT_X + c.cx"
-            :cy="PLOT_Y + c.cy"
-            :rx="c.r"
-            :ry="c.r * 0.75"
-            fill="none"
-            :stroke="c.level <= 4 ? '#14b8a6' : '#a855f7'"
-            stroke-width="0.8"
-            :opacity="c.opacity"
-            class="loss-surface__contour"
-          />
-        </g>
-
-        <!-- Basin glow -->
-        <ellipse
-          :cx="PLOT_X + (1 + 3) / 6 * PLOT_W"
-          :cy="PLOT_Y + (1 + 3) / 6 * PLOT_H"
-          rx="80"
-          ry="60"
-          fill="url(#ls-basin1)"
-          class="loss-surface__basin-glow"
-        />
-        <ellipse
-          :cx="PLOT_X + (-0.8 + 3) / 6 * PLOT_W"
-          :cy="PLOT_Y + (-0.5 + 3) / 6 * PLOT_H"
-          rx="70"
-          ry="55"
-          fill="url(#ls-basin2)"
-          class="loss-surface__basin-glow"
-        />
-
-        <!-- Minimum markers -->
-        <g>
-          <circle
-            :cx="PLOT_X + (1 + 3) / 6 * PLOT_W"
-            :cy="PLOT_Y + (1 + 3) / 6 * PLOT_H"
-            r="5"
-            fill="#14b8a6"
-            opacity="0.8"
-            filter="url(#ls-glow)"
-          />
-          <text
-            :x="PLOT_X + (1 + 3) / 6 * PLOT_W + 10"
-            :y="PLOT_Y + (1 + 3) / 6 * PLOT_H + 4"
-            class="loss-surface__label"
-            fill="#14b8a6"
-            opacity="0.7"
-          >
-            Global Min
-          </text>
-          <circle
-            :cx="PLOT_X + (-0.8 + 3) / 6 * PLOT_W"
-            :cy="PLOT_Y + (-0.5 + 3) / 6 * PLOT_H"
-            r="4"
-            fill="#a855f7"
-            opacity="0.7"
-            filter="url(#ls-glow)"
-          />
-          <text
-            :x="PLOT_X + (-0.8 + 3) / 6 * PLOT_W + 10"
-            :y="PLOT_Y + (-0.5 + 3) / 6 * PLOT_H + 4"
-            class="loss-surface__label"
-            fill="#a855f7"
-            opacity="0.6"
-          >
-            Local Min
-          </text>
-        </g>
-
-        <!-- SGD paths -->
-        <g
-          v-for="(path, pi) in sgdPaths"
-          :key="`sgd-${pi}`"
-          :opacity="sectionInfo.highlight === 'adam' ? 0.2 : 1"
-          class="loss-surface__path-group"
+      <ClientOnly>
+        <TresCanvas
+          :alpha="true"
+          :antialias="true"
+          :shadows="false"
         >
-          <path
-            :d="visiblePath(path)"
-            fill="none"
-            stroke="url(#ls-sgd-grad)"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            opacity="0.8"
-            class="loss-surface__optimizer-path"
+          <!-- Camera -->
+          <TresPerspectiveCamera
+            :position="[5, 4, 5]"
+            :fov="45"
+            :near="0.1"
+            :far="100"
           />
-          <!-- Current position dot -->
-          <circle
-            v-if="path[Math.min(animationFrame, path.length - 1)]"
-            :cx="PLOT_X + path[Math.min(animationFrame, path.length - 1)].x"
-            :cy="PLOT_Y + path[Math.min(animationFrame, path.length - 1)].y"
-            r="4"
-            fill="#f0a500"
-            filter="url(#ls-glow)"
-            class="loss-surface__dot-pulse"
+
+          <!-- OrbitControls (auto-imported from @tresjs/cientos via nuxt module) -->
+          <OrbitControls
+            :auto-rotate="!isUserInteracting"
+            :auto-rotate-speed="0.5"
+            :enable-damping="true"
+            :damping-factor="0.08"
+            :min-distance="3"
+            :max-distance="12"
+            :max-polar-angle="Math.PI * 0.48"
+            :min-polar-angle="Math.PI * 0.05"
+            :target="[0, 0.8, 0]"
+            @start="onControlsStart"
+            @end="onControlsEnd"
           />
-        </g>
 
-        <!-- Adam paths -->
-        <g
-          v-for="(path, pi) in adamPaths"
-          :key="`adam-${pi}`"
-          :opacity="sectionInfo.highlight === 'sgd' ? 0.2 : 1"
-          class="loss-surface__path-group"
-        >
-          <path
-            :d="visiblePath(path)"
-            fill="none"
-            stroke="url(#ls-adam-grad)"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            opacity="0.8"
-            class="loss-surface__optimizer-path"
-          />
-          <circle
-            v-if="path[Math.min(animationFrame, path.length - 1)]"
-            :cx="PLOT_X + path[Math.min(animationFrame, path.length - 1)].x"
-            :cy="PLOT_Y + path[Math.min(animationFrame, path.length - 1)].y"
-            r="4"
-            fill="#22c55e"
-            filter="url(#ls-glow)"
-            class="loss-surface__dot-pulse"
-          />
-        </g>
+          <!-- Lighting -->
+          <TresAmbientLight :intensity="0.4" color="#8ec8ff" />
+          <TresDirectionalLight :position="[5, 8, 3]" :intensity="0.8" color="#ffffff" />
+          <TresDirectionalLight :position="[-3, 2, -4]" :intensity="0.3" color="#14b8a6" />
 
-        <!-- Starting points -->
-        <g v-for="(pt, i) in startingPoints" :key="`start-${i}`">
-          <circle
-            :cx="PLOT_X + pt.x"
-            :cy="PLOT_Y + pt.y"
-            r="6"
-            fill="none"
-            stroke="#ffffff"
-            stroke-width="1.5"
-            opacity="0.5"
-          />
-          <circle
-            :cx="PLOT_X + pt.x"
-            :cy="PLOT_Y + pt.y"
-            r="2"
-            fill="#ffffff"
-            opacity="0.8"
-          />
-        </g>
+          <!-- Loss surface -->
+          <primitive v-if="surfaceMesh" :object="surfaceMesh" />
 
-        <!-- Legend -->
-        <g transform="translate(60, 455)">
-          <rect x="0" y="-2" width="200" height="28" rx="6" fill="#0a0e1a" opacity="0.9" />
-          <line x1="10" y1="12" x2="30" y2="12" stroke="#f0a500" stroke-width="2" />
-          <text x="36" y="16" class="loss-surface__legend-text">SGD</text>
-          <line x1="80" y1="12" x2="100" y2="12" stroke="#22c55e" stroke-width="2" />
-          <text x="106" y="16" class="loss-surface__legend-text">Adam</text>
-        </g>
+          <!-- Subtle ground grid -->
+          <primitive v-if="gridHelperObj" :object="gridHelperObj" />
 
-        <!-- Axis labels -->
-        <text :x="PLOT_X + PLOT_W / 2" :y="SVG_H - 5" text-anchor="middle" class="loss-surface__axis-label">
-          Parameter &theta;&#x2081;
-        </text>
-        <text :x="15" :y="PLOT_Y + PLOT_H / 2" text-anchor="middle" class="loss-surface__axis-label" transform="rotate(-90, 15, 240)">
-          Parameter &theta;&#x2082;
-        </text>
+          <!-- SGD path + ball -->
+          <primitive v-if="sgdLineObj" :object="sgdLineObj" />
+          <primitive v-if="sgdBallObj" :object="sgdBallObj" />
 
-        <!-- Click prompt -->
-        <text
-          v-if="startingPoints.length === 0"
-          :x="PLOT_X + PLOT_W / 2"
-          :y="PLOT_Y + PLOT_H / 2"
-          text-anchor="middle"
-          class="loss-surface__prompt"
-        >
-          Click anywhere to start gradient descent
-        </text>
+          <!-- Adam path + ball -->
+          <primitive v-if="adamLineObj" :object="adamLineObj" />
+          <primitive v-if="adamBallObj" :object="adamBallObj" />
 
-        <!-- Tooltip -->
-        <foreignObject
-          v-if="tooltip.visible"
-          :x="Math.min(Math.max(tooltip.x - 130, 10), SVG_W - 280)"
-          :y="tooltip.y < 250 ? tooltip.y + 15 : tooltip.y - 110"
-          width="260"
-          height="100"
-          class="loss-surface__tooltip-foreign"
-        >
-          <div class="loss-surface__tooltip" @click.stop>
-            <div class="loss-surface__tooltip-header">
-              <span class="loss-surface__tooltip-title">{{ tooltip.title }}</span>
-              <button class="loss-surface__tooltip-close" aria-label="Close tooltip" @click.stop="closeTooltip">&times;</button>
-            </div>
-            <p class="loss-surface__tooltip-desc">{{ tooltip.description }}</p>
+          <!-- Global minimum marker (teal glow) -->
+          <primitive v-if="globalMinMarker" :object="globalMinMarker" />
+
+          <!-- Local minimum marker (purple glow) -->
+          <primitive v-if="localMinMarker" :object="localMinMarker" />
+        </TresCanvas>
+
+        <template #fallback>
+          <div class="loss-surface__loading">
+            <div class="loss-surface__loading-spinner" />
+            <span class="loss-surface__loading-text">Loading 3D surface...</span>
           </div>
-        </foreignObject>
-      </svg>
+        </template>
+      </ClientOnly>
+
+      <!-- Legend overlay (positioned over the canvas) -->
+      <div class="loss-surface__legend">
+        <div class="loss-surface__legend-item">
+          <span class="loss-surface__legend-swatch loss-surface__legend-swatch--sgd" />
+          <span class="loss-surface__legend-label">SGD</span>
+        </div>
+        <div class="loss-surface__legend-item">
+          <span class="loss-surface__legend-swatch loss-surface__legend-swatch--adam" />
+          <span class="loss-surface__legend-label">Adam</span>
+        </div>
+        <div class="loss-surface__legend-item">
+          <span class="loss-surface__legend-dot loss-surface__legend-dot--global" />
+          <span class="loss-surface__legend-label">Global min</span>
+        </div>
+        <div class="loss-surface__legend-item">
+          <span class="loss-surface__legend-dot loss-surface__legend-dot--local" />
+          <span class="loss-surface__legend-label">Local min</span>
+        </div>
+      </div>
+
+      <!-- Color scale indicator -->
+      <div class="loss-surface__colorscale">
+        <span class="loss-surface__colorscale-label">Low loss</span>
+        <div class="loss-surface__colorscale-bar" />
+        <span class="loss-surface__colorscale-label">High loss</span>
+      </div>
     </div>
 
     <!-- Section context -->
@@ -622,145 +571,138 @@ watch(() => props.activeSection, () => {
 }
 
 .loss-surface__canvas {
+  position: relative;
   flex: 1;
   min-height: 0;
   display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  border-radius: 12px;
+  overflow: hidden;
+  background: radial-gradient(ellipse at center, #0a0e1a 0%, #05070f 100%);
+}
+
+/* Loading fallback */
+.loss-surface__loading {
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  cursor: crosshair;
-}
-
-.loss-surface__svg {
   width: 100%;
-  height: auto;
-  overflow: visible;
+  height: 100%;
+  min-height: 300px;
+  gap: 12px;
 }
 
-.loss-surface__contour {
-  transition: opacity 0.5s ease;
+.loss-surface__loading-spinner {
+  width: 28px;
+  height: 28px;
+  border: 2px solid rgba(20, 184, 166, 0.15);
+  border-top-color: var(--viz-primary);
+  border-radius: 50%;
+  animation: spinLoader 0.8s linear infinite;
 }
 
-.loss-surface__basin-glow {
-  animation: basinPulse 4s ease-in-out infinite;
+@keyframes spinLoader {
+  to { transform: rotate(360deg); }
 }
 
-@keyframes basinPulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+.loss-surface__loading-text {
+  font-size: 12px;
+  color: var(--viz-text-muted);
 }
 
-.loss-surface__path-group {
-  transition: opacity 0.5s ease;
-}
-
-.loss-surface__optimizer-path {
-  transition: opacity 0.3s ease;
-}
-
-.loss-surface__dot-pulse {
-  animation: dotPulse 1.2s ease-in-out infinite;
-}
-
-@keyframes dotPulse {
-  0%, 100% { r: 4; opacity: 1; }
-  50% { r: 6; opacity: 0.7; }
-}
-
-.loss-surface__label {
-  font-size: 10px;
-  font-family: 'Inter', sans-serif;
-  font-weight: 500;
-}
-
-.loss-surface__legend-text {
-  fill: var(--viz-text-muted);
-  font-size: 11px;
-  font-family: 'Inter', sans-serif;
-  font-weight: 500;
-}
-
-.loss-surface__axis-label {
-  fill: var(--viz-text-muted);
-  font-size: 11px;
-  font-family: 'Inter', sans-serif;
-}
-
-.loss-surface__prompt {
-  fill: rgba(255, 255, 255, 0.25);
-  font-size: 14px;
-  font-family: 'Inter', sans-serif;
-  animation: promptPulse 2s ease-in-out infinite;
-}
-
-@keyframes promptPulse {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.8; }
-}
-
-.loss-surface__tooltip-foreign {
+/* Legend overlay */
+.loss-surface__legend {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px 12px;
+  background: rgba(10, 14, 26, 0.88);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
   pointer-events: none;
-  overflow: visible;
+  z-index: 10;
 }
 
-.loss-surface__tooltip {
-  pointer-events: auto;
-  background: rgba(10, 14, 26, 0.95);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 12px 14px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-  animation: tooltipFadeIn 0.25s ease;
-}
-
-@keyframes tooltipFadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.loss-surface__tooltip-header {
+.loss-surface__legend-item {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 6px;
 }
 
-.loss-surface__tooltip-title {
-  font-size: 12px;
-  font-weight: 600;
-  color: #ffffff;
-  flex: 1;
-  font-family: 'Syne', sans-serif;
+.loss-surface__legend-swatch {
+  width: 16px;
+  height: 3px;
+  border-radius: 2px;
 }
 
-.loss-surface__tooltip-close {
-  appearance: none;
-  border: none;
-  background: rgba(255, 255, 255, 0.06);
+.loss-surface__legend-swatch--sgd {
+  background: linear-gradient(90deg, #f0a500, #ec4899);
+}
+
+.loss-surface__legend-swatch--adam {
+  background: linear-gradient(90deg, #22c55e, #14b8a6);
+}
+
+.loss-surface__legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.loss-surface__legend-dot--global {
+  background: #14b8a6;
+  box-shadow: 0 0 6px #14b8a6;
+}
+
+.loss-surface__legend-dot--local {
+  background: #a855f7;
+  box-shadow: 0 0 6px #a855f7;
+}
+
+.loss-surface__legend-label {
+  font-size: 10px;
+  font-weight: 500;
   color: var(--viz-text-muted);
-  width: 20px;
-  height: 20px;
-  border-radius: 6px;
-  font-size: 13px;
-  cursor: pointer;
+  letter-spacing: 0.02em;
+}
+
+/* Color scale */
+.loss-surface__colorscale {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  transition: background 0.2s ease;
-  padding: 0;
+  gap: 6px;
+  padding: 6px 10px;
+  background: rgba(10, 14, 26, 0.88);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  pointer-events: none;
+  z-index: 10;
 }
 
-.loss-surface__tooltip-close:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.loss-surface__tooltip-desc {
-  margin: 0;
-  font-size: 11px;
-  line-height: 1.5;
+.loss-surface__colorscale-label {
+  font-size: 9px;
   color: var(--viz-text-muted);
+  white-space: nowrap;
 }
 
+.loss-surface__colorscale-bar {
+  width: 60px;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #0a1628, #14b8a6, #eab308, #ef4444, #7f1d1d);
+}
+
+/* Context bar */
 .loss-surface__context {
   padding: 0 4px;
   min-height: 20px;
@@ -781,5 +723,9 @@ watch(() => props.activeSection, () => {
 
 @media (max-width: 768px) {
   .loss-surface__title { font-size: 14px; }
+
+  .loss-surface__colorscale {
+    display: none;
+  }
 }
 </style>

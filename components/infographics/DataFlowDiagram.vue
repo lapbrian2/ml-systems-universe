@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * DataFlowDiagram — Static textbook infographic
+ * DataFlowDiagram — Interactive textbook infographic
  * Shows the split between Training and Inference pipelines,
  * with shared components (Preprocessing, Feature Store) highlighted.
  *
@@ -8,6 +8,21 @@
  * Inference path (green):  New Data → Preprocessing → Feature Store → Model Serving → Predictions
  * Shared components (blue): Preprocessing, Feature Store
  */
+import { ref } from 'vue'
+
+const hoveredComponent = ref<string | null>(null)
+
+/** Component colors indexed by component id */
+const compColors: Record<string, string> = {
+  'raw-data': '#ffffff',
+  'new-data': '#ffffff',
+  'preprocessing': '#14b8a6',
+  'feature-store': '#14b8a6',
+  'training': '#a855f7',
+  'model-registry': '#a855f7',
+  'model-serving': '#22c55e',
+  'predictions': '#22c55e',
+}
 </script>
 
 <template>
@@ -79,9 +94,10 @@
       <!-- ════════════════════════════════════════════ -->
 
       <!-- Raw Data (training input) -->
-      <g transform="translate(20, 65)">
-        <rect x="0" y="0" width="130" height="68" rx="12" fill="url(#dfd-input-fill)" />
-        <rect x="0" y="0" width="130" height="68" rx="12" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1" />
+      <g transform="translate(20, 65)" class="dfd-node" @mouseenter="hoveredComponent = 'raw-data'" @mouseleave="hoveredComponent = null">
+        <rect v-if="hoveredComponent === 'raw-data'" x="-3" y="-3" width="136" height="74" rx="14" fill="rgba(255,255,255,0.03)" class="dfd-glow" />
+        <rect x="0" y="0" width="130" height="68" rx="12" :fill="hoveredComponent === 'raw-data' ? 'rgba(255,255,255,0.08)' : 'url(#dfd-input-fill)'" class="dfd-rect" />
+        <rect x="0" y="0" width="130" height="68" rx="12" fill="none" :stroke="hoveredComponent === 'raw-data' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)'" :stroke-width="hoveredComponent === 'raw-data' ? 1.5 : 1" class="dfd-rect" />
         <g transform="translate(12, 14)" opacity="0.7">
           <ellipse cx="10" cy="5" rx="8" ry="3.5" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.2" />
           <path d="M 2 5 v 7 c 0 1.9 3.6 3.5 8 3.5 s 8 -1.6 8 -3.5 V 5" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.2" />
@@ -91,9 +107,10 @@
       </g>
 
       <!-- New Data (inference input) -->
-      <g transform="translate(20, 275)">
-        <rect x="0" y="0" width="130" height="68" rx="12" fill="url(#dfd-input-fill)" />
-        <rect x="0" y="0" width="130" height="68" rx="12" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1" />
+      <g transform="translate(20, 275)" class="dfd-node" @mouseenter="hoveredComponent = 'new-data'" @mouseleave="hoveredComponent = null">
+        <rect v-if="hoveredComponent === 'new-data'" x="-3" y="-3" width="136" height="74" rx="14" fill="rgba(255,255,255,0.03)" class="dfd-glow" />
+        <rect x="0" y="0" width="130" height="68" rx="12" :fill="hoveredComponent === 'new-data' ? 'rgba(255,255,255,0.08)' : 'url(#dfd-input-fill)'" class="dfd-rect" />
+        <rect x="0" y="0" width="130" height="68" rx="12" fill="none" :stroke="hoveredComponent === 'new-data' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)'" :stroke-width="hoveredComponent === 'new-data' ? 1.5 : 1" class="dfd-rect" />
         <g transform="translate(12, 14)" opacity="0.7">
           <path d="M 2 3 L 12 3 L 16 7 L 16 17 L 2 17 Z" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.2" stroke-linejoin="round" />
           <path d="M 12 3 L 12 7 L 16 7" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.2" stroke-linejoin="round" />
@@ -117,9 +134,10 @@
       <line x1="195" y1="210" x2="209" y2="210" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" marker-end="url(#dfd-arrow-shared)" />
 
       <!-- Preprocessing (shared) -->
-      <g transform="translate(220, 168)">
-        <rect x="0" y="0" width="150" height="68" rx="12" fill="url(#dfd-shared-fill)" />
-        <rect x="0" y="0" width="150" height="68" rx="12" fill="none" stroke="#14b8a6" stroke-width="1.2" stroke-opacity="0.4" />
+      <g transform="translate(220, 168)" class="dfd-node" @mouseenter="hoveredComponent = 'preprocessing'" @mouseleave="hoveredComponent = null">
+        <rect v-if="hoveredComponent === 'preprocessing'" x="-3" y="-3" width="156" height="74" rx="14" :fill="`${compColors['preprocessing']}08`" class="dfd-glow" />
+        <rect x="0" y="0" width="150" height="68" rx="12" :fill="hoveredComponent === 'preprocessing' ? `${compColors['preprocessing']}15` : 'url(#dfd-shared-fill)'" class="dfd-rect" />
+        <rect x="0" y="0" width="150" height="68" rx="12" fill="none" stroke="#14b8a6" :stroke-width="hoveredComponent === 'preprocessing' ? 1.8 : 1.2" :stroke-opacity="hoveredComponent === 'preprocessing' ? 0.6 : 0.4" class="dfd-rect" />
         <!-- Shared badge -->
         <rect x="88" y="-8" width="56" height="16" rx="8" fill="#14b8a6" fill-opacity="0.15" stroke="#14b8a6" stroke-width="0.8" stroke-opacity="0.3" />
         <text x="116" y="3" text-anchor="middle" fill="#14b8a6" font-family="Inter, sans-serif" font-size="8" font-weight="600" opacity="0.8">SHARED</text>
@@ -135,9 +153,10 @@
       <line x1="375" y1="200" x2="409" y2="200" stroke="#14b8a6" stroke-width="1.5" stroke-opacity="0.3" marker-end="url(#dfd-arrow-shared)" />
 
       <!-- Feature Store (shared) -->
-      <g transform="translate(420, 168)">
-        <rect x="0" y="0" width="150" height="68" rx="12" fill="url(#dfd-shared-fill)" />
-        <rect x="0" y="0" width="150" height="68" rx="12" fill="none" stroke="#14b8a6" stroke-width="1.2" stroke-opacity="0.4" />
+      <g transform="translate(420, 168)" class="dfd-node" @mouseenter="hoveredComponent = 'feature-store'" @mouseleave="hoveredComponent = null">
+        <rect v-if="hoveredComponent === 'feature-store'" x="-3" y="-3" width="156" height="74" rx="14" :fill="`${compColors['feature-store']}08`" class="dfd-glow" />
+        <rect x="0" y="0" width="150" height="68" rx="12" :fill="hoveredComponent === 'feature-store' ? `${compColors['feature-store']}15` : 'url(#dfd-shared-fill)'" class="dfd-rect" />
+        <rect x="0" y="0" width="150" height="68" rx="12" fill="none" stroke="#14b8a6" :stroke-width="hoveredComponent === 'feature-store' ? 1.8 : 1.2" :stroke-opacity="hoveredComponent === 'feature-store' ? 0.6 : 0.4" class="dfd-rect" />
         <!-- Shared badge -->
         <rect x="88" y="-8" width="56" height="16" rx="8" fill="#14b8a6" fill-opacity="0.15" stroke="#14b8a6" stroke-width="0.8" stroke-opacity="0.3" />
         <text x="116" y="3" text-anchor="middle" fill="#14b8a6" font-family="Inter, sans-serif" font-size="8" font-weight="600" opacity="0.8">SHARED</text>
@@ -165,9 +184,10 @@
       />
 
       <!-- Training -->
-      <g transform="translate(636, 72)">
-        <rect x="0" y="0" width="140" height="68" rx="12" fill="url(#dfd-train-fill)" />
-        <rect x="0" y="0" width="140" height="68" rx="12" fill="none" stroke="#a855f7" stroke-width="1" stroke-opacity="0.35" />
+      <g transform="translate(636, 72)" class="dfd-node" @mouseenter="hoveredComponent = 'training'" @mouseleave="hoveredComponent = null">
+        <rect v-if="hoveredComponent === 'training'" x="-3" y="-3" width="146" height="74" rx="14" :fill="`${compColors['training']}08`" class="dfd-glow" />
+        <rect x="0" y="0" width="140" height="68" rx="12" :fill="hoveredComponent === 'training' ? `${compColors['training']}15` : 'url(#dfd-train-fill)'" class="dfd-rect" />
+        <rect x="0" y="0" width="140" height="68" rx="12" fill="none" :stroke="compColors['training']" :stroke-width="hoveredComponent === 'training' ? 1.5 : 1" :stroke-opacity="hoveredComponent === 'training' ? 0.55 : 0.35" class="dfd-rect" />
         <!-- Brain icon -->
         <g transform="translate(12, 14)" opacity="0.85">
           <circle cx="10" cy="10" r="8" fill="none" stroke="#a855f7" stroke-width="1.2" />
@@ -184,9 +204,10 @@
       <line x1="781" y1="106" x2="809" y2="106" stroke="#a855f7" stroke-width="1.5" stroke-opacity="0.35" marker-end="url(#dfd-arrow-train)" />
 
       <!-- Model Registry -->
-      <g transform="translate(820, 72)">
-        <rect x="0" y="0" width="140" height="68" rx="12" fill="url(#dfd-train-fill)" />
-        <rect x="0" y="0" width="140" height="68" rx="12" fill="none" stroke="#a855f7" stroke-width="1" stroke-opacity="0.35" />
+      <g transform="translate(820, 72)" class="dfd-node" @mouseenter="hoveredComponent = 'model-registry'" @mouseleave="hoveredComponent = null">
+        <rect v-if="hoveredComponent === 'model-registry'" x="-3" y="-3" width="146" height="74" rx="14" :fill="`${compColors['model-registry']}08`" class="dfd-glow" />
+        <rect x="0" y="0" width="140" height="68" rx="12" :fill="hoveredComponent === 'model-registry' ? `${compColors['model-registry']}15` : 'url(#dfd-train-fill)'" class="dfd-rect" />
+        <rect x="0" y="0" width="140" height="68" rx="12" fill="none" :stroke="compColors['model-registry']" :stroke-width="hoveredComponent === 'model-registry' ? 1.5 : 1" :stroke-opacity="hoveredComponent === 'model-registry' ? 0.55 : 0.35" class="dfd-rect" />
         <!-- Archive/registry icon -->
         <g transform="translate(12, 14)" opacity="0.85">
           <rect x="2" y="2" width="16" height="4" rx="1.5" fill="none" stroke="#a855f7" stroke-width="1.2" />
@@ -213,9 +234,10 @@
       />
 
       <!-- Model Serving -->
-      <g transform="translate(636, 272)">
-        <rect x="0" y="0" width="140" height="68" rx="12" fill="url(#dfd-infer-fill)" />
-        <rect x="0" y="0" width="140" height="68" rx="12" fill="none" stroke="#22c55e" stroke-width="1" stroke-opacity="0.35" />
+      <g transform="translate(636, 272)" class="dfd-node" @mouseenter="hoveredComponent = 'model-serving'" @mouseleave="hoveredComponent = null">
+        <rect v-if="hoveredComponent === 'model-serving'" x="-3" y="-3" width="146" height="74" rx="14" :fill="`${compColors['model-serving']}08`" class="dfd-glow" />
+        <rect x="0" y="0" width="140" height="68" rx="12" :fill="hoveredComponent === 'model-serving' ? `${compColors['model-serving']}15` : 'url(#dfd-infer-fill)'" class="dfd-rect" />
+        <rect x="0" y="0" width="140" height="68" rx="12" fill="none" :stroke="compColors['model-serving']" :stroke-width="hoveredComponent === 'model-serving' ? 1.5 : 1" :stroke-opacity="hoveredComponent === 'model-serving' ? 0.55 : 0.35" class="dfd-rect" />
         <!-- Server icon -->
         <g transform="translate(12, 14)" opacity="0.85">
           <rect x="2" y="2" width="16" height="6" rx="1.5" fill="none" stroke="#22c55e" stroke-width="1.2" />
@@ -231,9 +253,10 @@
       <line x1="781" y1="306" x2="809" y2="306" stroke="#22c55e" stroke-width="1.5" stroke-opacity="0.35" marker-end="url(#dfd-arrow-infer)" />
 
       <!-- Predictions -->
-      <g transform="translate(820, 272)">
-        <rect x="0" y="0" width="140" height="68" rx="12" fill="url(#dfd-infer-fill)" />
-        <rect x="0" y="0" width="140" height="68" rx="12" fill="none" stroke="#22c55e" stroke-width="1" stroke-opacity="0.35" />
+      <g transform="translate(820, 272)" class="dfd-node" @mouseenter="hoveredComponent = 'predictions'" @mouseleave="hoveredComponent = null">
+        <rect v-if="hoveredComponent === 'predictions'" x="-3" y="-3" width="146" height="74" rx="14" :fill="`${compColors['predictions']}08`" class="dfd-glow" />
+        <rect x="0" y="0" width="140" height="68" rx="12" :fill="hoveredComponent === 'predictions' ? `${compColors['predictions']}15` : 'url(#dfd-infer-fill)'" class="dfd-rect" />
+        <rect x="0" y="0" width="140" height="68" rx="12" fill="none" :stroke="compColors['predictions']" :stroke-width="hoveredComponent === 'predictions' ? 1.5 : 1" :stroke-opacity="hoveredComponent === 'predictions' ? 0.55 : 0.35" class="dfd-rect" />
         <!-- Output/check icon -->
         <g transform="translate(12, 14)" opacity="0.85">
           <circle cx="10" cy="10" r="8" fill="none" stroke="#22c55e" stroke-width="1.2" />
@@ -306,17 +329,19 @@
       <!-- ── INPUT NODES ── -->
 
       <!-- Raw Data -->
-      <g transform="translate(15, 10)">
-        <rect x="0" y="0" width="120" height="58" rx="10" fill="url(#dfd-input-fill)" />
-        <rect x="0" y="0" width="120" height="58" rx="10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1" />
+      <g transform="translate(15, 10)" class="dfd-node" @mouseenter="hoveredComponent = 'raw-data'" @mouseleave="hoveredComponent = null">
+        <rect v-if="hoveredComponent === 'raw-data'" x="-3" y="-3" width="126" height="64" rx="12" fill="rgba(255,255,255,0.03)" class="dfd-glow" />
+        <rect x="0" y="0" width="120" height="58" rx="10" :fill="hoveredComponent === 'raw-data' ? 'rgba(255,255,255,0.08)' : 'url(#dfd-input-fill)'" class="dfd-rect" />
+        <rect x="0" y="0" width="120" height="58" rx="10" fill="none" :stroke="hoveredComponent === 'raw-data' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)'" :stroke-width="hoveredComponent === 'raw-data' ? 1.5 : 1" class="dfd-rect" />
         <text x="12" y="26" fill="white" font-family="Inter, sans-serif" font-size="11" font-weight="600">Raw Data</text>
         <text x="12" y="44" fill="rgba(255,255,255,0.4)" font-family="Inter, sans-serif" font-size="8">Training data</text>
       </g>
 
       <!-- New Data -->
-      <g transform="translate(165, 10)">
-        <rect x="0" y="0" width="120" height="58" rx="10" fill="url(#dfd-input-fill)" />
-        <rect x="0" y="0" width="120" height="58" rx="10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1" />
+      <g transform="translate(165, 10)" class="dfd-node" @mouseenter="hoveredComponent = 'new-data'" @mouseleave="hoveredComponent = null">
+        <rect v-if="hoveredComponent === 'new-data'" x="-3" y="-3" width="126" height="64" rx="12" fill="rgba(255,255,255,0.03)" class="dfd-glow" />
+        <rect x="0" y="0" width="120" height="58" rx="10" :fill="hoveredComponent === 'new-data' ? 'rgba(255,255,255,0.08)' : 'url(#dfd-input-fill)'" class="dfd-rect" />
+        <rect x="0" y="0" width="120" height="58" rx="10" fill="none" :stroke="hoveredComponent === 'new-data' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)'" :stroke-width="hoveredComponent === 'new-data' ? 1.5 : 1" class="dfd-rect" />
         <text x="12" y="26" fill="white" font-family="Inter, sans-serif" font-size="11" font-weight="600">New Data</text>
         <text x="12" y="44" fill="rgba(255,255,255,0.4)" font-family="Inter, sans-serif" font-size="8">Live input</text>
       </g>
@@ -326,9 +351,10 @@
       <line x1="225" y1="72" x2="185" y2="105" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" marker-end="url(#dfd-arrow-shared-v)" />
 
       <!-- ── SHARED: Preprocessing ── -->
-      <g transform="translate(50, 110)">
-        <rect x="0" y="0" width="200" height="62" rx="10" fill="url(#dfd-shared-fill)" />
-        <rect x="0" y="0" width="200" height="62" rx="10" fill="none" stroke="#14b8a6" stroke-width="1.2" stroke-opacity="0.4" />
+      <g transform="translate(50, 110)" class="dfd-node" @mouseenter="hoveredComponent = 'preprocessing'" @mouseleave="hoveredComponent = null">
+        <rect v-if="hoveredComponent === 'preprocessing'" x="-3" y="-3" width="206" height="68" rx="12" :fill="`${compColors['preprocessing']}08`" class="dfd-glow" />
+        <rect x="0" y="0" width="200" height="62" rx="10" :fill="hoveredComponent === 'preprocessing' ? `${compColors['preprocessing']}15` : 'url(#dfd-shared-fill)'" class="dfd-rect" />
+        <rect x="0" y="0" width="200" height="62" rx="10" fill="none" stroke="#14b8a6" :stroke-width="hoveredComponent === 'preprocessing' ? 1.8 : 1.2" :stroke-opacity="hoveredComponent === 'preprocessing' ? 0.6 : 0.4" class="dfd-rect" />
         <rect x="138" y="-8" width="56" height="16" rx="8" fill="#14b8a6" fill-opacity="0.15" stroke="#14b8a6" stroke-width="0.8" stroke-opacity="0.3" />
         <text x="166" y="3" text-anchor="middle" fill="#14b8a6" font-family="Inter, sans-serif" font-size="8" font-weight="600" opacity="0.8">SHARED</text>
         <text x="14" y="28" fill="white" font-family="Inter, sans-serif" font-size="12" font-weight="600">Preprocessing</text>
@@ -339,9 +365,10 @@
       <line x1="150" y1="176" x2="150" y2="205" stroke="#14b8a6" stroke-width="1.5" stroke-opacity="0.3" marker-end="url(#dfd-arrow-shared-v)" />
 
       <!-- ── SHARED: Feature Store ── -->
-      <g transform="translate(50, 210)">
-        <rect x="0" y="0" width="200" height="62" rx="10" fill="url(#dfd-shared-fill)" />
-        <rect x="0" y="0" width="200" height="62" rx="10" fill="none" stroke="#14b8a6" stroke-width="1.2" stroke-opacity="0.4" />
+      <g transform="translate(50, 210)" class="dfd-node" @mouseenter="hoveredComponent = 'feature-store'" @mouseleave="hoveredComponent = null">
+        <rect v-if="hoveredComponent === 'feature-store'" x="-3" y="-3" width="206" height="68" rx="12" :fill="`${compColors['feature-store']}08`" class="dfd-glow" />
+        <rect x="0" y="0" width="200" height="62" rx="10" :fill="hoveredComponent === 'feature-store' ? `${compColors['feature-store']}15` : 'url(#dfd-shared-fill)'" class="dfd-rect" />
+        <rect x="0" y="0" width="200" height="62" rx="10" fill="none" stroke="#14b8a6" :stroke-width="hoveredComponent === 'feature-store' ? 1.8 : 1.2" :stroke-opacity="hoveredComponent === 'feature-store' ? 0.6 : 0.4" class="dfd-rect" />
         <rect x="138" y="-8" width="56" height="16" rx="8" fill="#14b8a6" fill-opacity="0.15" stroke="#14b8a6" stroke-width="0.8" stroke-opacity="0.3" />
         <text x="166" y="3" text-anchor="middle" fill="#14b8a6" font-family="Inter, sans-serif" font-size="8" font-weight="600" opacity="0.8">SHARED</text>
         <text x="14" y="28" fill="white" font-family="Inter, sans-serif" font-size="12" font-weight="600">Feature Store</text>
@@ -361,9 +388,10 @@
       <text x="22" y="322" fill="#a855f7" font-family="Inter, sans-serif" font-size="8" font-weight="600" letter-spacing="0.06em" opacity="0.55">TRAINING</text>
 
       <!-- Training -->
-      <g transform="translate(12, 335)">
-        <rect x="0" y="0" width="126" height="58" rx="10" fill="url(#dfd-train-fill)" />
-        <rect x="0" y="0" width="126" height="58" rx="10" fill="none" stroke="#a855f7" stroke-width="1" stroke-opacity="0.3" />
+      <g transform="translate(12, 335)" class="dfd-node" @mouseenter="hoveredComponent = 'training'" @mouseleave="hoveredComponent = null">
+        <rect v-if="hoveredComponent === 'training'" x="-3" y="-3" width="132" height="64" rx="12" :fill="`${compColors['training']}08`" class="dfd-glow" />
+        <rect x="0" y="0" width="126" height="58" rx="10" :fill="hoveredComponent === 'training' ? `${compColors['training']}15` : 'url(#dfd-train-fill)'" class="dfd-rect" />
+        <rect x="0" y="0" width="126" height="58" rx="10" fill="none" :stroke="compColors['training']" :stroke-width="hoveredComponent === 'training' ? 1.5 : 1" :stroke-opacity="hoveredComponent === 'training' ? 0.5 : 0.3" class="dfd-rect" />
         <text x="12" y="26" fill="white" font-family="Inter, sans-serif" font-size="11" font-weight="600">Training</text>
         <text x="12" y="44" fill="rgba(255,255,255,0.4)" font-family="Inter, sans-serif" font-size="8">Fit model on features</text>
       </g>
@@ -372,9 +400,10 @@
       <line x1="75" y1="397" x2="75" y2="425" stroke="#a855f7" stroke-width="1.5" stroke-opacity="0.3" marker-end="url(#dfd-arrow-train-v)" />
 
       <!-- Model Registry -->
-      <g transform="translate(12, 430)">
-        <rect x="0" y="0" width="126" height="58" rx="10" fill="url(#dfd-train-fill)" />
-        <rect x="0" y="0" width="126" height="58" rx="10" fill="none" stroke="#a855f7" stroke-width="1" stroke-opacity="0.3" />
+      <g transform="translate(12, 430)" class="dfd-node" @mouseenter="hoveredComponent = 'model-registry'" @mouseleave="hoveredComponent = null">
+        <rect v-if="hoveredComponent === 'model-registry'" x="-3" y="-3" width="132" height="64" rx="12" :fill="`${compColors['model-registry']}08`" class="dfd-glow" />
+        <rect x="0" y="0" width="126" height="58" rx="10" :fill="hoveredComponent === 'model-registry' ? `${compColors['model-registry']}15` : 'url(#dfd-train-fill)'" class="dfd-rect" />
+        <rect x="0" y="0" width="126" height="58" rx="10" fill="none" :stroke="compColors['model-registry']" :stroke-width="hoveredComponent === 'model-registry' ? 1.5 : 1" :stroke-opacity="hoveredComponent === 'model-registry' ? 0.5 : 0.3" class="dfd-rect" />
         <text x="12" y="26" fill="white" font-family="Inter, sans-serif" font-size="11" font-weight="600">Model Registry</text>
         <text x="12" y="44" fill="rgba(255,255,255,0.4)" font-family="Inter, sans-serif" font-size="8">Version &amp; store</text>
       </g>
@@ -386,9 +415,10 @@
       <text x="172" y="322" fill="#22c55e" font-family="Inter, sans-serif" font-size="8" font-weight="600" letter-spacing="0.06em" opacity="0.55">INFERENCE</text>
 
       <!-- Model Serving -->
-      <g transform="translate(162, 335)">
-        <rect x="0" y="0" width="126" height="58" rx="10" fill="url(#dfd-infer-fill)" />
-        <rect x="0" y="0" width="126" height="58" rx="10" fill="none" stroke="#22c55e" stroke-width="1" stroke-opacity="0.3" />
+      <g transform="translate(162, 335)" class="dfd-node" @mouseenter="hoveredComponent = 'model-serving'" @mouseleave="hoveredComponent = null">
+        <rect v-if="hoveredComponent === 'model-serving'" x="-3" y="-3" width="132" height="64" rx="12" :fill="`${compColors['model-serving']}08`" class="dfd-glow" />
+        <rect x="0" y="0" width="126" height="58" rx="10" :fill="hoveredComponent === 'model-serving' ? `${compColors['model-serving']}15` : 'url(#dfd-infer-fill)'" class="dfd-rect" />
+        <rect x="0" y="0" width="126" height="58" rx="10" fill="none" :stroke="compColors['model-serving']" :stroke-width="hoveredComponent === 'model-serving' ? 1.5 : 1" :stroke-opacity="hoveredComponent === 'model-serving' ? 0.5 : 0.3" class="dfd-rect" />
         <text x="12" y="26" fill="white" font-family="Inter, sans-serif" font-size="11" font-weight="600">Model Serving</text>
         <text x="12" y="44" fill="rgba(255,255,255,0.4)" font-family="Inter, sans-serif" font-size="8">Low-latency inference</text>
       </g>
@@ -397,9 +427,10 @@
       <line x1="225" y1="397" x2="225" y2="425" stroke="#22c55e" stroke-width="1.5" stroke-opacity="0.3" marker-end="url(#dfd-arrow-infer-v)" />
 
       <!-- Predictions -->
-      <g transform="translate(162, 430)">
-        <rect x="0" y="0" width="126" height="58" rx="10" fill="url(#dfd-infer-fill)" />
-        <rect x="0" y="0" width="126" height="58" rx="10" fill="none" stroke="#22c55e" stroke-width="1" stroke-opacity="0.3" />
+      <g transform="translate(162, 430)" class="dfd-node" @mouseenter="hoveredComponent = 'predictions'" @mouseleave="hoveredComponent = null">
+        <rect v-if="hoveredComponent === 'predictions'" x="-3" y="-3" width="132" height="64" rx="12" :fill="`${compColors['predictions']}08`" class="dfd-glow" />
+        <rect x="0" y="0" width="126" height="58" rx="10" :fill="hoveredComponent === 'predictions' ? `${compColors['predictions']}15` : 'url(#dfd-infer-fill)'" class="dfd-rect" />
+        <rect x="0" y="0" width="126" height="58" rx="10" fill="none" :stroke="compColors['predictions']" :stroke-width="hoveredComponent === 'predictions' ? 1.5 : 1" :stroke-opacity="hoveredComponent === 'predictions' ? 0.5 : 0.3" class="dfd-rect" />
         <text x="12" y="26" fill="white" font-family="Inter, sans-serif" font-size="11" font-weight="600">Predictions</text>
         <text x="12" y="44" fill="rgba(255,255,255,0.4)" font-family="Inter, sans-serif" font-size="8">Served to application</text>
       </g>
@@ -446,6 +477,18 @@
   max-width: 980px;
   margin: 0 auto;
   font-family: 'Inter', sans-serif;
+}
+
+.dfd-node {
+  cursor: pointer;
+}
+
+.dfd-rect {
+  transition: fill 0.2s ease, stroke 0.2s ease, stroke-width 0.2s ease, stroke-opacity 0.2s ease;
+}
+
+.dfd-glow {
+  transition: opacity 0.2s ease;
 }
 
 .data-flow-diagram__caption {

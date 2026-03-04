@@ -70,6 +70,11 @@ const partDescriptions: Record<string, string> = {
   <div class="min-h-screen bg-cosmic-bg">
     <!-- ═══ Hero ═══ -->
     <header class="relative overflow-hidden">
+      <!-- 3D Neural Network Background -->
+      <ClientOnly>
+        <NeuralNetworkHero />
+      </ClientOnly>
+
       <!-- Animated gradient orbs -->
       <div class="absolute inset-0 pointer-events-none overflow-hidden">
         <div

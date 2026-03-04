@@ -1,9 +1,23 @@
 <script setup lang="ts">
 /**
- * MLPipelineDiagram — Static textbook infographic
+ * MLPipelineDiagram — Interactive textbook infographic
  * Shows the 7 stages of an ML pipeline as a horizontal flow
  * with a feedback loop from Monitoring back to Data Collection.
  */
+import { ref } from 'vue'
+
+const hoveredStage = ref<number | null>(null)
+
+/** Stage colors indexed by stage number, matching the gradient definitions */
+const stageColors: Record<number, string> = {
+  0: '#14b8a6',
+  1: '#5b78ff',
+  2: '#7c6cff',
+  3: '#a05af5',
+  4: '#4ac896',
+  5: '#22d9a0',
+  6: '#22c55e',
+}
 </script>
 
 <template>
@@ -95,9 +109,10 @@
       </text>
 
       <!-- ── Stage 0: Data Collection ── -->
-      <g transform="translate(20, 40)">
-        <rect x="0" y="0" width="130" height="80" rx="12" fill="url(#mpd-stage-0)" />
-        <rect x="0" y="0" width="130" height="80" rx="12" fill="none" stroke="#14b8a6" stroke-width="1" stroke-opacity="0.3" />
+      <g transform="translate(20, 40)" class="stage-group" @mouseenter="hoveredStage = 0" @mouseleave="hoveredStage = null">
+        <rect v-if="hoveredStage === 0" x="-3" y="-3" width="136" height="86" rx="14" :fill="`${stageColors[0]}08`" class="stage-glow" />
+        <rect x="0" y="0" width="130" height="80" rx="12" :fill="hoveredStage === 0 ? `${stageColors[0]}15` : 'url(#mpd-stage-0)'" class="stage-rect" />
+        <rect x="0" y="0" width="130" height="80" rx="12" fill="none" :stroke="stageColors[0]" :stroke-width="hoveredStage === 0 ? 1.5 : 1" :stroke-opacity="hoveredStage === 0 ? 0.5 : 0.3" class="stage-rect" />
         <!-- Database icon -->
         <g transform="translate(10, 12)" opacity="0.85">
           <ellipse cx="10" cy="5" rx="8" ry="3.5" fill="none" stroke="#14b8a6" stroke-width="1.2" />
@@ -110,9 +125,10 @@
       </g>
 
       <!-- ── Stage 1: Data Preprocessing ── -->
-      <g transform="translate(160, 40)">
-        <rect x="0" y="0" width="130" height="80" rx="12" fill="url(#mpd-stage-1)" />
-        <rect x="0" y="0" width="130" height="80" rx="12" fill="none" stroke="#5b78ff" stroke-width="1" stroke-opacity="0.3" />
+      <g transform="translate(160, 40)" class="stage-group" @mouseenter="hoveredStage = 1" @mouseleave="hoveredStage = null">
+        <rect v-if="hoveredStage === 1" x="-3" y="-3" width="136" height="86" rx="14" :fill="`${stageColors[1]}08`" class="stage-glow" />
+        <rect x="0" y="0" width="130" height="80" rx="12" :fill="hoveredStage === 1 ? `${stageColors[1]}15` : 'url(#mpd-stage-1)'" class="stage-rect" />
+        <rect x="0" y="0" width="130" height="80" rx="12" fill="none" :stroke="stageColors[1]" :stroke-width="hoveredStage === 1 ? 1.5 : 1" :stroke-opacity="hoveredStage === 1 ? 0.5 : 0.3" class="stage-rect" />
         <!-- Filter icon -->
         <g transform="translate(10, 12)" opacity="0.85">
           <path d="M 2 3 h 16 l -5.5 7 v 4 l -5 2.5 v -6.5 Z" fill="none" stroke="#5b78ff" stroke-width="1.2" stroke-linejoin="round" />
@@ -123,9 +139,10 @@
       </g>
 
       <!-- ── Stage 2: Feature Engineering ── -->
-      <g transform="translate(300, 40)">
-        <rect x="0" y="0" width="130" height="80" rx="12" fill="url(#mpd-stage-2)" />
-        <rect x="0" y="0" width="130" height="80" rx="12" fill="none" stroke="#7c6cff" stroke-width="1" stroke-opacity="0.3" />
+      <g transform="translate(300, 40)" class="stage-group" @mouseenter="hoveredStage = 2" @mouseleave="hoveredStage = null">
+        <rect v-if="hoveredStage === 2" x="-3" y="-3" width="136" height="86" rx="14" :fill="`${stageColors[2]}08`" class="stage-glow" />
+        <rect x="0" y="0" width="130" height="80" rx="12" :fill="hoveredStage === 2 ? `${stageColors[2]}15` : 'url(#mpd-stage-2)'" class="stage-rect" />
+        <rect x="0" y="0" width="130" height="80" rx="12" fill="none" :stroke="stageColors[2]" :stroke-width="hoveredStage === 2 ? 1.5 : 1" :stroke-opacity="hoveredStage === 2 ? 0.5 : 0.3" class="stage-rect" />
         <!-- Layers icon -->
         <g transform="translate(10, 12)" opacity="0.85">
           <path d="M 10 3 L 1 8 L 10 13 L 19 8 Z" fill="none" stroke="#7c6cff" stroke-width="1.2" stroke-linejoin="round" />
@@ -137,9 +154,10 @@
       </g>
 
       <!-- ── Stage 3: Model Training ── -->
-      <g transform="translate(440, 40)">
-        <rect x="0" y="0" width="130" height="80" rx="12" fill="url(#mpd-stage-3)" />
-        <rect x="0" y="0" width="130" height="80" rx="12" fill="none" stroke="#a05af5" stroke-width="1" stroke-opacity="0.3" />
+      <g transform="translate(440, 40)" class="stage-group" @mouseenter="hoveredStage = 3" @mouseleave="hoveredStage = null">
+        <rect v-if="hoveredStage === 3" x="-3" y="-3" width="136" height="86" rx="14" :fill="`${stageColors[3]}08`" class="stage-glow" />
+        <rect x="0" y="0" width="130" height="80" rx="12" :fill="hoveredStage === 3 ? `${stageColors[3]}15` : 'url(#mpd-stage-3)'" class="stage-rect" />
+        <rect x="0" y="0" width="130" height="80" rx="12" fill="none" :stroke="stageColors[3]" :stroke-width="hoveredStage === 3 ? 1.5 : 1" :stroke-opacity="hoveredStage === 3 ? 0.5 : 0.3" class="stage-rect" />
         <!-- Brain icon -->
         <g transform="translate(10, 12)" opacity="0.85">
           <circle cx="10" cy="10" r="8" fill="none" stroke="#a05af5" stroke-width="1.2" />
@@ -157,9 +175,10 @@
       </g>
 
       <!-- ── Stage 4: Evaluation ── -->
-      <g transform="translate(580, 40)">
-        <rect x="0" y="0" width="130" height="80" rx="12" fill="url(#mpd-stage-4)" />
-        <rect x="0" y="0" width="130" height="80" rx="12" fill="none" stroke="#4ac896" stroke-width="1" stroke-opacity="0.3" />
+      <g transform="translate(580, 40)" class="stage-group" @mouseenter="hoveredStage = 4" @mouseleave="hoveredStage = null">
+        <rect v-if="hoveredStage === 4" x="-3" y="-3" width="136" height="86" rx="14" :fill="`${stageColors[4]}08`" class="stage-glow" />
+        <rect x="0" y="0" width="130" height="80" rx="12" :fill="hoveredStage === 4 ? `${stageColors[4]}15` : 'url(#mpd-stage-4)'" class="stage-rect" />
+        <rect x="0" y="0" width="130" height="80" rx="12" fill="none" :stroke="stageColors[4]" :stroke-width="hoveredStage === 4 ? 1.5 : 1" :stroke-opacity="hoveredStage === 4 ? 0.5 : 0.3" class="stage-rect" />
         <!-- Chart icon -->
         <g transform="translate(10, 12)" opacity="0.85">
           <rect x="2" y="11" width="4" height="7" rx="0.5" fill="#4ac896" opacity="0.5" />
@@ -172,9 +191,10 @@
       </g>
 
       <!-- ── Stage 5: Deployment ── -->
-      <g transform="translate(720, 40)">
-        <rect x="0" y="0" width="130" height="80" rx="12" fill="url(#mpd-stage-5)" />
-        <rect x="0" y="0" width="130" height="80" rx="12" fill="none" stroke="#22d9a0" stroke-width="1" stroke-opacity="0.3" />
+      <g transform="translate(720, 40)" class="stage-group" @mouseenter="hoveredStage = 5" @mouseleave="hoveredStage = null">
+        <rect v-if="hoveredStage === 5" x="-3" y="-3" width="136" height="86" rx="14" :fill="`${stageColors[5]}08`" class="stage-glow" />
+        <rect x="0" y="0" width="130" height="80" rx="12" :fill="hoveredStage === 5 ? `${stageColors[5]}15` : 'url(#mpd-stage-5)'" class="stage-rect" />
+        <rect x="0" y="0" width="130" height="80" rx="12" fill="none" :stroke="stageColors[5]" :stroke-width="hoveredStage === 5 ? 1.5 : 1" :stroke-opacity="hoveredStage === 5 ? 0.5 : 0.3" class="stage-rect" />
         <!-- Rocket icon -->
         <g transform="translate(10, 12)" opacity="0.85">
           <path d="M 10 2 C 7 6 6 10 6 15 L 10 13 L 14 15 C 14 10 13 6 10 2 Z" fill="none" stroke="#22d9a0" stroke-width="1.2" stroke-linejoin="round" />
@@ -187,9 +207,10 @@
       </g>
 
       <!-- ── Stage 6: Monitoring ── -->
-      <g transform="translate(860, 40)">
-        <rect x="0" y="0" width="130" height="80" rx="12" fill="url(#mpd-stage-6)" />
-        <rect x="0" y="0" width="130" height="80" rx="12" fill="none" stroke="#22c55e" stroke-width="1" stroke-opacity="0.3" />
+      <g transform="translate(860, 40)" class="stage-group" @mouseenter="hoveredStage = 6" @mouseleave="hoveredStage = null">
+        <rect v-if="hoveredStage === 6" x="-3" y="-3" width="136" height="86" rx="14" :fill="`${stageColors[6]}08`" class="stage-glow" />
+        <rect x="0" y="0" width="130" height="80" rx="12" :fill="hoveredStage === 6 ? `${stageColors[6]}15` : 'url(#mpd-stage-6)'" class="stage-rect" />
+        <rect x="0" y="0" width="130" height="80" rx="12" fill="none" :stroke="stageColors[6]" :stroke-width="hoveredStage === 6 ? 1.5 : 1" :stroke-opacity="hoveredStage === 6 ? 0.5 : 0.3" class="stage-rect" />
         <!-- Pulse icon -->
         <g transform="translate(10, 12)" opacity="0.85">
           <polyline points="1,10 5,10 7.5,3 10,17 12.5,7 15,10 19,10" fill="none" stroke="#22c55e" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
@@ -249,9 +270,10 @@
       </text>
 
       <!-- Stage 0 -->
-      <g transform="translate(20, 5)">
-        <rect x="0" y="0" width="230" height="80" rx="12" fill="url(#mpd-stage-0)" />
-        <rect x="0" y="0" width="230" height="80" rx="12" fill="none" stroke="#14b8a6" stroke-width="1" stroke-opacity="0.3" />
+      <g transform="translate(20, 5)" class="stage-group" @mouseenter="hoveredStage = 0" @mouseleave="hoveredStage = null">
+        <rect v-if="hoveredStage === 0" x="-3" y="-3" width="236" height="86" rx="14" :fill="`${stageColors[0]}08`" class="stage-glow" />
+        <rect x="0" y="0" width="230" height="80" rx="12" :fill="hoveredStage === 0 ? `${stageColors[0]}15` : 'url(#mpd-stage-0)'" class="stage-rect" />
+        <rect x="0" y="0" width="230" height="80" rx="12" fill="none" :stroke="stageColors[0]" :stroke-width="hoveredStage === 0 ? 1.5 : 1" :stroke-opacity="hoveredStage === 0 ? 0.5 : 0.3" class="stage-rect" />
         <g transform="translate(14, 16)" opacity="0.85">
           <ellipse cx="10" cy="5" rx="8" ry="3.5" fill="none" stroke="#14b8a6" stroke-width="1.2" />
           <path d="M 2 5 v 7 c 0 1.9 3.6 3.5 8 3.5 s 8 -1.6 8 -3.5 V 5" fill="none" stroke="#14b8a6" stroke-width="1.2" />
@@ -261,9 +283,10 @@
       </g>
 
       <!-- Stage 1 -->
-      <g transform="translate(20, 105)">
-        <rect x="0" y="0" width="230" height="80" rx="12" fill="url(#mpd-stage-1)" />
-        <rect x="0" y="0" width="230" height="80" rx="12" fill="none" stroke="#5b78ff" stroke-width="1" stroke-opacity="0.3" />
+      <g transform="translate(20, 105)" class="stage-group" @mouseenter="hoveredStage = 1" @mouseleave="hoveredStage = null">
+        <rect v-if="hoveredStage === 1" x="-3" y="-3" width="236" height="86" rx="14" :fill="`${stageColors[1]}08`" class="stage-glow" />
+        <rect x="0" y="0" width="230" height="80" rx="12" :fill="hoveredStage === 1 ? `${stageColors[1]}15` : 'url(#mpd-stage-1)'" class="stage-rect" />
+        <rect x="0" y="0" width="230" height="80" rx="12" fill="none" :stroke="stageColors[1]" :stroke-width="hoveredStage === 1 ? 1.5 : 1" :stroke-opacity="hoveredStage === 1 ? 0.5 : 0.3" class="stage-rect" />
         <g transform="translate(14, 16)" opacity="0.85">
           <path d="M 2 3 h 16 l -5.5 7 v 4 l -5 2.5 v -6.5 Z" fill="none" stroke="#5b78ff" stroke-width="1.2" stroke-linejoin="round" />
         </g>
@@ -272,9 +295,10 @@
       </g>
 
       <!-- Stage 2 -->
-      <g transform="translate(20, 205)">
-        <rect x="0" y="0" width="230" height="80" rx="12" fill="url(#mpd-stage-2)" />
-        <rect x="0" y="0" width="230" height="80" rx="12" fill="none" stroke="#7c6cff" stroke-width="1" stroke-opacity="0.3" />
+      <g transform="translate(20, 205)" class="stage-group" @mouseenter="hoveredStage = 2" @mouseleave="hoveredStage = null">
+        <rect v-if="hoveredStage === 2" x="-3" y="-3" width="236" height="86" rx="14" :fill="`${stageColors[2]}08`" class="stage-glow" />
+        <rect x="0" y="0" width="230" height="80" rx="12" :fill="hoveredStage === 2 ? `${stageColors[2]}15` : 'url(#mpd-stage-2)'" class="stage-rect" />
+        <rect x="0" y="0" width="230" height="80" rx="12" fill="none" :stroke="stageColors[2]" :stroke-width="hoveredStage === 2 ? 1.5 : 1" :stroke-opacity="hoveredStage === 2 ? 0.5 : 0.3" class="stage-rect" />
         <g transform="translate(14, 16)" opacity="0.85">
           <path d="M 10 3 L 1 8 L 10 13 L 19 8 Z" fill="none" stroke="#7c6cff" stroke-width="1.2" stroke-linejoin="round" />
           <path d="M 1 11.5 L 10 16.5 L 19 11.5" fill="none" stroke="#7c6cff" stroke-width="1.2" stroke-linejoin="round" opacity="0.6" />
@@ -284,9 +308,10 @@
       </g>
 
       <!-- Stage 3 -->
-      <g transform="translate(20, 305)">
-        <rect x="0" y="0" width="230" height="80" rx="12" fill="url(#mpd-stage-3)" />
-        <rect x="0" y="0" width="230" height="80" rx="12" fill="none" stroke="#a05af5" stroke-width="1" stroke-opacity="0.3" />
+      <g transform="translate(20, 305)" class="stage-group" @mouseenter="hoveredStage = 3" @mouseleave="hoveredStage = null">
+        <rect v-if="hoveredStage === 3" x="-3" y="-3" width="236" height="86" rx="14" :fill="`${stageColors[3]}08`" class="stage-glow" />
+        <rect x="0" y="0" width="230" height="80" rx="12" :fill="hoveredStage === 3 ? `${stageColors[3]}15` : 'url(#mpd-stage-3)'" class="stage-rect" />
+        <rect x="0" y="0" width="230" height="80" rx="12" fill="none" :stroke="stageColors[3]" :stroke-width="hoveredStage === 3 ? 1.5 : 1" :stroke-opacity="hoveredStage === 3 ? 0.5 : 0.3" class="stage-rect" />
         <g transform="translate(14, 16)" opacity="0.85">
           <circle cx="10" cy="10" r="8" fill="none" stroke="#a05af5" stroke-width="1.2" />
           <circle cx="7" cy="7.5" r="1" fill="#a05af5" opacity="0.6" />
@@ -299,9 +324,10 @@
       </g>
 
       <!-- Stage 4 -->
-      <g transform="translate(20, 405)">
-        <rect x="0" y="0" width="230" height="80" rx="12" fill="url(#mpd-stage-4)" />
-        <rect x="0" y="0" width="230" height="80" rx="12" fill="none" stroke="#4ac896" stroke-width="1" stroke-opacity="0.3" />
+      <g transform="translate(20, 405)" class="stage-group" @mouseenter="hoveredStage = 4" @mouseleave="hoveredStage = null">
+        <rect v-if="hoveredStage === 4" x="-3" y="-3" width="236" height="86" rx="14" :fill="`${stageColors[4]}08`" class="stage-glow" />
+        <rect x="0" y="0" width="230" height="80" rx="12" :fill="hoveredStage === 4 ? `${stageColors[4]}15` : 'url(#mpd-stage-4)'" class="stage-rect" />
+        <rect x="0" y="0" width="230" height="80" rx="12" fill="none" :stroke="stageColors[4]" :stroke-width="hoveredStage === 4 ? 1.5 : 1" :stroke-opacity="hoveredStage === 4 ? 0.5 : 0.3" class="stage-rect" />
         <g transform="translate(14, 16)" opacity="0.85">
           <rect x="2" y="11" width="4" height="7" rx="0.5" fill="#4ac896" opacity="0.5" />
           <rect x="8" y="7" width="4" height="11" rx="0.5" fill="#4ac896" opacity="0.7" />
@@ -312,9 +338,10 @@
       </g>
 
       <!-- Stage 5 -->
-      <g transform="translate(20, 505)">
-        <rect x="0" y="0" width="230" height="80" rx="12" fill="url(#mpd-stage-5)" />
-        <rect x="0" y="0" width="230" height="80" rx="12" fill="none" stroke="#22d9a0" stroke-width="1" stroke-opacity="0.3" />
+      <g transform="translate(20, 505)" class="stage-group" @mouseenter="hoveredStage = 5" @mouseleave="hoveredStage = null">
+        <rect v-if="hoveredStage === 5" x="-3" y="-3" width="236" height="86" rx="14" :fill="`${stageColors[5]}08`" class="stage-glow" />
+        <rect x="0" y="0" width="230" height="80" rx="12" :fill="hoveredStage === 5 ? `${stageColors[5]}15` : 'url(#mpd-stage-5)'" class="stage-rect" />
+        <rect x="0" y="0" width="230" height="80" rx="12" fill="none" :stroke="stageColors[5]" :stroke-width="hoveredStage === 5 ? 1.5 : 1" :stroke-opacity="hoveredStage === 5 ? 0.5 : 0.3" class="stage-rect" />
         <g transform="translate(14, 16)" opacity="0.85">
           <path d="M 10 2 C 7 6 6 10 6 15 L 10 13 L 14 15 C 14 10 13 6 10 2 Z" fill="none" stroke="#22d9a0" stroke-width="1.2" stroke-linejoin="round" />
           <circle cx="10" cy="8.5" r="1.5" fill="none" stroke="#22d9a0" stroke-width="1.2" />
@@ -324,9 +351,10 @@
       </g>
 
       <!-- Stage 6 -->
-      <g transform="translate(20, 605)">
-        <rect x="0" y="0" width="230" height="80" rx="12" fill="url(#mpd-stage-6)" />
-        <rect x="0" y="0" width="230" height="80" rx="12" fill="none" stroke="#22c55e" stroke-width="1" stroke-opacity="0.3" />
+      <g transform="translate(20, 605)" class="stage-group" @mouseenter="hoveredStage = 6" @mouseleave="hoveredStage = null">
+        <rect v-if="hoveredStage === 6" x="-3" y="-3" width="236" height="86" rx="14" :fill="`${stageColors[6]}08`" class="stage-glow" />
+        <rect x="0" y="0" width="230" height="80" rx="12" :fill="hoveredStage === 6 ? `${stageColors[6]}15` : 'url(#mpd-stage-6)'" class="stage-rect" />
+        <rect x="0" y="0" width="230" height="80" rx="12" fill="none" :stroke="stageColors[6]" :stroke-width="hoveredStage === 6 ? 1.5 : 1" :stroke-opacity="hoveredStage === 6 ? 0.5 : 0.3" class="stage-rect" />
         <g transform="translate(14, 16)" opacity="0.85">
           <polyline points="1,10 5,10 7.5,3 10,17 12.5,7 15,10 19,10" fill="none" stroke="#22c55e" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
         </g>
@@ -343,6 +371,18 @@
   max-width: 1060px;
   margin: 0 auto;
   font-family: 'Inter', sans-serif;
+}
+
+.stage-group {
+  cursor: pointer;
+}
+
+.stage-rect {
+  transition: fill 0.2s ease, stroke 0.2s ease, stroke-width 0.2s ease, stroke-opacity 0.2s ease;
+}
+
+.stage-glow {
+  transition: opacity 0.2s ease;
 }
 
 .ml-pipeline-diagram__caption {

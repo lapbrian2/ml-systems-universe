@@ -429,3 +429,20 @@ a:focus-visible {
     padding-bottom: 80px !important;
   }
 }
+
+/* ── Mobile viz responsive ── */
+@media (max-width: 1023px) {
+  .viz-panel-glow svg {
+    max-height: 100%;
+    width: 100%;
+  }
+}
+
+/* ── Touch-friendly viz elements ── */
+@media (hover: none) {
+  .viz-panel-glow [role="button"],
+  .viz-panel-glow button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
