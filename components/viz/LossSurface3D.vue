@@ -292,9 +292,9 @@ watch(() => props.activeSection, () => {
             <feComposite in="SourceGraphic" in2="blur" operator="over" />
           </filter>
           <radialGradient id="ls-basin1" cx="67%" cy="67%">
-            <stop offset="0%" stop-color="#4a6aff" stop-opacity="0.3" />
-            <stop offset="60%" stop-color="#4a6aff" stop-opacity="0.05" />
-            <stop offset="100%" stop-color="#4a6aff" stop-opacity="0" />
+            <stop offset="0%" stop-color="#14b8a6" stop-opacity="0.3" />
+            <stop offset="60%" stop-color="#14b8a6" stop-opacity="0.05" />
+            <stop offset="100%" stop-color="#14b8a6" stop-opacity="0" />
           </radialGradient>
           <radialGradient id="ls-basin2" cx="37%" cy="42%">
             <stop offset="0%" stop-color="#a855f7" stop-opacity="0.25" />
@@ -306,8 +306,8 @@ watch(() => props.activeSection, () => {
             <stop offset="100%" stop-color="#ec4899" />
           </linearGradient>
           <linearGradient id="ls-adam-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#00c896" />
-            <stop offset="100%" stop-color="#4a6aff" />
+            <stop offset="0%" stop-color="#22c55e" />
+            <stop offset="100%" stop-color="#14b8a6" />
           </linearGradient>
         </defs>
 
@@ -323,7 +323,7 @@ watch(() => props.activeSection, () => {
             :y1="PLOT_Y"
             :x2="PLOT_X + (PLOT_W / 10) * i"
             :y2="PLOT_Y + PLOT_H"
-            stroke="#4a6aff"
+            stroke="#14b8a6"
             stroke-width="0.5"
           />
           <line
@@ -333,7 +333,7 @@ watch(() => props.activeSection, () => {
             :y1="PLOT_Y + (PLOT_H / 10) * i"
             :x2="PLOT_X + PLOT_W"
             :y2="PLOT_Y + (PLOT_H / 10) * i"
-            stroke="#4a6aff"
+            stroke="#14b8a6"
             stroke-width="0.5"
           />
         </g>
@@ -348,7 +348,7 @@ watch(() => props.activeSection, () => {
             :rx="c.r"
             :ry="c.r * 0.75"
             fill="none"
-            :stroke="c.level <= 4 ? '#4a6aff' : '#a855f7'"
+            :stroke="c.level <= 4 ? '#14b8a6' : '#a855f7'"
             stroke-width="0.8"
             :opacity="c.opacity"
             class="loss-surface__contour"
@@ -379,7 +379,7 @@ watch(() => props.activeSection, () => {
             :cx="PLOT_X + (1 + 3) / 6 * PLOT_W"
             :cy="PLOT_Y + (1 + 3) / 6 * PLOT_H"
             r="5"
-            fill="#4a6aff"
+            fill="#14b8a6"
             opacity="0.8"
             filter="url(#ls-glow)"
           />
@@ -387,7 +387,7 @@ watch(() => props.activeSection, () => {
             :x="PLOT_X + (1 + 3) / 6 * PLOT_W + 10"
             :y="PLOT_Y + (1 + 3) / 6 * PLOT_H + 4"
             class="loss-surface__label"
-            fill="#4a6aff"
+            fill="#14b8a6"
             opacity="0.7"
           >
             Global Min
@@ -462,7 +462,7 @@ watch(() => props.activeSection, () => {
             :cx="PLOT_X + path[Math.min(animationFrame, path.length - 1)].x"
             :cy="PLOT_Y + path[Math.min(animationFrame, path.length - 1)].y"
             r="4"
-            fill="#00c896"
+            fill="#22c55e"
             filter="url(#ls-glow)"
             class="loss-surface__dot-pulse"
           />
@@ -493,7 +493,7 @@ watch(() => props.activeSection, () => {
           <rect x="0" y="-2" width="200" height="28" rx="6" fill="#0a0e1a" opacity="0.9" />
           <line x1="10" y1="12" x2="30" y2="12" stroke="#f0a500" stroke-width="2" />
           <text x="36" y="16" class="loss-surface__legend-text">SGD</text>
-          <line x1="80" y1="12" x2="100" y2="12" stroke="#00c896" stroke-width="2" />
+          <line x1="80" y1="12" x2="100" y2="12" stroke="#22c55e" stroke-width="2" />
           <text x="106" y="16" class="loss-surface__legend-text">Adam</text>
         </g>
 
@@ -549,10 +549,10 @@ watch(() => props.activeSection, () => {
   --viz-surface: #0a0e1a;
   --viz-card: #0f1325;
   --viz-border: rgba(255, 255, 255, 0.06);
-  --viz-primary: #4a6aff;
+  --viz-primary: #14b8a6;
   --viz-text: #e2e8f0;
   --viz-text-muted: rgba(255, 255, 255, 0.45);
-  --viz-accent-green: #00c896;
+  --viz-accent-green: #22c55e;
 
   display: flex;
   flex-direction: column;
@@ -581,8 +581,8 @@ watch(() => props.activeSection, () => {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--viz-primary);
-  background: rgba(74, 106, 255, 0.1);
-  border: 1px solid rgba(74, 106, 255, 0.2);
+  background: rgba(20, 184, 166, 0.1);
+  border: 1px solid rgba(20, 184, 166, 0.2);
 }
 
 .loss-surface__title {
@@ -617,8 +617,8 @@ watch(() => props.activeSection, () => {
 
 .loss-surface__progress--complete {
   color: var(--viz-accent-green);
-  background: rgba(0, 200, 150, 0.1);
-  border-color: rgba(0, 200, 150, 0.3);
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 .loss-surface__canvas {

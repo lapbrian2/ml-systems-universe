@@ -1,13 +1,13 @@
 export const COSMIC_THEME = {
   bg: '#05070f',
   bgRgb: '5, 7, 15',
-  primary: '#4a6aff',
-  primaryRgb: '74, 106, 255',
+  primary: '#14b8a6',
+  primaryRgb: '20, 184, 166',
 
   partColors: {
-    foundations: { hex: '#4a6aff', three: 0x4a6aff, rgb: '74, 106, 255' },
+    foundations: { hex: '#14b8a6', three: 0x14b8a6, rgb: '20, 184, 166' },
     design: { hex: '#a855f7', three: 0xa855f7, rgb: '168, 85, 247' },
-    performance: { hex: '#00c896', three: 0x00c896, rgb: '0, 200, 150' },
+    performance: { hex: '#22c55e', three: 0x22c55e, rgb: '34, 197, 94' },
     deployment: { hex: '#f0a500', three: 0xf0a500, rgb: '240, 165, 0' },
     trustworthy: { hex: '#ff6b6b', three: 0xff6b6b, rgb: '255, 107, 107' },
     frontiers: { hex: '#ec4899', three: 0xec4899, rgb: '236, 72, 153' },
@@ -15,7 +15,7 @@ export const COSMIC_THEME = {
 
   glass: {
     bg: 'rgba(10, 15, 30, 0.7)',
-    border: 'rgba(74, 106, 255, 0.15)',
+    border: 'rgba(255, 255, 255, 0.08)',
     blur: '12px',
   },
 } as const;

@@ -18,10 +18,10 @@ export default {
           card: '#0f1325',
           border: 'rgba(255,255,255,0.06)',
         },
-        primary: '#4a6aff',
+        primary: '#14b8a6',
         accent: {
           purple: '#a855f7',
-          green: '#00c896',
+          green: '#22c55e',
           amber: '#f0a500',
           red: '#ff6b6b',
           pink: '#ec4899',

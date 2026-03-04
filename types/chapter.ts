@@ -3,7 +3,7 @@ export interface Part {
   name: string;
   shortName: string;
   color: string;
-  hexColor: number; // For Three.js (e.g., 0x4a6aff)
+  hexColor: number; // For Three.js (e.g., 0x14b8a6)
   chapters: string[];
 }
 

@@ -22,8 +22,8 @@
       </text>
 
       <!-- Data Collection & Verification -->
-      <rect x="50" y="70" width="180" height="55" rx="8" fill="rgba(74,106,255,0.08)" stroke="rgba(74,106,255,0.25)" stroke-width="1" />
-      <text x="140" y="93" text-anchor="middle" fill="#4a6aff" font-size="11" font-family="Inter, sans-serif" font-weight="600">Data Collection</text>
+      <rect x="50" y="70" width="180" height="55" rx="8" fill="rgba(20,184,166,0.08)" stroke="rgba(20,184,166,0.25)" stroke-width="1" />
+      <text x="140" y="93" text-anchor="middle" fill="#14b8a6" font-size="11" font-family="Inter, sans-serif" font-weight="600">Data Collection</text>
       <text x="140" y="112" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-size="9" font-family="Inter, sans-serif">Pipelines, validation, labeling</text>
 
       <!-- Feature Engineering -->
@@ -38,7 +38,7 @@
 
       <!-- ML CODE (the small box in the center) -->
       <rect x="250" y="155" width="180" height="70" rx="8" fill="rgba(0,200,150,0.12)" stroke="rgba(0,200,150,0.5)" stroke-width="2" />
-      <text x="340" y="185" text-anchor="middle" fill="#00c896" font-size="13" font-family="Syne, sans-serif" font-weight="700">ML Code</text>
+      <text x="340" y="185" text-anchor="middle" fill="#22c55e" font-size="13" font-family="Syne, sans-serif" font-weight="700">ML Code</text>
       <text x="340" y="205" text-anchor="middle" fill="rgba(0,200,150,0.6)" font-size="9" font-family="Inter, sans-serif">~5% of the system</text>
 
       <!-- Serving Infrastructure -->
@@ -52,8 +52,8 @@
       <text x="550" y="197" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-size="9" font-family="Inter, sans-serif">GPU scheduling, auto-scaling</text>
 
       <!-- Monitoring -->
-      <rect x="50" y="250" width="180" height="55" rx="8" fill="rgba(74,106,255,0.08)" stroke="rgba(74,106,255,0.25)" stroke-width="1" />
-      <text x="140" y="273" text-anchor="middle" fill="#4a6aff" font-size="11" font-family="Inter, sans-serif" font-weight="600">Monitoring</text>
+      <rect x="50" y="250" width="180" height="55" rx="8" fill="rgba(20,184,166,0.08)" stroke="rgba(20,184,166,0.25)" stroke-width="1" />
+      <text x="140" y="273" text-anchor="middle" fill="#14b8a6" font-size="11" font-family="Inter, sans-serif" font-weight="600">Monitoring</text>
       <text x="140" y="292" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-size="9" font-family="Inter, sans-serif">Drift detection, alerting</text>
 
       <!-- Testing & Debugging -->

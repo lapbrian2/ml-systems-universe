@@ -38,7 +38,7 @@ const layers: ArchLayer[] = [
     id: 'data',
     label: 'Data Layer',
     description: 'Ingestion, storage, and versioning of training and serving data.',
-    color: '#4a6aff',
+    color: '#14b8a6',
     icon: 'database',
     subComponents: [
       { label: 'Data Lake', description: 'Raw data storage for structured and unstructured data' },
@@ -86,7 +86,7 @@ const layers: ArchLayer[] = [
     id: 'monitoring',
     label: 'Monitoring Layer',
     description: 'Performance tracking, drift detection, and alerting.',
-    color: '#00c896',
+    color: '#22c55e',
     icon: 'pulse',
     subComponents: [
       { label: 'Metrics Dashboard', description: 'Real-time model performance visualization' },
@@ -526,10 +526,10 @@ watch(
   --viz-surface: #0a0e1a;
   --viz-card: #0f1325;
   --viz-border: rgba(255, 255, 255, 0.06);
-  --viz-primary: #4a6aff;
+  --viz-primary: #14b8a6;
   --viz-text: #e2e8f0;
   --viz-text-muted: rgba(255, 255, 255, 0.45);
-  --viz-accent-green: #00c896;
+  --viz-accent-green: #22c55e;
 
   display: flex;
   flex-direction: column;
@@ -559,8 +559,8 @@ watch(
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--viz-primary);
-  background: rgba(74, 106, 255, 0.1);
-  border: 1px solid rgba(74, 106, 255, 0.2);
+  background: rgba(20, 184, 166, 0.1);
+  border: 1px solid rgba(20, 184, 166, 0.2);
 }
 
 .arch-builder__title {
@@ -595,8 +595,8 @@ watch(
 
 .arch-builder__progress--complete {
   color: var(--viz-accent-green);
-  background: rgba(0, 200, 150, 0.1);
-  border-color: rgba(0, 200, 150, 0.3);
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 /* ── Canvas ── */
@@ -798,7 +798,7 @@ watch(
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 14px 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(74, 106, 255, 0.05);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(20, 184, 166, 0.05);
   animation: archTooltipIn 0.25s ease;
 }
 

@@ -29,7 +29,7 @@ interface TooltipState {
 
 /* ── Pipeline Nodes ── */
 const sources: PipelineNode[] = [
-  { id: 'db', label: 'Database', description: 'Relational and NoSQL databases (PostgreSQL, MongoDB, etc.).', color: '#4a6aff', icon: 'db', group: 'source' },
+  { id: 'db', label: 'Database', description: 'Relational and NoSQL databases (PostgreSQL, MongoDB, etc.).', color: '#14b8a6', icon: 'db', group: 'source' },
   { id: 'api', label: 'REST APIs', description: 'External service endpoints providing structured JSON/XML data.', color: '#6c5ce7', icon: 'api', group: 'source' },
   { id: 'files', label: 'File Storage', description: 'CSV, Parquet, JSON files from S3, GCS, or local filesystems.', color: '#3b82f6', icon: 'file', group: 'source' },
 ]
@@ -41,7 +41,7 @@ const etlStages: PipelineNode[] = [
 ]
 
 const storageNodes: PipelineNode[] = [
-  { id: 'warehouse', label: 'Data Warehouse', description: 'Columnar analytics store (BigQuery, Snowflake, Redshift).', color: '#00c896', icon: 'warehouse', group: 'storage' },
+  { id: 'warehouse', label: 'Data Warehouse', description: 'Columnar analytics store (BigQuery, Snowflake, Redshift).', color: '#22c55e', icon: 'warehouse', group: 'storage' },
   { id: 'feature-store', label: 'Feature Store', description: 'Low-latency serving of pre-computed ML features (Feast, Tecton).', color: '#3b82f6', icon: 'features', group: 'serve' },
 ]
 
@@ -458,10 +458,10 @@ watch(
   --viz-surface: #0a0e1a;
   --viz-card: #0f1325;
   --viz-border: rgba(255, 255, 255, 0.06);
-  --viz-primary: #4a6aff;
+  --viz-primary: #14b8a6;
   --viz-text: #e2e8f0;
   --viz-text-muted: rgba(255, 255, 255, 0.45);
-  --viz-accent-green: #00c896;
+  --viz-accent-green: #22c55e;
 
   display: flex;
   flex-direction: column;
@@ -491,8 +491,8 @@ watch(
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--viz-primary);
-  background: rgba(74, 106, 255, 0.1);
-  border: 1px solid rgba(74, 106, 255, 0.2);
+  background: rgba(20, 184, 166, 0.1);
+  border: 1px solid rgba(20, 184, 166, 0.2);
 }
 
 .dp-sim__title {
@@ -527,8 +527,8 @@ watch(
 
 .dp-sim__progress--complete {
   color: var(--viz-accent-green);
-  background: rgba(0, 200, 150, 0.1);
-  border-color: rgba(0, 200, 150, 0.3);
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 /* ── Canvas ── */
@@ -699,7 +699,7 @@ watch(
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 14px 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(74, 106, 255, 0.05);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(20, 184, 166, 0.05);
   animation: dpTooltipIn 0.25s ease;
 }
 

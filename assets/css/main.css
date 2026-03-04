@@ -22,7 +22,7 @@ html.lenis, html.lenis body {
   --color-surface: #0a0e1a;
   --color-card: #0f1325;
   --color-border: rgba(255, 255, 255, 0.06);
-  --color-primary: #4a6aff;
+  --color-primary: #14b8a6;
   --color-text: #e2e8f0;
   --color-text-muted: rgba(255, 255, 255, 0.5);
 }
@@ -41,7 +41,7 @@ body {
 }
 
 ::selection {
-  background: rgba(74, 106, 255, 0.3);
+  background: rgba(20, 184, 166, 0.3);
   color: #fff;
 }
 
@@ -59,7 +59,7 @@ body {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(74, 106, 255, 0.2) 50%,
+    rgba(20, 184, 166, 0.2) 50%,
     transparent
   );
 }
@@ -81,12 +81,12 @@ body {
 
 /* ── Viz panel subtle glow ── */
 .viz-panel-glow {
-  box-shadow: inset -1px 0 0 rgba(74, 106, 255, 0.05);
+  box-shadow: inset -1px 0 0 rgba(20, 184, 166, 0.05);
 }
 
 /* ── Concept card hover ── */
 .concept-glow:hover {
-  box-shadow: 0 0 24px rgba(74, 106, 255, 0.08);
+  box-shadow: 0 0 24px rgba(20, 184, 166, 0.08);
 }
 
 /* ── Film grain overlay (subtle) ── */
@@ -140,16 +140,16 @@ body {
   line-height: 1.5;
 }
 .quiz-option:hover:not(.quiz-option--selected):not(.quiz-option--disabled) {
-  border-color: rgba(74, 106, 255, 0.3);
-  background: rgba(74, 106, 255, 0.05);
+  border-color: rgba(20, 184, 166, 0.3);
+  background: rgba(20, 184, 166, 0.05);
 }
 .quiz-option--selected {
-  border-color: rgba(74, 106, 255, 0.5);
-  background: rgba(74, 106, 255, 0.1);
+  border-color: rgba(20, 184, 166, 0.5);
+  background: rgba(20, 184, 166, 0.1);
 }
 .quiz-option--correct {
-  border-color: rgba(0, 200, 150, 0.5);
-  background: rgba(0, 200, 150, 0.1);
+  border-color: rgba(34, 197, 94, 0.5);
+  background: rgba(34, 197, 94, 0.1);
 }
 .quiz-option--wrong {
   border-color: rgba(255, 107, 107, 0.5);
@@ -173,16 +173,16 @@ body {
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 .callout-box--note {
-  border-left-color: #4a6aff;
-  background: rgba(74, 106, 255, 0.04);
+  border-left-color: #14b8a6;
+  background: rgba(20, 184, 166, 0.04);
 }
 .callout-box--warning {
   border-left-color: #ff6b6b;
   background: rgba(255, 107, 107, 0.04);
 }
 .callout-box--tip {
-  border-left-color: #00c896;
-  background: rgba(0, 200, 150, 0.04);
+  border-left-color: #22c55e;
+  background: rgba(34, 197, 94, 0.04);
 }
 .callout-box--example {
   border-left-color: #a855f7;
@@ -259,7 +259,7 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: rgba(255, 255, 255, 0.7);
-  background: rgba(74, 106, 255, 0.08);
+  background: rgba(20, 184, 166, 0.08);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 .data-table td {
@@ -287,7 +287,7 @@ body {
   border-radius: 10px;
   padding: 14px 16px;
   background: rgba(15, 19, 37, 0.5);
-  border: 1px solid rgba(74, 106, 255, 0.12);
+  border: 1px solid rgba(20, 184, 166, 0.12);
 }
 
 /* ── Figure blocks ── */

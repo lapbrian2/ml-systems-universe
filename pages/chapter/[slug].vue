@@ -20,7 +20,7 @@ const part = computed<Part | undefined>(() =>
 const content = computed<ChapterContent | null>(() =>
   chapter.value ? getChapterContent(chapter.value.id) : null
 )
-const partColor = computed(() => part.value?.color ?? '#4a6aff')
+const partColor = computed(() => part.value?.color ?? '#14b8a6')
 
 // Head meta
 useHead({

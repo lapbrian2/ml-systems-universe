@@ -5,8 +5,8 @@ export const PARTS: Part[] = [
     id: 'foundations',
     name: 'Part I: Foundations',
     shortName: 'Foundations',
-    color: '#4a6aff',
-    hexColor: 0x4a6aff,
+    color: '#14b8a6',
+    hexColor: 0x14b8a6,
     chapters: ['ch01', 'ch02', 'ch03', 'ch04'],
   },
   {
@@ -21,8 +21,8 @@ export const PARTS: Part[] = [
     id: 'performance',
     name: 'Part III: Performance Engineering',
     shortName: 'Performance',
-    color: '#00c896',
-    hexColor: 0x00c896,
+    color: '#22c55e',
+    hexColor: 0x22c55e,
     chapters: ['ch09', 'ch10', 'ch11', 'ch12'],
   },
   {

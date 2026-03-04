@@ -21,11 +21,11 @@ interface Milestone {
 }
 
 const milestones: Milestone[] = [
-  { id: 'asilomar', year: 2017, title: 'Asilomar AI Principles', category: 'guideline', color: '#4a6aff', description: '23 principles for beneficial AI, signed by thousands of researchers.', impact: 'Established foundational ethical AI principles adopted globally.', sectionGroup: 0 },
+  { id: 'asilomar', year: 2017, title: 'Asilomar AI Principles', category: 'guideline', color: '#14b8a6', description: '23 principles for beneficial AI, signed by thousands of researchers.', impact: 'Established foundational ethical AI principles adopted globally.', sectionGroup: 0 },
   { id: 'gdpr', year: 2018, title: 'GDPR Enforcement', category: 'regulation', color: '#a855f7', description: 'EU General Data Protection Regulation with right to explanation.', impact: 'Set global standard for data privacy; influenced AI transparency.', sectionGroup: 0 },
-  { id: 'model-cards', year: 2019, title: 'Model Cards', category: 'tool', color: '#00c896', description: 'Google introduces Model Cards for model transparency and reporting.', impact: 'Standardized ML model documentation; adopted by Hugging Face.', sectionGroup: 1 },
-  { id: 'datasheets', year: 2019, title: 'Datasheets for Datasets', category: 'tool', color: '#00c896', description: 'Gebru et al. propose standardized documentation for ML datasets.', impact: 'Improved data quality tracking and bias awareness in ML pipelines.', sectionGroup: 1 },
-  { id: 'eu-ethics', year: 2019, title: 'EU AI Ethics Guidelines', category: 'guideline', color: '#4a6aff', description: 'EU High-Level Expert Group publishes Ethics Guidelines for Trustworthy AI.', impact: 'Defined 7 key requirements for ethical AI systems in Europe.', sectionGroup: 1 },
+  { id: 'model-cards', year: 2019, title: 'Model Cards', category: 'tool', color: '#22c55e', description: 'Google introduces Model Cards for model transparency and reporting.', impact: 'Standardized ML model documentation; adopted by Hugging Face.', sectionGroup: 1 },
+  { id: 'datasheets', year: 2019, title: 'Datasheets for Datasets', category: 'tool', color: '#22c55e', description: 'Gebru et al. propose standardized documentation for ML datasets.', impact: 'Improved data quality tracking and bias awareness in ML pipelines.', sectionGroup: 1 },
+  { id: 'eu-ethics', year: 2019, title: 'EU AI Ethics Guidelines', category: 'guideline', color: '#14b8a6', description: 'EU High-Level Expert Group publishes Ethics Guidelines for Trustworthy AI.', impact: 'Defined 7 key requirements for ethical AI systems in Europe.', sectionGroup: 1 },
   { id: 'nist', year: 2023, title: 'NIST AI RMF', category: 'framework', color: '#f0a500', description: 'NIST releases AI Risk Management Framework for organizations.', impact: 'Structured approach to AI risk assessment adopted by US government.', sectionGroup: 2 },
   { id: 'eu-ai-act', year: 2024, title: 'EU AI Act', category: 'regulation', color: '#a855f7', description: 'World\'s first comprehensive AI law with risk-based classification.', impact: 'Banned high-risk AI uses; required conformity assessments.', sectionGroup: 2 },
   { id: 'exec-order', year: 2024, title: 'US Executive Order on AI', category: 'regulation', color: '#a855f7', description: 'Executive Order on Safe, Secure, and Trustworthy AI development.', impact: 'Required safety testing for frontier models; new reporting.', sectionGroup: 3 },
@@ -107,10 +107,10 @@ watch(() => props.activeSection, () => { selectedMilestone.value = null })
     </div>
 
     <div class="tl__legend">
-      <div class="tl__legend-item"><svg width="10" height="10"><circle cx="5" cy="5" r="4" fill="#4a6aff"/></svg><span>Guideline</span></div>
+      <div class="tl__legend-item"><svg width="10" height="10"><circle cx="5" cy="5" r="4" fill="#14b8a6"/></svg><span>Guideline</span></div>
       <div class="tl__legend-item"><svg width="10" height="10"><rect x="1" y="1" width="8" height="8" rx="2" fill="#a855f7" transform="rotate(45,5,5)"/></svg><span>Regulation</span></div>
       <div class="tl__legend-item"><svg width="10" height="10"><rect x="1" y="1" width="8" height="8" rx="2" fill="#f0a500"/></svg><span>Framework</span></div>
-      <div class="tl__legend-item"><svg width="10" height="10"><polygon points="5,1 9,9 1,9" fill="#00c896"/></svg><span>Tool</span></div>
+      <div class="tl__legend-item"><svg width="10" height="10"><polygon points="5,1 9,9 1,9" fill="#22c55e"/></svg><span>Tool</span></div>
     </div>
 
     <div class="tl__canvas" @click.self="closeDetail">
@@ -132,7 +132,7 @@ watch(() => props.activeSection, () => { selectedMilestone.value = null })
         </g>
 
         <!-- Era bands -->
-        <rect :x="yearToX(2017)" y="60" :width="yearToX(2019) - yearToX(2017)" height="110" rx="6" fill="rgba(74,106,255,0.03)" />
+        <rect :x="yearToX(2017)" y="60" :width="yearToX(2019) - yearToX(2017)" height="110" rx="6" fill="rgba(20,184,166,0.03)" />
         <text :x="yearToX(2018)" y="55" text-anchor="middle" class="tl__era">Early Principles</text>
         <rect :x="yearToX(2019)" y="60" :width="yearToX(2023) - yearToX(2019)" height="110" rx="6" fill="rgba(0,200,150,0.03)" />
         <text :x="yearToX(2021)" y="55" text-anchor="middle" class="tl__era">Tools &amp; Standards</text>
@@ -195,7 +195,7 @@ watch(() => props.activeSection, () => { selectedMilestone.value = null })
 <style scoped>
 .tl {
   --bg: #05070f; --card: #0f1325; --border: rgba(255,255,255,0.06);
-  --primary: #4a6aff; --text: #e2e8f0; --muted: rgba(255,255,255,0.45); --green: #00c896;
+  --primary: #14b8a6; --text: #e2e8f0; --muted: rgba(255,255,255,0.45); --green: #22c55e;
   display: flex; flex-direction: column; gap: 12px; width: 100%; height: 100%;
   min-height: 0; font-family: 'Inter', sans-serif; user-select: none;
 }

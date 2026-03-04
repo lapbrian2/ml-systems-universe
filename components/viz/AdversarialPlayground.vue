@@ -93,9 +93,9 @@ const perturbedPixels = computed(() => {
 
 /* ── Classification results ── */
 const originalClassifications = computed<Classification[]>(() => [
-  { label: 'Cat', confidence: 0.94, color: '#4a6aff' },
+  { label: 'Cat', confidence: 0.94, color: '#14b8a6' },
   { label: 'Dog', confidence: 0.03, color: '#a855f7' },
-  { label: 'Bird', confidence: 0.02, color: '#00c896' },
+  { label: 'Bird', confidence: 0.02, color: '#22c55e' },
   { label: 'Fish', confidence: 0.01, color: '#f0a500' },
 ])
 
@@ -110,9 +110,9 @@ const perturbedClassifications = computed<Classification[]>(() => {
 
   const total = catConf + dogConf + birdConf + fishConf
   return [
-    { label: 'Cat', confidence: catConf / total, color: '#4a6aff' },
+    { label: 'Cat', confidence: catConf / total, color: '#14b8a6' },
     { label: 'Dog', confidence: dogConf / total, color: '#a855f7' },
-    { label: 'Bird', confidence: birdConf / total, color: '#00c896' },
+    { label: 'Bird', confidence: birdConf / total, color: '#22c55e' },
     { label: 'Fish', confidence: fishConf / total, color: '#f0a500' },
   ].sort((a, b) => b.confidence - a.confidence)
 })
@@ -379,8 +379,8 @@ watch(
             width="150"
             height="50"
             rx="10"
-            :fill="isAdversarialSuccess ? 'rgba(255, 107, 107, 0.1)' : 'rgba(0, 200, 150, 0.1)'"
-            :stroke="isAdversarialSuccess ? 'rgba(255, 107, 107, 0.3)' : 'rgba(0, 200, 150, 0.3)'"
+            :fill="isAdversarialSuccess ? 'rgba(255, 107, 107, 0.1)' : 'rgba(34, 197, 94, 0.1)'"
+            :stroke="isAdversarialSuccess ? 'rgba(255, 107, 107, 0.3)' : 'rgba(34, 197, 94, 0.3)'"
             stroke-width="1"
             class="adversarial__status-bg"
           />
@@ -404,7 +404,7 @@ watch(
           <text x="12" y="65" class="adversarial__detail-text">
             Perturbed: {{ perturbedPixels[selectedPixel.y][selectedPixel.x] }}
           </text>
-          <text x="12" y="85" class="adversarial__detail-text" :fill="Math.abs(perturbedPixels[selectedPixel.y][selectedPixel.x] - originalPixels[selectedPixel.y][selectedPixel.x]) > 10 ? '#ff6b6b' : '#00c896'">
+          <text x="12" y="85" class="adversarial__detail-text" :fill="Math.abs(perturbedPixels[selectedPixel.y][selectedPixel.x] - originalPixels[selectedPixel.y][selectedPixel.x]) > 10 ? '#ff6b6b' : '#22c55e'">
             Delta: {{ perturbedPixels[selectedPixel.y][selectedPixel.x] - originalPixels[selectedPixel.y][selectedPixel.x] }}
           </text>
         </g>
@@ -489,10 +489,10 @@ watch(
   --viz-surface: #0a0e1a;
   --viz-card: #0f1325;
   --viz-border: rgba(255, 255, 255, 0.06);
-  --viz-primary: #4a6aff;
+  --viz-primary: #14b8a6;
   --viz-text: #e2e8f0;
   --viz-text-muted: rgba(255, 255, 255, 0.45);
-  --viz-accent-green: #00c896;
+  --viz-accent-green: #22c55e;
   --viz-accent-red: #ff6b6b;
 
   display: flex;
@@ -559,8 +559,8 @@ watch(
 
 .adversarial__progress--complete {
   color: var(--viz-accent-green);
-  background: rgba(0, 200, 150, 0.1);
-  border-color: rgba(0, 200, 150, 0.3);
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 /* ── Canvas ── */

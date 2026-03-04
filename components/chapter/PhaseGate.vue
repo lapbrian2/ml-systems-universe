@@ -45,7 +45,7 @@ watch(allComplete, async (isComplete) => {
       particleCount: 120,
       spread: 80,
       origin: { y: 0.7 },
-      colors: [props.partColor, '#4a6aff', '#00c896', '#f0a500'],
+      colors: [props.partColor, '#14b8a6', '#22c55e', '#f0a500'],
     })
   } catch {
     // canvas-confetti not available; silently skip

@@ -24,8 +24,8 @@
       <defs>
         <!-- Stage gradient fills -->
         <linearGradient id="mpd-stage-0" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#4a6aff" stop-opacity="0.18" />
-          <stop offset="100%" stop-color="#4a6aff" stop-opacity="0.06" />
+          <stop offset="0%" stop-color="#14b8a6" stop-opacity="0.18" />
+          <stop offset="100%" stop-color="#14b8a6" stop-opacity="0.06" />
         </linearGradient>
         <linearGradient id="mpd-stage-1" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stop-color="#5b78ff" stop-opacity="0.18" />
@@ -48,8 +48,8 @@
           <stop offset="100%" stop-color="#22d9a0" stop-opacity="0.06" />
         </linearGradient>
         <linearGradient id="mpd-stage-6" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#00c896" stop-opacity="0.18" />
-          <stop offset="100%" stop-color="#00c896" stop-opacity="0.06" />
+          <stop offset="0%" stop-color="#22c55e" stop-opacity="0.18" />
+          <stop offset="100%" stop-color="#22c55e" stop-opacity="0.06" />
         </linearGradient>
 
         <!-- Arrow marker -->
@@ -59,7 +59,7 @@
 
         <!-- Feedback arrow marker -->
         <marker id="mpd-feedback-arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#00c896" opacity="0.5" />
+          <polygon points="0 0, 10 3.5, 0 7" fill="#22c55e" opacity="0.5" />
         </marker>
       </defs>
 
@@ -75,7 +75,7 @@
       <path
         d="M 930 120 C 930 195 530 210 530 210 C 530 210 100 195 100 120"
         fill="none"
-        stroke="#00c896"
+        stroke="#22c55e"
         stroke-width="1.5"
         stroke-dasharray="6 4"
         stroke-opacity="0.4"
@@ -85,7 +85,7 @@
         x="530"
         y="202"
         text-anchor="middle"
-        fill="#00c896"
+        fill="#22c55e"
         font-family="Inter, sans-serif"
         font-size="9"
         font-style="italic"
@@ -97,12 +97,12 @@
       <!-- ── Stage 0: Data Collection ── -->
       <g transform="translate(20, 40)">
         <rect x="0" y="0" width="130" height="80" rx="12" fill="url(#mpd-stage-0)" />
-        <rect x="0" y="0" width="130" height="80" rx="12" fill="none" stroke="#4a6aff" stroke-width="1" stroke-opacity="0.3" />
+        <rect x="0" y="0" width="130" height="80" rx="12" fill="none" stroke="#14b8a6" stroke-width="1" stroke-opacity="0.3" />
         <!-- Database icon -->
         <g transform="translate(10, 12)" opacity="0.85">
-          <ellipse cx="10" cy="5" rx="8" ry="3.5" fill="none" stroke="#4a6aff" stroke-width="1.2" />
-          <path d="M 2 5 v 7 c 0 1.9 3.6 3.5 8 3.5 s 8 -1.6 8 -3.5 V 5" fill="none" stroke="#4a6aff" stroke-width="1.2" />
-          <path d="M 2 9 c 0 1.9 3.6 3.5 8 3.5 s 8 -1.6 8 -3.5" fill="none" stroke="#4a6aff" stroke-width="1.2" opacity="0.4" />
+          <ellipse cx="10" cy="5" rx="8" ry="3.5" fill="none" stroke="#14b8a6" stroke-width="1.2" />
+          <path d="M 2 5 v 7 c 0 1.9 3.6 3.5 8 3.5 s 8 -1.6 8 -3.5 V 5" fill="none" stroke="#14b8a6" stroke-width="1.2" />
+          <path d="M 2 9 c 0 1.9 3.6 3.5 8 3.5 s 8 -1.6 8 -3.5" fill="none" stroke="#14b8a6" stroke-width="1.2" opacity="0.4" />
         </g>
         <text x="34" y="23" fill="white" font-family="Inter, sans-serif" font-size="12" font-weight="600">Data</text>
         <text x="34" y="37" fill="white" font-family="Inter, sans-serif" font-size="12" font-weight="600">Collection</text>
@@ -189,10 +189,10 @@
       <!-- ── Stage 6: Monitoring ── -->
       <g transform="translate(860, 40)">
         <rect x="0" y="0" width="130" height="80" rx="12" fill="url(#mpd-stage-6)" />
-        <rect x="0" y="0" width="130" height="80" rx="12" fill="none" stroke="#00c896" stroke-width="1" stroke-opacity="0.3" />
+        <rect x="0" y="0" width="130" height="80" rx="12" fill="none" stroke="#22c55e" stroke-width="1" stroke-opacity="0.3" />
         <!-- Pulse icon -->
         <g transform="translate(10, 12)" opacity="0.85">
-          <polyline points="1,10 5,10 7.5,3 10,17 12.5,7 15,10 19,10" fill="none" stroke="#00c896" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+          <polyline points="1,10 5,10 7.5,3 10,17 12.5,7 15,10 19,10" fill="none" stroke="#22c55e" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
         </g>
         <text x="34" y="30" fill="white" font-family="Inter, sans-serif" font-size="12" font-weight="600">Monitoring</text>
         <text x="10" y="62" fill="rgba(255,255,255,0.45)" font-family="Inter, sans-serif" font-size="9">Track drift &amp; performance</text>
@@ -212,7 +212,7 @@
           <polygon points="0 0, 10 3.5, 0 7" fill="rgba(255,255,255,0.25)" />
         </marker>
         <marker id="mpd-fb-arrow-v" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="#00c896" opacity="0.5" />
+          <polygon points="0 0, 10 3.5, 0 7" fill="#22c55e" opacity="0.5" />
         </marker>
       </defs>
 
@@ -228,7 +228,7 @@
       <path
         d="M 245 690 C 270 690 270 50 245 50"
         fill="none"
-        stroke="#00c896"
+        stroke="#22c55e"
         stroke-width="1.5"
         stroke-dasharray="6 4"
         stroke-opacity="0.35"
@@ -238,7 +238,7 @@
         x="268"
         y="380"
         text-anchor="middle"
-        fill="#00c896"
+        fill="#22c55e"
         font-family="Inter, sans-serif"
         font-size="8"
         font-style="italic"
@@ -251,10 +251,10 @@
       <!-- Stage 0 -->
       <g transform="translate(20, 5)">
         <rect x="0" y="0" width="230" height="80" rx="12" fill="url(#mpd-stage-0)" />
-        <rect x="0" y="0" width="230" height="80" rx="12" fill="none" stroke="#4a6aff" stroke-width="1" stroke-opacity="0.3" />
+        <rect x="0" y="0" width="230" height="80" rx="12" fill="none" stroke="#14b8a6" stroke-width="1" stroke-opacity="0.3" />
         <g transform="translate(14, 16)" opacity="0.85">
-          <ellipse cx="10" cy="5" rx="8" ry="3.5" fill="none" stroke="#4a6aff" stroke-width="1.2" />
-          <path d="M 2 5 v 7 c 0 1.9 3.6 3.5 8 3.5 s 8 -1.6 8 -3.5 V 5" fill="none" stroke="#4a6aff" stroke-width="1.2" />
+          <ellipse cx="10" cy="5" rx="8" ry="3.5" fill="none" stroke="#14b8a6" stroke-width="1.2" />
+          <path d="M 2 5 v 7 c 0 1.9 3.6 3.5 8 3.5 s 8 -1.6 8 -3.5 V 5" fill="none" stroke="#14b8a6" stroke-width="1.2" />
         </g>
         <text x="44" y="30" fill="white" font-family="Inter, sans-serif" font-size="13" font-weight="600">Data Collection</text>
         <text x="14" y="58" fill="rgba(255,255,255,0.45)" font-family="Inter, sans-serif" font-size="10">Gather &amp; label raw data</text>
@@ -326,9 +326,9 @@
       <!-- Stage 6 -->
       <g transform="translate(20, 605)">
         <rect x="0" y="0" width="230" height="80" rx="12" fill="url(#mpd-stage-6)" />
-        <rect x="0" y="0" width="230" height="80" rx="12" fill="none" stroke="#00c896" stroke-width="1" stroke-opacity="0.3" />
+        <rect x="0" y="0" width="230" height="80" rx="12" fill="none" stroke="#22c55e" stroke-width="1" stroke-opacity="0.3" />
         <g transform="translate(14, 16)" opacity="0.85">
-          <polyline points="1,10 5,10 7.5,3 10,17 12.5,7 15,10 19,10" fill="none" stroke="#00c896" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+          <polyline points="1,10 5,10 7.5,3 10,17 12.5,7 15,10 19,10" fill="none" stroke="#22c55e" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
         </g>
         <text x="44" y="30" fill="white" font-family="Inter, sans-serif" font-size="13" font-weight="600">Monitoring</text>
         <text x="14" y="58" fill="rgba(255,255,255,0.45)" font-family="Inter, sans-serif" font-size="10">Track drift &amp; performance</text>

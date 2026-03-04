@@ -21,7 +21,7 @@ interface ChapterNode {
 }
 
 const partColors: Record<number, string> = {
-  1: '#4a6aff', 2: '#a855f7', 3: '#00c896', 4: '#f0a500', 5: '#ec4899', 6: '#ff6b6b',
+  1: '#14b8a6', 2: '#a855f7', 3: '#22c55e', 4: '#f0a500', 5: '#ec4899', 6: '#ff6b6b',
 }
 const partNames: Record<number, string> = {
   1: 'ML Foundations', 2: 'Training & Data', 3: 'Deployment & Ops',
@@ -143,7 +143,7 @@ watch(() => props.activeSection, () => { selectedNode.value = null })
           <filter id="km-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4" result="b" /><feComposite in="SourceGraphic" in2="b" operator="over" /></filter>
           <filter id="km-glow-s" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="8" result="b" /><feComposite in="SourceGraphic" in2="b" operator="over" /></filter>
           <marker id="km-arr" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,6 2.5,0 5" fill="rgba(255,255,255,0.12)" /></marker>
-          <marker id="km-arr-a" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,6 2.5,0 5" fill="rgba(74,106,255,0.4)" /></marker>
+          <marker id="km-arr-a" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,6 2.5,0 5" fill="rgba(20,184,166,0.4)" /></marker>
         </defs>
 
         <g class="km__conns">
@@ -201,7 +201,7 @@ watch(() => props.activeSection, () => { selectedNode.value = null })
 <style scoped>
 .km {
   --bg: #05070f; --card: #0f1325; --border: rgba(255,255,255,0.06);
-  --primary: #4a6aff; --text: #e2e8f0; --muted: rgba(255,255,255,0.45); --green: #00c896;
+  --primary: #14b8a6; --text: #e2e8f0; --muted: rgba(255,255,255,0.45); --green: #22c55e;
   display: flex; flex-direction: column; gap: 12px; width: 100%; height: 100%;
   min-height: 0; font-family: 'Inter', sans-serif; user-select: none;
 }
@@ -209,7 +209,7 @@ watch(() => props.activeSection, () => { selectedNode.value = null })
 .km__badge {
   display: inline-flex; align-self: flex-start; padding: 3px 10px; border-radius: 9999px;
   font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--primary); background: rgba(74,106,255,0.1); border: 1px solid rgba(74,106,255,0.2);
+  color: var(--primary); background: rgba(20,184,166,0.1); border: 1px solid rgba(20,184,166,0.2);
 }
 .km__title { margin: 0; font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: var(--text); }
 .km__subtitle { margin: 0; font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
@@ -226,7 +226,7 @@ watch(() => props.activeSection, () => { selectedNode.value = null })
 .km__canvas { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
 .km__svg { width: 100%; height: auto; overflow: visible; }
 .km__conn { stroke: rgba(255,255,255,0.04); stroke-width: 1; transition: stroke 0.4s, stroke-width 0.3s; }
-.km__conn--hl { stroke: rgba(74,106,255,0.3); stroke-width: 1.5; animation: kmPulse 2s ease-in-out infinite; }
+.km__conn--hl { stroke: rgba(20,184,166,0.3); stroke-width: 1.5; animation: kmPulse 2s ease-in-out infinite; }
 @keyframes kmPulse { 0%, 100% { stroke-opacity: 0.3; } 50% { stroke-opacity: 0.6; } }
 .km__cluster { font-size: 10px; font-family: 'Syne', sans-serif; font-weight: 600; opacity: 0.3; }
 .km__node { cursor: pointer; outline: none; transition: opacity 0.5s ease; }

@@ -137,11 +137,11 @@ function neuronColor(node: NeuronNode): string {
   const pruned = seededWeight(node.layer, node.index, 0, 0) * 100 < pruningPercent.value * 0.3
   if (pruned) return 'rgba(255,255,255,0.05)'
   switch (quantBits.value) {
-    case 32: return '#4a6aff'
+    case 32: return '#14b8a6'
     case 16: return '#6c5ce7'
     case 8: return '#f0a500'
     case 4: return '#ec4899'
-    default: return '#4a6aff'
+    default: return '#14b8a6'
   }
 }
 
@@ -311,7 +311,7 @@ watch(() => props.activeSection, () => {
           :y1="conn.y1"
           :x2="conn.x2"
           :y2="conn.y2"
-          :stroke="conn.pruned ? 'rgba(255,255,255,0.02)' : 'rgba(74,106,255,0.15)'"
+          :stroke="conn.pruned ? 'rgba(255,255,255,0.02)' : 'rgba(20,184,166,0.15)'"
           :stroke-width="conn.pruned ? 0.3 : conn.weight * 1.5 + 0.3"
           :stroke-dasharray="conn.pruned ? '2 4' : 'none'"
           class="quant-prune__connection"
@@ -359,7 +359,7 @@ watch(() => props.activeSection, () => {
           <text :x="SVG_W / 2" :y="28" text-anchor="middle" class="quant-prune__distill-text">
             Student Network (distilled)
           </text>
-          <line :x1="SVG_W / 2 - 80" y1="35" :x2="SVG_W / 2 + 80" y2="35" stroke="#00c896" stroke-width="1" opacity="0.4" />
+          <line :x1="SVG_W / 2 - 80" y1="35" :x2="SVG_W / 2 + 80" y2="35" stroke="#22c55e" stroke-width="1" opacity="0.4" />
         </g>
       </svg>
     </div>
@@ -415,10 +415,10 @@ watch(() => props.activeSection, () => {
   --viz-surface: #0a0e1a;
   --viz-card: #0f1325;
   --viz-border: rgba(255, 255, 255, 0.06);
-  --viz-primary: #4a6aff;
+  --viz-primary: #14b8a6;
   --viz-text: #e2e8f0;
   --viz-text-muted: rgba(255, 255, 255, 0.45);
-  --viz-accent-green: #00c896;
+  --viz-accent-green: #22c55e;
 
   display: flex;
   flex-direction: column;
@@ -447,8 +447,8 @@ watch(() => props.activeSection, () => {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--viz-primary);
-  background: rgba(74, 106, 255, 0.1);
-  border: 1px solid rgba(74, 106, 255, 0.2);
+  background: rgba(20, 184, 166, 0.1);
+  border: 1px solid rgba(20, 184, 166, 0.2);
 }
 
 .quant-prune__title {
@@ -482,8 +482,8 @@ watch(() => props.activeSection, () => {
 
 .quant-prune__progress--complete {
   color: var(--viz-accent-green);
-  background: rgba(0, 200, 150, 0.1);
-  border-color: rgba(0, 200, 150, 0.3);
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 /* ── Controls ── */
@@ -505,8 +505,8 @@ watch(() => props.activeSection, () => {
 }
 
 .quant-prune__control--highlight {
-  border-color: rgba(74, 106, 255, 0.3);
-  background: rgba(74, 106, 255, 0.05);
+  border-color: rgba(20, 184, 166, 0.3);
+  background: rgba(20, 184, 166, 0.05);
 }
 
 .quant-prune__control-label {
@@ -544,7 +544,7 @@ watch(() => props.activeSection, () => {
   background: var(--viz-primary);
   border: 2px solid #1a1f3a;
   cursor: pointer;
-  box-shadow: 0 0 8px rgba(74, 106, 255, 0.4);
+  box-shadow: 0 0 8px rgba(20, 184, 166, 0.4);
 }
 
 .quant-prune__slider::-moz-range-thumb {
@@ -584,7 +584,7 @@ watch(() => props.activeSection, () => {
 }
 
 .quant-prune__toggle--active {
-  background: rgba(0, 200, 150, 0.3);
+  background: rgba(34, 197, 94, 0.3);
 }
 
 .quant-prune__toggle-thumb {
@@ -601,7 +601,7 @@ watch(() => props.activeSection, () => {
 
 .quant-prune__toggle--active .quant-prune__toggle-thumb {
   transform: translateX(20px);
-  background: #00c896;
+  background: #22c55e;
 }
 
 .quant-prune__toggle:focus-visible {
@@ -643,7 +643,7 @@ watch(() => props.activeSection, () => {
 }
 
 .quant-prune__distill-text {
-  fill: #00c896;
+  fill: #22c55e;
   font-size: 11px;
   font-family: 'Syne', sans-serif;
   font-weight: 600;
@@ -716,7 +716,7 @@ watch(() => props.activeSection, () => {
 }
 
 .quant-prune__metric-fill--accuracy {
-  background: #00c896;
+  background: #22c55e;
 }
 
 /* ── Context ── */

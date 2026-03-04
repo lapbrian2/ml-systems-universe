@@ -51,7 +51,7 @@ const models: ModelPoint[] = [
     category: 'vision',
     isPareto: true,
     description: 'Lightweight architecture optimized for mobile devices using depthwise separable convolutions and squeeze-excitation blocks.',
-    color: '#00c896',
+    color: '#22c55e',
   },
   {
     id: 'efficientnet-b0',
@@ -63,7 +63,7 @@ const models: ModelPoint[] = [
     category: 'vision',
     isPareto: true,
     description: 'Compound scaling method that uniformly scales depth, width, and resolution. Optimal baseline for efficiency.',
-    color: '#4a6aff',
+    color: '#14b8a6',
   },
   {
     id: 'efficientnet-b4',
@@ -75,7 +75,7 @@ const models: ModelPoint[] = [
     category: 'vision',
     isPareto: true,
     description: 'Scaled-up version with higher accuracy. Demonstrates the compound scaling strategy at larger compute budgets.',
-    color: '#4a6aff',
+    color: '#14b8a6',
   },
   {
     id: 'resnet-50',
@@ -123,7 +123,7 @@ const models: ModelPoint[] = [
     category: 'nlp',
     isPareto: true,
     description: 'Knowledge-distilled BERT retaining 97% performance with 40% fewer parameters and 60% faster inference.',
-    color: '#00c896',
+    color: '#22c55e',
   },
   {
     id: 'tinybert',
@@ -135,7 +135,7 @@ const models: ModelPoint[] = [
     category: 'nlp',
     isPareto: true,
     description: 'Aggressive distillation achieving 7.5x smaller and 9.4x faster than BERT with task-specific distillation.',
-    color: '#00c896',
+    color: '#22c55e',
   },
   {
     id: 'bert-base',
@@ -290,13 +290,13 @@ watch(() => props.activeSection, () => {
             <feComposite in="SourceGraphic" in2="blur" operator="over" />
           </filter>
           <linearGradient id="ef-pareto-grad" x1="0%" y1="100%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#00c896" stop-opacity="0.8" />
-            <stop offset="50%" stop-color="#4a6aff" stop-opacity="0.8" />
+            <stop offset="0%" stop-color="#22c55e" stop-opacity="0.8" />
+            <stop offset="50%" stop-color="#14b8a6" stop-opacity="0.8" />
             <stop offset="100%" stop-color="#ec4899" stop-opacity="0.8" />
           </linearGradient>
           <linearGradient id="ef-fill-grad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#4a6aff" stop-opacity="0.06" />
-            <stop offset="100%" stop-color="#4a6aff" stop-opacity="0" />
+            <stop offset="0%" stop-color="#14b8a6" stop-opacity="0.06" />
+            <stop offset="100%" stop-color="#14b8a6" stop-opacity="0" />
           </linearGradient>
         </defs>
 
@@ -312,7 +312,7 @@ watch(() => props.activeSection, () => {
             :y1="PLOT_Y"
             :x2="PLOT_X + (PLOT_W / 10) * i"
             :y2="PLOT_Y + PLOT_H"
-            stroke="#4a6aff"
+            stroke="#14b8a6"
             stroke-width="0.5"
           />
           <line
@@ -322,7 +322,7 @@ watch(() => props.activeSection, () => {
             :y1="PLOT_Y + (PLOT_H / 10) * i"
             :x2="PLOT_X + PLOT_W"
             :y2="PLOT_Y + (PLOT_H / 10) * i"
-            stroke="#4a6aff"
+            stroke="#14b8a6"
             stroke-width="0.5"
           />
         </g>
@@ -453,11 +453,11 @@ watch(() => props.activeSection, () => {
         <!-- Legend -->
         <g :transform="`translate(${PLOT_X + PLOT_W - 220}, ${PLOT_Y + 10})`">
           <rect x="0" y="0" width="210" height="62" rx="8" fill="#0a0e1a" opacity="0.9" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
-          <circle cx="16" cy="16" r="5" fill="#00c896" />
+          <circle cx="16" cy="16" r="5" fill="#22c55e" />
           <text x="28" y="20" class="eff-frontier__legend-text">Pareto Optimal</text>
           <circle cx="16" cy="36" r="5" fill="#f0a500" />
           <text x="28" y="40" class="eff-frontier__legend-text">Dominated</text>
-          <circle cx="120" cy="16" r="4" fill="#4a6aff" />
+          <circle cx="120" cy="16" r="4" fill="#14b8a6" />
           <text x="130" y="20" class="eff-frontier__legend-text">Vision</text>
           <circle cx="120" cy="36" r="4" fill="#ec4899" />
           <text x="130" y="40" class="eff-frontier__legend-text">NLP</text>
@@ -513,10 +513,10 @@ watch(() => props.activeSection, () => {
   --viz-surface: #0a0e1a;
   --viz-card: #0f1325;
   --viz-border: rgba(255, 255, 255, 0.06);
-  --viz-primary: #4a6aff;
+  --viz-primary: #14b8a6;
   --viz-text: #e2e8f0;
   --viz-text-muted: rgba(255, 255, 255, 0.45);
-  --viz-accent-green: #00c896;
+  --viz-accent-green: #22c55e;
 
   display: flex;
   flex-direction: column;
@@ -545,8 +545,8 @@ watch(() => props.activeSection, () => {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--viz-primary);
-  background: rgba(74, 106, 255, 0.1);
-  border: 1px solid rgba(74, 106, 255, 0.2);
+  background: rgba(20, 184, 166, 0.1);
+  border: 1px solid rgba(20, 184, 166, 0.2);
 }
 
 .eff-frontier__title {
@@ -580,8 +580,8 @@ watch(() => props.activeSection, () => {
 
 .eff-frontier__progress--complete {
   color: var(--viz-accent-green);
-  background: rgba(0, 200, 150, 0.1);
-  border-color: rgba(0, 200, 150, 0.3);
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 .eff-frontier__canvas {
@@ -621,7 +621,7 @@ watch(() => props.activeSection, () => {
 }
 
 .eff-frontier__region-label--optimal {
-  fill: rgba(74, 106, 255, 0.3);
+  fill: rgba(20, 184, 166, 0.3);
 }
 
 @keyframes regionFadeIn {
@@ -739,8 +739,8 @@ watch(() => props.activeSection, () => {
   font-weight: 600;
   padding: 1px 6px;
   border-radius: 4px;
-  background: rgba(0, 200, 150, 0.15);
-  color: #00c896;
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }

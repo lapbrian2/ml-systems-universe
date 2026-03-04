@@ -104,7 +104,7 @@ const operations: Operation[] = [
     arithmeticIntensity: 25,
     description: 'Small matrix multiply near the roofline ridge. Transitioning from memory to compute bound.',
     category: 'balanced',
-    color: '#4a6aff',
+    color: '#14b8a6',
   },
   {
     id: 'conv2d',
@@ -113,7 +113,7 @@ const operations: Operation[] = [
     arithmeticIntensity: 80,
     description: 'Standard convolution with high reuse. Compute-bound and well-suited for GPU acceleration.',
     category: 'compute',
-    color: '#00c896',
+    color: '#22c55e',
   },
   {
     id: 'matmul-large',
@@ -122,7 +122,7 @@ const operations: Operation[] = [
     arithmeticIntensity: 200,
     description: 'Large GEMM operation — the bread and butter of GPU computing. Deep in the compute-bound regime.',
     category: 'compute',
-    color: '#00c896',
+    color: '#22c55e',
   },
   {
     id: 'winograd-conv',
@@ -131,7 +131,7 @@ const operations: Operation[] = [
     arithmeticIntensity: 350,
     description: 'Transform-based convolution trading more FLOP/Byte for fewer total FLOPs. Highly compute-bound.',
     category: 'compute',
-    color: '#00c896',
+    color: '#22c55e',
   },
 ]
 
@@ -260,11 +260,11 @@ watch(() => props.activeSection, () => {
           </filter>
           <linearGradient id="rf-bw-grad" x1="0%" y1="100%" x2="100%" y2="0%">
             <stop offset="0%" stop-color="#f0a500" />
-            <stop offset="100%" stop-color="#4a6aff" />
+            <stop offset="100%" stop-color="#14b8a6" />
           </linearGradient>
           <linearGradient id="rf-fill-grad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#4a6aff" stop-opacity="0.08" />
-            <stop offset="100%" stop-color="#4a6aff" stop-opacity="0" />
+            <stop offset="0%" stop-color="#14b8a6" stop-opacity="0.08" />
+            <stop offset="100%" stop-color="#14b8a6" stop-opacity="0" />
           </linearGradient>
         </defs>
 
@@ -280,7 +280,7 @@ watch(() => props.activeSection, () => {
             :y1="PLOT_Y"
             :x2="PLOT_X + (PLOT_W / 10) * i"
             :y2="PLOT_Y + PLOT_H"
-            stroke="#4a6aff"
+            stroke="#14b8a6"
             stroke-width="0.5"
           />
           <line
@@ -290,7 +290,7 @@ watch(() => props.activeSection, () => {
             :y1="PLOT_Y + (PLOT_H / 10) * i"
             :x2="PLOT_X + PLOT_W"
             :y2="PLOT_Y + (PLOT_H / 10) * i"
-            stroke="#4a6aff"
+            stroke="#14b8a6"
             stroke-width="0.5"
           />
         </g>
@@ -339,7 +339,7 @@ watch(() => props.activeSection, () => {
         <path
           :d="computePath"
           fill="none"
-          stroke="#00c896"
+          stroke="#22c55e"
           stroke-width="2.5"
           stroke-linecap="round"
           class="roofline__ceiling"
@@ -352,7 +352,7 @@ watch(() => props.activeSection, () => {
             :y1="toSvgY(PEAK_COMPUTE)"
             :x2="toSvgX(RIDGE_POINT)"
             :y2="PLOT_Y + PLOT_H"
-            stroke="#4a6aff"
+            stroke="#14b8a6"
             stroke-width="1"
             stroke-dasharray="4 4"
             opacity="0.3"
@@ -361,7 +361,7 @@ watch(() => props.activeSection, () => {
             :cx="toSvgX(RIDGE_POINT)"
             :cy="toSvgY(PEAK_COMPUTE)"
             r="5"
-            fill="#4a6aff"
+            fill="#14b8a6"
             opacity="0.8"
             filter="url(#rf-glow)"
           />
@@ -389,7 +389,7 @@ watch(() => props.activeSection, () => {
           :y="toSvgY(PEAK_COMPUTE) - 10"
           text-anchor="end"
           class="roofline__ceiling-label"
-          fill="#00c896"
+          fill="#22c55e"
         >
           Peak Compute: {{ PEAK_COMPUTE }} TFLOPS
         </text>
@@ -408,7 +408,7 @@ watch(() => props.activeSection, () => {
           :y="PLOT_Y + PLOT_H - 20"
           text-anchor="end"
           class="roofline__region-label"
-          fill="#00c896"
+          fill="#22c55e"
         >
           Compute Bound
         </text>
@@ -527,10 +527,10 @@ watch(() => props.activeSection, () => {
   --viz-surface: #0a0e1a;
   --viz-card: #0f1325;
   --viz-border: rgba(255, 255, 255, 0.06);
-  --viz-primary: #4a6aff;
+  --viz-primary: #14b8a6;
   --viz-text: #e2e8f0;
   --viz-text-muted: rgba(255, 255, 255, 0.45);
-  --viz-accent-green: #00c896;
+  --viz-accent-green: #22c55e;
 
   display: flex;
   flex-direction: column;
@@ -559,8 +559,8 @@ watch(() => props.activeSection, () => {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--viz-primary);
-  background: rgba(74, 106, 255, 0.1);
-  border: 1px solid rgba(74, 106, 255, 0.2);
+  background: rgba(20, 184, 166, 0.1);
+  border: 1px solid rgba(20, 184, 166, 0.2);
 }
 
 .roofline__title {
@@ -594,8 +594,8 @@ watch(() => props.activeSection, () => {
 
 .roofline__progress--complete {
   color: var(--viz-accent-green);
-  background: rgba(0, 200, 150, 0.1);
-  border-color: rgba(0, 200, 150, 0.3);
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 .roofline__canvas {
@@ -760,13 +760,13 @@ watch(() => props.activeSection, () => {
 }
 
 .roofline__tooltip-cat--compute {
-  background: rgba(0, 200, 150, 0.15);
-  color: #00c896;
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
 }
 
 .roofline__tooltip-cat--balanced {
-  background: rgba(74, 106, 255, 0.15);
-  color: #4a6aff;
+  background: rgba(20, 184, 166, 0.15);
+  color: #14b8a6;
 }
 
 .roofline__tooltip-close {

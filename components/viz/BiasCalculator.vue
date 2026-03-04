@@ -38,10 +38,10 @@ const selectedMetric = ref<string | null>(null)
 
 /* ── Confusion matrix cell info ── */
 const matrixCells = [
-  { key: 'tp' as const, label: 'True Positive', row: 0, col: 0, color: '#00c896' },
+  { key: 'tp' as const, label: 'True Positive', row: 0, col: 0, color: '#22c55e' },
   { key: 'fp' as const, label: 'False Positive', row: 0, col: 1, color: '#ff6b6b' },
   { key: 'fn' as const, label: 'False Negative', row: 1, col: 0, color: '#f0a500' },
-  { key: 'tn' as const, label: 'True Negative', row: 1, col: 1, color: '#4a6aff' },
+  { key: 'tn' as const, label: 'True Negative', row: 1, col: 1, color: '#14b8a6' },
 ]
 
 /* ── Derived metrics per group ── */
@@ -349,8 +349,8 @@ watch(
               width="56"
               height="22"
               rx="11"
-              :fill="metric.pass ? 'rgba(0, 200, 150, 0.15)' : 'rgba(255, 107, 107, 0.15)'"
-              :stroke="metric.pass ? 'rgba(0, 200, 150, 0.3)' : 'rgba(255, 107, 107, 0.3)'"
+              :fill="metric.pass ? 'rgba(34, 197, 94, 0.15)' : 'rgba(255, 107, 107, 0.15)'"
+              :stroke="metric.pass ? 'rgba(34, 197, 94, 0.3)' : 'rgba(255, 107, 107, 0.3)'"
               stroke-width="1"
             />
             <text
@@ -358,7 +358,7 @@ watch(
               y="22"
               text-anchor="middle"
               class="bias__metric-status"
-              :fill="metric.pass ? '#00c896' : '#ff6b6b'"
+              :fill="metric.pass ? '#22c55e' : '#ff6b6b'"
             >
               {{ metric.pass ? 'PASS' : 'FAIL' }}
             </text>
@@ -373,7 +373,7 @@ watch(
                 :width="200 * Math.min(1, metric.valueA)"
                 height="10"
                 rx="5"
-                fill="#4a6aff"
+                fill="#14b8a6"
                 class="bias__metric-bar"
               />
               <text :x="22 + 200 * Math.min(1, metric.valueA) + 6" y="11" class="bias__bar-value">
@@ -404,7 +404,7 @@ watch(
               y1="68"
               :x2="14 + 312 * Math.min(1, metric.difference / 0.3)"
               y2="68"
-              :stroke="metric.pass ? '#00c896' : '#ff6b6b'"
+              :stroke="metric.pass ? '#22c55e' : '#ff6b6b'"
               stroke-width="2"
               stroke-linecap="round"
               class="bias__threshold-line"
@@ -431,7 +431,7 @@ watch(
           <rect x="0" y="0" width="370" height="60" rx="8" class="bias__info-bg" />
           <text x="14" y="20" class="bias__info-title">Overall Accuracy</text>
           <g transform="translate(14, 30)">
-            <text x="0" y="10" class="bias__bar-label" fill="#4a6aff">A:</text>
+            <text x="0" y="10" class="bias__bar-label" fill="#14b8a6">A:</text>
             <rect x="22" y="2" width="150" height="8" rx="4" fill="rgba(255,255,255,0.04)" />
             <rect
               x="22"
@@ -439,7 +439,7 @@ watch(
               :width="150 * computeMetrics(groupA).accuracy"
               height="8"
               rx="4"
-              fill="#4a6aff"
+              fill="#14b8a6"
               class="bias__metric-bar"
             />
             <text :x="180" y="10" class="bias__bar-value">
@@ -489,10 +489,10 @@ watch(
   --viz-surface: #0a0e1a;
   --viz-card: #0f1325;
   --viz-border: rgba(255, 255, 255, 0.06);
-  --viz-primary: #4a6aff;
+  --viz-primary: #14b8a6;
   --viz-text: #e2e8f0;
   --viz-text-muted: rgba(255, 255, 255, 0.45);
-  --viz-accent-green: #00c896;
+  --viz-accent-green: #22c55e;
   --viz-accent-red: #ff6b6b;
 
   display: flex;
@@ -530,8 +530,8 @@ watch(
 }
 
 .bias__progress--complete {
-  color: var(--viz-accent-green); background: rgba(0, 200, 150, 0.1);
-  border-color: rgba(0, 200, 150, 0.3);
+  color: var(--viz-accent-green); background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 .bias__canvas { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
@@ -571,7 +571,7 @@ watch(
 
 .bias__cell-input:focus {
   border-color: var(--viz-primary);
-  background: rgba(74, 106, 255, 0.08);
+  background: rgba(20, 184, 166, 0.08);
 }
 
 /* ── Metrics ── */
@@ -587,7 +587,7 @@ watch(
   fill: var(--viz-card); stroke: var(--viz-border); stroke-width: 1;
   transition: fill 0.3s ease, stroke 0.3s ease;
 }
-.bias__metric-bg--pass { stroke: rgba(0, 200, 150, 0.15); }
+.bias__metric-bg--pass { stroke: rgba(34, 197, 94, 0.15); }
 .bias__metric-bg--fail { stroke: rgba(255, 107, 107, 0.15); }
 .bias__metric:hover .bias__metric-bg { fill: #141933; }
 .bias__metric--highlighted .bias__metric-bg { stroke: var(--viz-primary); stroke-opacity: 0.4; }

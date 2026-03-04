@@ -37,7 +37,7 @@ const architectures: Architecture[] = [
     id: 'cnn',
     name: 'Convolutional Neural Network',
     shortName: 'CNN',
-    color: '#4a6aff',
+    color: '#14b8a6',
     tagline: 'Spatial feature hierarchies',
     description: 'Extracts spatial features using convolutional filters. Excels at images, video, and grid-structured data.',
     params: '1M - 500M',
@@ -45,14 +45,14 @@ const architectures: Architecture[] = [
     complexity: 'Medium',
     yearIntro: '1998',
     blocks: [
-      { label: 'Input Image', color: '#4a6aff', height: 40 },
+      { label: 'Input Image', color: '#14b8a6', height: 40 },
       { label: 'Conv + ReLU', color: '#6c5ce7', height: 50 },
       { label: 'Pooling', color: '#a855f7', height: 35 },
       { label: 'Conv + ReLU', color: '#6c5ce7', height: 45 },
       { label: 'Pooling', color: '#a855f7', height: 30 },
       { label: 'Flatten', color: '#ec4899', height: 25 },
       { label: 'Dense', color: '#f0a500', height: 40 },
-      { label: 'Output', color: '#00c896', height: 35 },
+      { label: 'Output', color: '#22c55e', height: 35 },
     ],
   },
   {
@@ -73,14 +73,14 @@ const architectures: Architecture[] = [
       { label: 'LSTM Cell', color: '#ec4899', height: 55 },
       { label: 'LSTM Cell', color: '#ec4899', height: 55 },
       { label: 'Dense', color: '#f0a500', height: 40 },
-      { label: 'Output', color: '#00c896', height: 35 },
+      { label: 'Output', color: '#22c55e', height: 35 },
     ],
   },
   {
     id: 'transformer',
     name: 'Transformer',
     shortName: 'Transformer',
-    color: '#00c896',
+    color: '#22c55e',
     tagline: 'Attention is all you need',
     description: 'Parallel self-attention replaces recurrence. Foundation of GPT, BERT, and modern LLMs.',
     params: '100M - 1T+',
@@ -88,14 +88,14 @@ const architectures: Architecture[] = [
     complexity: 'High',
     yearIntro: '2017',
     blocks: [
-      { label: 'Input Tokens', color: '#00c896', height: 40 },
+      { label: 'Input Tokens', color: '#22c55e', height: 40 },
       { label: 'Positional Enc', color: '#3b82f6', height: 30 },
       { label: 'Multi-Head Attn', color: '#ec4899', height: 55 },
       { label: 'Add & Norm', color: '#f0a500', height: 25 },
       { label: 'Feed Forward', color: '#a855f7', height: 45 },
       { label: 'Add & Norm', color: '#f0a500', height: 25 },
       { label: 'Linear + Softmax', color: '#6c5ce7', height: 40 },
-      { label: 'Output', color: '#4a6aff', height: 35 },
+      { label: 'Output', color: '#14b8a6', height: 35 },
     ],
   },
 ]
@@ -409,10 +409,10 @@ watch(
   --viz-surface: #0a0e1a;
   --viz-card: #0f1325;
   --viz-border: rgba(255, 255, 255, 0.06);
-  --viz-primary: #4a6aff;
+  --viz-primary: #14b8a6;
   --viz-text: #e2e8f0;
   --viz-text-muted: rgba(255, 255, 255, 0.45);
-  --viz-accent-green: #00c896;
+  --viz-accent-green: #22c55e;
 
   display: flex;
   flex-direction: column;
@@ -442,8 +442,8 @@ watch(
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--viz-primary);
-  background: rgba(74, 106, 255, 0.1);
-  border: 1px solid rgba(74, 106, 255, 0.2);
+  background: rgba(20, 184, 166, 0.1);
+  border: 1px solid rgba(20, 184, 166, 0.2);
 }
 
 .arch-cmp__title {
@@ -478,8 +478,8 @@ watch(
 
 .arch-cmp__progress--complete {
   color: var(--viz-accent-green);
-  background: rgba(0, 200, 150, 0.1);
-  border-color: rgba(0, 200, 150, 0.3);
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 /* ── Canvas ── */

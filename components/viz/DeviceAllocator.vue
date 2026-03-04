@@ -63,7 +63,7 @@ const devices: Device[] = [
     id: 'cloud',
     name: 'Cloud Server',
     icon: 'cloud',
-    color: '#4a6aff',
+    color: '#14b8a6',
     constraints: { memory: 80000, compute: 312000, power: 700, latency: 500 },
     description: 'GPU-accelerated cloud instances (A100/H100). Virtually unlimited resources but high latency and cost.',
     examples: 'AWS p4d, GCP a2-highgpu, Azure NC A100',
@@ -99,7 +99,7 @@ const devices: Device[] = [
     id: 'browser',
     name: 'Browser (WASM)',
     icon: 'browser',
-    color: '#00c896',
+    color: '#22c55e',
     constraints: { memory: 4000, compute: 500, power: 15, latency: 100 },
     description: 'WebAssembly/WebGL inference in browser. No install required but limited by JS engine.',
     examples: 'TensorFlow.js, ONNX Runtime Web',
@@ -328,7 +328,7 @@ watch(() => props.activeSection, () => {
             rx="12"
             fill="#0f1325"
             :stroke="assignedDevices.has(device.id)
-              ? (checkConstraints(device).overall ? '#00c896' : '#ff6b6b')
+              ? (checkConstraints(device).overall ? '#22c55e' : '#ff6b6b')
               : device.color"
             :stroke-width="assignedDevices.has(device.id) ? 2 : 1"
             :stroke-opacity="assignedDevices.has(device.id) ? 0.7 : 0.2"
@@ -408,7 +408,7 @@ watch(() => props.activeSection, () => {
                 :width="Math.min(constraintPercent(selectedModel.requirements[key], device.constraints[key]) * 0.8, 80)"
                 height="14"
                 rx="3"
-                :fill="selectedModel.requirements[key] <= device.constraints[key] ? '#00c896' : '#ff6b6b'"
+                :fill="selectedModel.requirements[key] <= device.constraints[key] ? '#22c55e' : '#ff6b6b'"
                 opacity="0.6"
                 class="allocator__constraint-fill"
               />
@@ -428,7 +428,7 @@ watch(() => props.activeSection, () => {
                   text-anchor="middle"
                   font-size="8"
                   font-weight="bold"
-                  :fill="selectedModel.requirements[key] <= device.constraints[key] ? '#00c896' : '#ff6b6b'"
+                  :fill="selectedModel.requirements[key] <= device.constraints[key] ? '#22c55e' : '#ff6b6b'"
                 >
                   {{ selectedModel.requirements[key] <= device.constraints[key] ? '&#10003;' : '&#10007;' }}
                 </text>
@@ -453,7 +453,7 @@ watch(() => props.activeSection, () => {
               :y="DEVICE_Y + 329"
               text-anchor="middle"
               class="allocator__status-text"
-              :fill="checkConstraints(device).overall ? '#00c896' : '#ff6b6b'"
+              :fill="checkConstraints(device).overall ? '#22c55e' : '#ff6b6b'"
             >
               {{ checkConstraints(device).overall ? 'Compatible' : 'Exceeds' }}
             </text>
@@ -505,10 +505,10 @@ watch(() => props.activeSection, () => {
   --viz-surface: #0a0e1a;
   --viz-card: #0f1325;
   --viz-border: rgba(255, 255, 255, 0.06);
-  --viz-primary: #4a6aff;
+  --viz-primary: #14b8a6;
   --viz-text: #e2e8f0;
   --viz-text-muted: rgba(255, 255, 255, 0.45);
-  --viz-accent-green: #00c896;
+  --viz-accent-green: #22c55e;
 
   display: flex;
   flex-direction: column;
@@ -537,8 +537,8 @@ watch(() => props.activeSection, () => {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--viz-primary);
-  background: rgba(74, 106, 255, 0.1);
-  border: 1px solid rgba(74, 106, 255, 0.2);
+  background: rgba(20, 184, 166, 0.1);
+  border: 1px solid rgba(20, 184, 166, 0.2);
 }
 
 .allocator__title {
@@ -572,8 +572,8 @@ watch(() => props.activeSection, () => {
 
 .allocator__progress--complete {
   color: var(--viz-accent-green);
-  background: rgba(0, 200, 150, 0.1);
-  border-color: rgba(0, 200, 150, 0.3);
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 /* ── Model Select ── */
@@ -614,7 +614,7 @@ watch(() => props.activeSection, () => {
 }
 
 .allocator__select:hover {
-  border-color: rgba(74, 106, 255, 0.3);
+  border-color: rgba(20, 184, 166, 0.3);
 }
 
 .allocator__model-reqs {

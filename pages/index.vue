@@ -14,8 +14,8 @@ const store = useProgressStore()
       <div class="absolute inset-0 pointer-events-none opacity-[0.04]"
         :style="{
           backgroundImage: `
-            linear-gradient(rgba(74,106,255,0.3) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(74,106,255,0.3) 1px, transparent 1px)
+            linear-gradient(rgba(20,184,166,0.3) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(20,184,166,0.3) 1px, transparent 1px)
           `,
           backgroundSize: '60px 60px',
         }"

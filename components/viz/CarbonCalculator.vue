@@ -59,8 +59,8 @@ const comparisons: Comparison[] = [
 ]
 
 const modelSizes = [
-  { label: 'Small (1B)', params: 1, color: '#00c896' },
-  { label: 'Medium (7B)', params: 7, color: '#4a6aff' },
+  { label: 'Small (1B)', params: 1, color: '#22c55e' },
+  { label: 'Medium (7B)', params: 7, color: '#14b8a6' },
   { label: 'Large (70B)', params: 70, color: '#f0a500' },
   { label: 'Huge (175B)', params: 175, color: '#ff6b6b' },
 ]
@@ -184,8 +184,8 @@ watch(() => props.activeSection, () => {})
             <feComposite in="SourceGraphic" in2="blur" operator="over" />
           </filter>
           <linearGradient id="carbon-green-grad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#00c896" stop-opacity="0.2" />
-            <stop offset="100%" stop-color="#00c896" stop-opacity="0" />
+            <stop offset="0%" stop-color="#22c55e" stop-opacity="0.2" />
+            <stop offset="100%" stop-color="#22c55e" stop-opacity="0" />
           </linearGradient>
         </defs>
 
@@ -218,11 +218,11 @@ watch(() => props.activeSection, () => {})
           <rect x="500" y="0" width="230" height="80" rx="12" class="carbon__output-bg" />
           <g transform="translate(516, 20)">
             <!-- Leaf icon -->
-            <path d="M 12 2 C 6 8 4 16 10 20 C 16 16 18 8 12 2 Z" fill="none" stroke="#00c896" stroke-width="1.5" opacity="0.8" />
-            <line x1="10" y1="20" x2="14" y2="10" stroke="#00c896" stroke-width="1" opacity="0.5" />
+            <path d="M 12 2 C 6 8 4 16 10 20 C 16 16 18 8 12 2 Z" fill="none" stroke="#22c55e" stroke-width="1.5" opacity="0.8" />
+            <line x1="10" y1="20" x2="14" y2="10" stroke="#22c55e" stroke-width="1" opacity="0.5" />
           </g>
           <text x="544" y="32" class="carbon__output-label">Carbon Intensity</text>
-          <text x="544" y="58" class="carbon__output-value" fill="#00c896">
+          <text x="544" y="58" class="carbon__output-value" fill="#22c55e">
             {{ currentLocation.carbonIntensity }} gCO2/kWh
           </text>
         </g>
@@ -245,7 +245,7 @@ watch(() => props.activeSection, () => {})
               :width="280 * Math.min(1, loc.co2 / maxLocationCo2)"
               height="14"
               rx="3"
-              :fill="loc.id === selectedLocation ? '#4a6aff' : 'rgba(74, 106, 255, 0.3)'"
+              :fill="loc.id === selectedLocation ? '#14b8a6' : 'rgba(20, 184, 166, 0.3)'"
               class="carbon__loc-bar"
             />
             <text :x="155 + 280 * Math.min(1, loc.co2 / maxLocationCo2) + 6" y="14" class="carbon__loc-value">
@@ -419,10 +419,10 @@ watch(() => props.activeSection, () => {})
   --viz-surface: #0a0e1a;
   --viz-card: #0f1325;
   --viz-border: rgba(255, 255, 255, 0.06);
-  --viz-primary: #4a6aff;
+  --viz-primary: #14b8a6;
   --viz-text: #e2e8f0;
   --viz-text-muted: rgba(255, 255, 255, 0.45);
-  --viz-accent-green: #00c896;
+  --viz-accent-green: #22c55e;
   --viz-accent-red: #ff6b6b;
   --viz-accent-amber: #f0a500;
 
@@ -441,8 +441,8 @@ watch(() => props.activeSection, () => {})
 .carbon__badge {
   display: inline-flex; align-self: flex-start; padding: 3px 10px; border-radius: 9999px;
   font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--viz-accent-green); background: rgba(0, 200, 150, 0.1);
-  border: 1px solid rgba(0, 200, 150, 0.2);
+  color: var(--viz-accent-green); background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.2);
 }
 
 .carbon__title {
@@ -462,8 +462,8 @@ watch(() => props.activeSection, () => {})
 }
 
 .carbon__progress--complete {
-  color: var(--viz-accent-green); background: rgba(0, 200, 150, 0.1);
-  border-color: rgba(0, 200, 150, 0.3);
+  color: var(--viz-accent-green); background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 .carbon__canvas { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }

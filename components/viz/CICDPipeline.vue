@@ -37,7 +37,7 @@ const stages: PipelineStage[] = [
     label: 'Code Commit',
     shortLabel: 'Commit',
     icon: 'git',
-    color: '#4a6aff',
+    color: '#14b8a6',
     duration: '~1s',
     description: 'Developer pushes code changes. Git hooks run linting and formatting checks before commit.',
     tools: ['Git', 'Pre-commit', 'Husky'],
@@ -92,7 +92,7 @@ const stages: PipelineStage[] = [
     label: 'Model Registry',
     shortLabel: 'Registry',
     icon: 'archive',
-    color: '#00c896',
+    color: '#22c55e',
     duration: '~1m',
     description: 'Version and register the model with metadata. Promote to staging if validation passes.',
     tools: ['MLflow Registry', 'Vertex AI', 'DVC'],
@@ -125,7 +125,7 @@ const stages: PipelineStage[] = [
     label: 'Production',
     shortLabel: 'Prod',
     icon: 'rocket',
-    color: '#00c896',
+    color: '#22c55e',
     duration: 'Continuous',
     description: 'Full traffic cutover to new model. Monitor for drift, latency, and error rates.',
     tools: ['Prometheus', 'Grafana', 'PagerDuty'],
@@ -314,7 +314,7 @@ watch(() => props.activeSection, () => {
             refY="3"
             orient="auto"
           >
-            <polygon points="0 0, 8 3, 0 6" fill="rgba(74,106,255,0.4)" />
+            <polygon points="0 0, 8 3, 0 6" fill="rgba(20,184,166,0.4)" />
           </marker>
         </defs>
 
@@ -325,8 +325,8 @@ watch(() => props.activeSection, () => {
           :width="SPACING * 2 + 20"
           height="140"
           rx="12"
-          fill="rgba(74,106,255,0.03)"
-          :stroke="highlightedPhase === 'build' ? 'rgba(74,106,255,0.15)' : 'rgba(255,255,255,0.02)'"
+          fill="rgba(20,184,166,0.03)"
+          :stroke="highlightedPhase === 'build' ? 'rgba(20,184,166,0.15)' : 'rgba(255,255,255,0.02)'"
           stroke-width="1"
           class="cicd__phase-bg"
         />
@@ -543,10 +543,10 @@ watch(() => props.activeSection, () => {
   --viz-surface: #0a0e1a;
   --viz-card: #0f1325;
   --viz-border: rgba(255, 255, 255, 0.06);
-  --viz-primary: #4a6aff;
+  --viz-primary: #14b8a6;
   --viz-text: #e2e8f0;
   --viz-text-muted: rgba(255, 255, 255, 0.45);
-  --viz-accent-green: #00c896;
+  --viz-accent-green: #22c55e;
 
   display: flex;
   flex-direction: column;
@@ -575,8 +575,8 @@ watch(() => props.activeSection, () => {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--viz-primary);
-  background: rgba(74, 106, 255, 0.1);
-  border: 1px solid rgba(74, 106, 255, 0.2);
+  background: rgba(20, 184, 166, 0.1);
+  border: 1px solid rgba(20, 184, 166, 0.2);
 }
 
 .cicd__title {
@@ -610,8 +610,8 @@ watch(() => props.activeSection, () => {
 
 .cicd__progress--complete {
   color: var(--viz-accent-green);
-  background: rgba(0, 200, 150, 0.1);
-  border-color: rgba(0, 200, 150, 0.3);
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 .cicd__phases {
@@ -635,8 +635,8 @@ watch(() => props.activeSection, () => {
 
 .cicd__phase--active {
   color: var(--viz-primary);
-  background: rgba(74, 106, 255, 0.08);
-  border-color: rgba(74, 106, 255, 0.25);
+  background: rgba(20, 184, 166, 0.08);
+  border-color: rgba(20, 184, 166, 0.25);
 }
 
 .cicd__canvas {
@@ -663,7 +663,7 @@ watch(() => props.activeSection, () => {
 }
 
 .cicd__connection--active {
-  stroke: rgba(74, 106, 255, 0.2);
+  stroke: rgba(20, 184, 166, 0.2);
 }
 
 @keyframes dashFlow {
@@ -763,7 +763,7 @@ watch(() => props.activeSection, () => {
   border-radius: 4px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  background: rgba(74, 106, 255, 0.15);
+  background: rgba(20, 184, 166, 0.15);
   color: var(--viz-primary);
 }
 

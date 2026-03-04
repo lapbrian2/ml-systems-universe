@@ -39,7 +39,7 @@ const domains: AppDomain[] = [
   {
     id: 'finance',
     name: 'Finance',
-    color: '#4a6aff',
+    color: '#14b8a6',
     icon: 'finance',
     livesImpacted: '2B+',
     costSavings: '$300B/yr',
@@ -61,7 +61,7 @@ const domains: AppDomain[] = [
   {
     id: 'agriculture',
     name: 'Agriculture',
-    color: '#00c896',
+    color: '#22c55e',
     icon: 'agriculture',
     livesImpacted: '800M+',
     costSavings: '$100B/yr',
@@ -409,10 +409,10 @@ watch(
   --viz-surface: #0a0e1a;
   --viz-card: #0f1325;
   --viz-border: rgba(255, 255, 255, 0.06);
-  --viz-primary: #4a6aff;
+  --viz-primary: #14b8a6;
   --viz-text: #e2e8f0;
   --viz-text-muted: rgba(255, 255, 255, 0.45);
-  --viz-accent-green: #00c896;
+  --viz-accent-green: #22c55e;
 
   display: flex;
   flex-direction: column;
@@ -449,8 +449,8 @@ watch(
 }
 
 .impact__progress--complete {
-  color: var(--viz-accent-green); background: rgba(0, 200, 150, 0.1);
-  border-color: rgba(0, 200, 150, 0.3);
+  color: var(--viz-accent-green); background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 .impact__canvas { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
@@ -461,11 +461,11 @@ watch(
   stroke: rgba(255, 255, 255, 0.04); stroke-width: 1;
   transition: stroke 0.5s ease;
 }
-.impact__connection-line--active { stroke: rgba(74, 106, 255, 0.15); }
+.impact__connection-line--active { stroke: rgba(20, 184, 166, 0.15); }
 .impact__connection-line--cross { stroke: rgba(255, 255, 255, 0.02); }
 
 /* ── Hub ── */
-.impact__hub-bg { fill: var(--viz-card); stroke: rgba(74, 106, 255, 0.2); stroke-width: 1; }
+.impact__hub-bg { fill: var(--viz-card); stroke: rgba(20, 184, 166, 0.2); stroke-width: 1; }
 .impact__hub-text { fill: var(--viz-primary); font-size: 12px; font-family: 'Syne', sans-serif; font-weight: 700; }
 .impact__hub-sub { fill: var(--viz-text-muted); font-size: 8px; font-family: 'Inter', sans-serif; }
 

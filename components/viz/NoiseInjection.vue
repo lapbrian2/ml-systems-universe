@@ -151,7 +151,7 @@ const xGridLines = computed(() => {
 
 /* ── Noise modes ── */
 const noiseModes: { value: NoiseMode; label: string; color: string }[] = [
-  { value: 'gaussian', label: 'Gaussian', color: '#4a6aff' },
+  { value: 'gaussian', label: 'Gaussian', color: '#14b8a6' },
   { value: 'adversarial', label: 'Adversarial', color: '#ff6b6b' },
   { value: 'shift', label: 'Distribution Shift', color: '#f0a500' },
 ]
@@ -188,7 +188,7 @@ const explorationProgress = computed(() => Math.min(interactionCount.value, 3))
 
 /* ── Confidence bar color ── */
 function confidenceColor(conf: number): string {
-  if (conf >= 80) return '#00c896'
+  if (conf >= 80) return '#22c55e'
   if (conf >= 50) return '#f0a500'
   return '#ff6b6b'
 }
@@ -234,8 +234,8 @@ watch(
             <feComposite in="SourceGraphic" in2="blur" operator="over" />
           </filter>
           <linearGradient id="noise-clean-gradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#4a6aff" stop-opacity="0.15" />
-            <stop offset="100%" stop-color="#4a6aff" stop-opacity="0" />
+            <stop offset="0%" stop-color="#14b8a6" stop-opacity="0.15" />
+            <stop offset="100%" stop-color="#14b8a6" stop-opacity="0" />
           </linearGradient>
           <linearGradient id="noise-noisy-gradient" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" :stop-color="noiseModes.find(m => m.value === noiseMode)?.color ?? '#ff6b6b'" stop-opacity="0.1" />
@@ -330,7 +330,7 @@ watch(
           <path
             :d="pointsToPath(cleanSignal)"
             fill="none"
-            stroke="#4a6aff"
+            stroke="#14b8a6"
             stroke-width="2"
             filter="url(#noise-glow)"
             class="noise__signal-line noise__signal-line--clean"
@@ -342,7 +342,7 @@ watch(
               :cx="cleanSignal[hoveredPoint].x"
               :cy="cleanSignal[hoveredPoint].y"
               r="4"
-              fill="#4a6aff"
+              fill="#14b8a6"
               stroke="#05070f"
               stroke-width="2"
             />
@@ -383,7 +383,7 @@ watch(
         <!-- Legend -->
         <g :transform="`translate(${chartPadding.left + 10}, ${chartPadding.top + 10})`">
           <rect x="-6" y="-10" width="170" height="38" rx="6" fill="rgba(5,7,15,0.8)" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
-          <line x1="0" y1="0" x2="20" y2="0" stroke="#4a6aff" stroke-width="2" />
+          <line x1="0" y1="0" x2="20" y2="0" stroke="#14b8a6" stroke-width="2" />
           <text x="26" y="4" class="noise__legend-text">Clean Signal</text>
           <line x1="0" y1="18" x2="20" y2="18" :stroke="noiseModes.find(m => m.value === noiseMode)?.color ?? '#ff6b6b'" stroke-width="1.5" stroke-opacity="0.6" />
           <text x="26" y="22" class="noise__legend-text">Noisy Signal</text>
@@ -549,10 +549,10 @@ watch(
   --viz-surface: #0a0e1a;
   --viz-card: #0f1325;
   --viz-border: rgba(255, 255, 255, 0.06);
-  --viz-primary: #4a6aff;
+  --viz-primary: #14b8a6;
   --viz-text: #e2e8f0;
   --viz-text-muted: rgba(255, 255, 255, 0.45);
-  --viz-accent-green: #00c896;
+  --viz-accent-green: #22c55e;
   --viz-accent-red: #ff6b6b;
   --viz-accent-amber: #f0a500;
 
@@ -572,7 +572,7 @@ watch(
 .noise__badge {
   display: inline-flex; align-self: flex-start; padding: 3px 10px; border-radius: 9999px;
   font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--viz-primary); background: rgba(74, 106, 255, 0.1); border: 1px solid rgba(74, 106, 255, 0.2);
+  color: var(--viz-primary); background: rgba(20, 184, 166, 0.1); border: 1px solid rgba(20, 184, 166, 0.2);
 }
 
 .noise__title {
@@ -592,8 +592,8 @@ watch(
 }
 
 .noise__progress--complete {
-  color: var(--viz-accent-green); background: rgba(0, 200, 150, 0.1);
-  border-color: rgba(0, 200, 150, 0.3);
+  color: var(--viz-accent-green); background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 /* ── Canvas ── */
