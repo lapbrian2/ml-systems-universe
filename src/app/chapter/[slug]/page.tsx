@@ -1,13 +1,14 @@
 import { CHAPTERS } from '@/data/chapters';
 import { notFound } from 'next/navigation';
 import ChapterShell from '@/components/chapter/ChapterShell';
+import { getChapterContent } from '@/data/content';
 import type { ChapterSection, GlossaryTerm } from '@/types/chapter';
 
 export function generateStaticParams() {
   return CHAPTERS.map((ch) => ({ slug: ch.slug }));
 }
 
-// Generate placeholder sections from chapter topics
+// Fallback for chapters that don't have content files yet
 function generatePlaceholderSections(chapter: typeof CHAPTERS[number]): ChapterSection[] {
   return chapter.topics.map((topic, i) => ({
     id: `${chapter.id}-s${i + 1}`,
@@ -40,9 +41,12 @@ export default async function ChapterPage({ params }: { params: Promise<{ slug: 
   const chapter = CHAPTERS.find(ch => ch.slug === slug);
   if (!chapter) notFound();
 
-  const sections = generatePlaceholderSections(chapter);
-  const glossary = generatePlaceholderGlossary(chapter);
-  const keyTakeaways = generatePlaceholderTakeaways(chapter);
+  // Use real content if available, otherwise fall back to placeholders
+  const content = getChapterContent(chapter.id);
+
+  const sections = content?.sections ?? generatePlaceholderSections(chapter);
+  const glossary = content?.glossary ?? generatePlaceholderGlossary(chapter);
+  const keyTakeaways = content?.keyTakeaways ?? generatePlaceholderTakeaways(chapter);
 
   return (
     <ChapterShell

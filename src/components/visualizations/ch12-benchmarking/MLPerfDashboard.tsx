@@ -79,7 +79,7 @@ export default function MLPerfDashboard({
   }, [interactionCount, exerciseDone, onExerciseComplete]);
 
   const data = category === 'training' ? TRAINING_DATA : INFERENCE_DATA;
-  const models = useMemo(() => [...new Set(data.map((d) => d.model))], [data]);
+  const models = useMemo(() => Array.from(new Set(data.map((d) => d.model))), [data]);
 
   const filteredData = useMemo(
     () => data.filter((d) => d.model === selectedModel),
@@ -102,7 +102,7 @@ export default function MLPerfDashboard({
       setCategory(cat);
       // Reset to first model of new category
       const newData = cat === 'training' ? TRAINING_DATA : INFERENCE_DATA;
-      const firstModel = [...new Set(newData.map((d) => d.model))][0];
+      const firstModel = Array.from(new Set(newData.map((d) => d.model)))[0];
       setSelectedModel(firstModel);
       interact();
     },
