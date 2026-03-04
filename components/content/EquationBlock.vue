@@ -32,10 +32,10 @@ watch(() => props.latex, () => {
 
 <template>
   <ClientOnly>
-    <div class="my-6 flex items-center justify-center gap-4">
+    <div class="my-6 rounded-lg border border-white/[0.04] bg-white/[0.015] px-6 py-5 flex items-center justify-center gap-4">
       <!-- Equation -->
       <div
-        class="katex-display-wrapper flex-1 text-center overflow-x-auto py-3"
+        class="katex-display-wrapper flex-1 text-center overflow-x-auto"
         v-html="renderedHtml"
       />
 
@@ -49,7 +49,7 @@ watch(() => props.latex, () => {
     </div>
 
     <template #fallback>
-      <div class="my-6 text-center py-3">
+      <div class="my-6 text-center py-3 rounded-lg border border-white/[0.04] bg-white/[0.015]">
         <code class="text-xs text-white/40 font-mono">{{ latex }}</code>
       </div>
     </template>

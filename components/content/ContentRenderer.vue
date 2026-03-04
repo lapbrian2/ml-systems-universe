@@ -12,7 +12,7 @@ defineProps<{
       <!-- Paragraph -->
       <p
         v-if="block.type === 'paragraph'"
-        class="text-sm leading-[1.8] text-white/65"
+        class="text-[14.5px] leading-[1.85] text-white/60 tracking-[0.005em]"
       >
         {{ block.text }}
       </p>

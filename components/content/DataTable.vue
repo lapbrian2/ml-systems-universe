@@ -37,7 +37,7 @@ defineProps<{
             <td
               v-for="(cell, cIdx) in row"
               :key="cIdx"
-              class="px-4 py-2.5 text-white/55 whitespace-nowrap"
+              class="px-4 py-2.5 text-white/55"
             >
               {{ cell }}
             </td>
