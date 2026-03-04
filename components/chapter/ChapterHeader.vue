@@ -1,15 +1,38 @@
 <script setup lang="ts">
-import { Clock, ExternalLink, Tag } from 'lucide-vue-next'
+import { Clock, ExternalLink, Tag, ArrowRight } from 'lucide-vue-next'
 import type { ChapterMeta, Part } from '~/types/chapter'
+import { PARTS } from '~/data/chapters/parts'
 
-defineProps<{
+const props = defineProps<{
   chapter: ChapterMeta
   part: Part
 }>()
+
+// System layer mapping for context breadcrumb
+const systemLayers: Record<string, string> = {
+  foundations: 'Core Concepts',
+  design: 'System Design',
+  performance: 'Optimization',
+  deployment: 'Infrastructure',
+  trustworthy: 'Safety & Trust',
+  frontiers: 'Emerging Systems',
+}
+
+const systemLayer = computed(() => systemLayers[props.part.id] ?? props.part.shortName)
+const partIndex = computed(() => PARTS.findIndex(p => p.id === props.part.id) + 1)
 </script>
 
 <template>
   <header class="mb-12">
+    <!-- System position breadcrumb -->
+    <div class="flex items-center gap-1.5 mb-4 text-[10px] text-white/20 tracking-wide">
+      <span class="uppercase">ML System</span>
+      <ArrowRight class="w-2.5 h-2.5" />
+      <span class="uppercase" :style="{ color: `${part.color}80` }">Part {{ partIndex }}: {{ systemLayer }}</span>
+      <ArrowRight class="w-2.5 h-2.5" />
+      <span class="text-white/30">Chapter {{ chapter.number }}</span>
+    </div>
+
     <!-- Part badge + chapter number -->
     <div class="flex items-center gap-3 mb-5">
       <span

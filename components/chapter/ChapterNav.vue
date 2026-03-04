@@ -42,6 +42,9 @@ const nextPart = computed(() => next.value ? getPartForChapter(next.value.id) : 
           <p class="text-sm font-medium text-white/65 group-hover:text-white/90 transition-colors truncate mt-0.5">
             {{ prev.title }}
           </p>
+          <span v-if="prevPart" class="text-[9px] mt-0.5 block truncate" :style="{ color: `${prevPart.color}60` }">
+            {{ prevPart.shortName }}
+          </span>
         </div>
       </NuxtLink>
       <div v-else class="flex-1" />
@@ -64,6 +67,9 @@ const nextPart = computed(() => next.value ? getPartForChapter(next.value.id) : 
           <p class="text-sm font-medium text-white/65 group-hover:text-white/90 transition-colors truncate mt-0.5">
             {{ next.title }}
           </p>
+          <span v-if="nextPart" class="text-[9px] mt-0.5 block truncate" :style="{ color: `${nextPart.color}60` }">
+            {{ nextPart.shortName }}
+          </span>
         </div>
         <div
           class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all duration-300 group-hover:translate-x-0.5"

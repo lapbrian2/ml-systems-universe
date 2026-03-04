@@ -17,9 +17,10 @@ nuxtApp.hook('page:finish', () => { isLoading.value = false })
     >
       <div
         v-if="isLoading"
-        class="fixed top-0 left-0 right-0 z-[200] h-0.5 bg-primary overflow-hidden"
+        class="fixed top-0 left-0 right-0 z-[200] h-0.5 overflow-hidden"
+        style="background: rgba(20, 184, 166, 0.1);"
       >
-        <div class="h-full bg-primary animate-loading-bar" />
+        <div class="h-full animate-loading-bar" style="background: linear-gradient(90deg, #14b8a6, #22c55e, #a855f7, #14b8a6);" />
       </div>
     </Transition>
 

@@ -124,9 +124,14 @@ const partDescriptions: Record<string, string> = {
           </span>
         </h1>
 
+        <!-- Thesis -->
+        <p class="text-[13px] font-semibold uppercase tracking-widest text-white/20 mb-3">
+          ML is a system, not just a model
+        </p>
+
         <!-- Subtitle -->
         <p class="text-white/45 text-lg lg:text-xl max-w-xl leading-relaxed">
-          An interactive deep-dive into Machine Learning Systems — from neural architectures to production deployment, with hands-on visualizations and assessments.
+          From data pipelines to production deployment — an interactive deep-dive into the full ML systems stack, with hands-on visualizations and assessments.
         </p>
 
         <!-- Stats row -->
@@ -321,6 +326,9 @@ const partDescriptions: Record<string, string> = {
     <!-- ═══ Footer ═══ -->
     <footer class="border-t border-white/[0.04] py-12">
       <div class="max-w-5xl mx-auto px-6">
+        <p class="text-center text-[11px] text-white/15 mb-6 tracking-wide">
+          Data &rarr; Features &rarr; Training &rarr; Registry &rarr; Serving &rarr; Monitoring &rarr; Feedback
+        </p>
         <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div class="flex items-center gap-3">
             <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -328,7 +336,7 @@ const partDescriptions: Record<string, string> = {
             </div>
             <div>
               <p class="text-sm font-semibold text-white/70">ML Systems Universe</p>
-              <p class="text-[11px] text-white/25">Interactive companion for Harvard CS249r</p>
+              <p class="text-[11px] text-white/25">Understanding ML systems from data collection to production deployment</p>
             </div>
           </div>
           <div class="flex items-center gap-6">
