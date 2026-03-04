@@ -244,7 +244,7 @@ export default function InfoPanel({ chapter, isOpen, onClose }: InfoPanelProps) 
                 </button>
               ) : (
                 <Link
-                  href={`/chapters/${chapter.slug}`}
+                  href={`/chapter/${chapter.slug}`}
                   className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-sm font-medium text-white transition-all hover:brightness-110"
                   style={{
                     backgroundColor: part?.color ?? '#4a6aff',
