@@ -129,12 +129,35 @@ function onExerciseComplete() {
   }
 }
 
-// ── Viz component: dynamic import for ch01, placeholder for others ───
+// ── Viz component: dynamic import per chapter ───────────────────────
+const vizImportMap: Record<string, () => Promise<any>> = {
+  ch01: () => import('~/components/viz/MLPipelineFlow.vue'),
+  ch02: () => import('~/components/viz/SystemArchitectureBuilder.vue'),
+  ch03: () => import('~/components/viz/NeuralNetworkPlayground.vue'),
+  ch04: () => import('~/components/viz/ArchitectureComparison.vue'),
+  ch05: () => import('~/components/viz/WorkflowDesigner.vue'),
+  ch06: () => import('~/components/viz/DataPipelineSimulator.vue'),
+  ch07: () => import('~/components/viz/FrameworkComparison.vue'),
+  ch08: () => import('~/components/viz/LossSurface3D.vue'),
+  ch09: () => import('~/components/viz/EfficiencyFrontier.vue'),
+  ch10: () => import('~/components/viz/QuantizationPruning.vue'),
+  ch11: () => import('~/components/viz/RooflineModel.vue'),
+  ch12: () => import('~/components/viz/MLPerfDashboard.vue'),
+  ch13: () => import('~/components/viz/CICDPipeline.vue'),
+  ch14: () => import('~/components/viz/DeviceAllocator.vue'),
+  ch15: () => import('~/components/viz/AdversarialPlayground.vue'),
+  ch16: () => import('~/components/viz/NoiseInjection.vue'),
+  ch17: () => import('~/components/viz/BiasCalculator.vue'),
+  ch18: () => import('~/components/viz/CarbonCalculator.vue'),
+  ch19: () => import('~/components/viz/ImpactExplorer.vue'),
+  ch20: () => import('~/components/viz/TimelineMapper.vue'),
+  ch21: () => import('~/components/viz/KnowledgeMap.vue'),
+}
+
 const vizComponent = computed(() => {
-  if (chapter.value?.id === 'ch01') {
-    return defineAsyncComponent(
-      () => import('~/components/viz/MLPipelineFlow.vue')
-    )
+  const id = chapter.value?.id
+  if (id && vizImportMap[id]) {
+    return defineAsyncComponent(vizImportMap[id])
   }
   return null
 })
