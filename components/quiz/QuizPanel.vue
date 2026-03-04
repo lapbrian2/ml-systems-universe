@@ -281,7 +281,7 @@ function getOptionClass(optionIndex: number): string {
 
             <!-- Explanation -->
             <Transition
-              enter-active-class="transition-all duration-400 ease-out"
+              enter-active-class="transition-all duration-300 ease-out"
               enter-from-class="opacity-0 translate-y-2 scale-[0.98]"
               enter-to-class="opacity-100 translate-y-0 scale-100"
             >
@@ -307,7 +307,7 @@ function getOptionClass(optionIndex: number): string {
             <div class="flex justify-end pt-2">
               <button
                 v-if="!revealed"
-                class="px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 disabled:opacity-25 disabled:cursor-not-allowed"
+                class="px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:brightness-105 active:scale-[0.98] disabled:opacity-25 disabled:cursor-not-allowed"
                 :style="{
                   backgroundColor: selectedAnswer !== null ? `${partColor}20` : 'rgba(255,255,255,0.05)',
                   color: selectedAnswer !== null ? partColor : 'rgba(255,255,255,0.3)',

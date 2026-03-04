@@ -58,11 +58,11 @@ const features = [
 // Part descriptions
 const partDescriptions: Record<string, string> = {
   foundations: 'Core concepts, deep learning fundamentals, and architectural patterns',
-  workflow: 'End-to-end ML lifecycle, data engineering, and framework ecosystems',
-  training: 'Training at scale, efficiency optimization, and model compression',
+  design: 'End-to-end ML lifecycle, data engineering, and framework ecosystems',
+  performance: 'Training at scale, efficiency optimization, and model compression',
   deployment: 'Hardware acceleration, benchmarking, infrastructure, and deployment strategies',
-  safety: 'Security, robustness, fairness, and responsible AI practices',
-  impact: 'Sustainability, real-world applications, and the future of ML systems',
+  trustworthy: 'Security, robustness, fairness, and responsible AI practices',
+  frontiers: 'Sustainability, real-world applications, and the future of ML systems',
 }
 </script>
 
@@ -70,9 +70,9 @@ const partDescriptions: Record<string, string> = {
   <div class="min-h-screen bg-cosmic-bg">
     <!-- ═══ Hero ═══ -->
     <header class="relative overflow-hidden">
-      <!-- 3D Neural Network Background -->
+      <!-- ML System Architecture Background -->
       <ClientOnly>
-        <NeuralNetworkHero />
+        <MLSystemHero />
       </ClientOnly>
 
       <!-- Animated gradient orbs -->
@@ -238,7 +238,8 @@ const partDescriptions: Record<string, string> = {
 
         <!-- Chapter cards -->
         <div class="grid gap-2">
-          <NuxtLink
+          <component
+            :is="store.getChapterState(chapter.id) !== 'locked' ? 'NuxtLink' : 'div'"
             v-for="chapter in getPartChapters(part.id)"
             :key="chapter.id"
             :to="store.getChapterState(chapter.id) !== 'locked' ? `/chapter/${chapter.slug}` : undefined"
@@ -312,7 +313,7 @@ const partDescriptions: Record<string, string> = {
                 class="w-4 h-4 text-white/15 group-hover:text-white/50 group-hover:translate-x-0.5 transition-all duration-300"
               />
             </div>
-          </NuxtLink>
+          </component>
         </div>
       </div>
     </main>
@@ -340,7 +341,7 @@ const partDescriptions: Record<string, string> = {
               mlsysbook.ai
             </a>
             <span class="text-xs text-white/15">
-              Built with Nuxt 3 + Three.js + GSAP
+              Built with Nuxt 3 + TresJS + GSAP
             </span>
           </div>
         </div>

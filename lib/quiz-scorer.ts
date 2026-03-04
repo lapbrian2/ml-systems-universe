@@ -1,7 +1,12 @@
 import type { QuizQuestion } from '~/types/quiz';
 
 export function selectQuizQuestions(pool: QuizQuestion[], count: number): QuizQuestion[] {
-  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  // Fisher-Yates shuffle for unbiased randomization
+  const shuffled = [...pool];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
   return shuffled.slice(0, count);
 }
 
@@ -20,6 +25,6 @@ export function scoreQuiz(answers: Record<string, number>, questions: QuizQuesti
   }));
   const score = results.filter(r => r.correct).length;
   const total = questions.length;
-  const percentage = Math.round((score / total) * 100);
+  const percentage = total > 0 ? Math.round((score / total) * 100) : 0;
   return { score, total, percentage, passed: percentage >= 70, results };
 }

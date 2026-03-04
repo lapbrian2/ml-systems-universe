@@ -12,11 +12,12 @@ const copied = ref(false)
 let copyTimeout: ReturnType<typeof setTimeout> | null = null
 
 function copyCode() {
+  if (!navigator.clipboard) return
   navigator.clipboard.writeText(props.code).then(() => {
     copied.value = true
     if (copyTimeout) clearTimeout(copyTimeout)
     copyTimeout = setTimeout(() => { copied.value = false }, 2000)
-  })
+  }).catch(() => {})
 }
 
 // Lightweight syntax highlighting
@@ -94,7 +95,7 @@ function highlightYaml(code: string): string {
       <div class="code-block__header">
         <div class="flex items-center gap-2">
           <Terminal class="w-3 h-3 text-white/20" />
-          <span class="code-block__lang" :style="{ color: `${language === 'python' ? '#3b82f6' : language === 'bash' ? '#22c55e' : '#f0a500'}` }">
+          <span class="code-block__lang" :style="{ color: `${language === 'python' ? '#a855f7' : language === 'bash' ? '#22c55e' : '#f0a500'}` }">
             {{ language }}
           </span>
         </div>

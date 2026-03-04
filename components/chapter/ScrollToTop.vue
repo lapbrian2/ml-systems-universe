@@ -45,7 +45,7 @@ onUnmounted(() => {
   >
     <button
       v-if="visible"
-      class="fixed bottom-20 xl:bottom-6 right-6 z-50 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-lg"
+      class="fixed bottom-20 xl:bottom-6 right-6 z-50 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 shadow-lg"
       :style="{
         backgroundColor: partColor,
         boxShadow: `0 4px 20px ${partColor}40`,

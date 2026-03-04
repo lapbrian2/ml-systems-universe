@@ -30,6 +30,7 @@ export default {
       fontFamily: {
         display: ['Syne', 'sans-serif'],
         body: ['Inter', 'sans-serif'],
+        mono: ['JetBrains Mono', 'Fira Code', 'Consolas', 'monospace'],
       },
       fontSize: {
         hero: 'clamp(2.5rem, 6vw, 5rem)',

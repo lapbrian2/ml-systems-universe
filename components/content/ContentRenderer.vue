@@ -13,7 +13,7 @@ defineProps<{
       <!-- Paragraph -->
       <p
         v-if="block.type === 'paragraph'"
-        class="text-[14.5px] leading-[1.85] text-white/60 tracking-[0.005em]"
+        class="text-[15px] leading-[1.8] text-white/60 tracking-[0.005em]"
       >
         <GlossaryText
           v-if="glossary && glossary.length > 0"

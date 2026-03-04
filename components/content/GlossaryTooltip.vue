@@ -14,10 +14,14 @@ const showTooltip = ref(false)
     class="relative inline"
     @mouseenter="showTooltip = true"
     @mouseleave="showTooltip = false"
+    @focusin="showTooltip = true"
+    @focusout="showTooltip = false"
   >
     <!-- Highlighted term -->
     <span
-      class="border-b border-dashed border-primary/30 text-white/70 cursor-help transition-colors hover:text-primary/80 hover:border-primary/50"
+      tabindex="0"
+      role="button"
+      class="border-b border-dashed border-primary/30 text-white/70 cursor-help transition-colors hover:text-primary/80 hover:border-primary/50 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/40 focus-visible:rounded"
     >
       <slot />
     </span>
@@ -34,8 +38,7 @@ const showTooltip = ref(false)
         class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 z-50 pointer-events-none"
       >
         <div
-          class="rounded-lg px-3 py-2.5 text-left shadow-xl"
-          style="background: rgba(10, 14, 26, 0.95); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.1);"
+          class="glass-panel--tooltip rounded-lg px-3 py-2.5 text-left shadow-xl"
         >
           <p class="text-[10px] font-bold uppercase tracking-wider text-primary mb-1">{{ term }}</p>
           <p class="text-xs text-white/55 leading-relaxed">{{ definition }}</p>

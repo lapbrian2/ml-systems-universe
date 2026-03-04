@@ -21,7 +21,10 @@ const segments = computed<TextSegment[]>(() => {
 
   // Build a case-insensitive regex matching all glossary terms.
   // Sort by length descending so longer terms match first (e.g., "ML Systems" before "ML").
-  const sorted = [...props.terms].sort((a, b) => b.term.length - a.term.length)
+  const sorted = [...props.terms]
+    .filter(t => t.term.length > 0)
+    .sort((a, b) => b.term.length - a.term.length)
+  if (sorted.length === 0) return [{ type: 'text', value: props.text }]
   const escaped = sorted.map((t) => t.term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
   const pattern = new RegExp(`(${escaped.join('|')})`, 'gi')
 
@@ -45,7 +48,10 @@ const segments = computed<TextSegment[]>(() => {
     const termKey = match[1].toLowerCase()
 
     // Only highlight the first occurrence of each term per paragraph
-    if (matched.has(termKey)) continue
+    if (matched.has(termKey)) {
+      // Advance lastIndex past the duplicate to avoid text duplication
+      continue
+    }
     matched.add(termKey)
 
     const entry = termMap.get(termKey)

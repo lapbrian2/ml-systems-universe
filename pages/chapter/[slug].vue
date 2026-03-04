@@ -289,7 +289,7 @@ const vizComponent = computed(() => {
               :style="{ backgroundColor: `${partColor}10` }"
             >
               <span class="text-2xl font-display font-bold" :style="{ color: partColor }">
-                {{ String(chapter!.number).padStart(2, '0') }}
+                {{ String(chapter?.number ?? 0).padStart(2, '0') }}
               </span>
             </div>
             <p class="text-xs text-white/20 max-w-[200px]">

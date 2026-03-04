@@ -14,7 +14,7 @@ defineProps<{
       <Quote class="w-10 h-10 text-white" />
     </div>
 
-    <p class="text-[15px] leading-[1.85] text-white/55 italic pl-1 relative z-10">
+    <p class="text-[15px] leading-[1.8] text-white/55 italic pl-1 relative z-10">
       {{ text }}
     </p>
     <footer

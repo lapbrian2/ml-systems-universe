@@ -76,8 +76,7 @@ watch(() => props.chapterId, () => {
       aria-label="Table of contents"
     >
       <div
-        class="rounded-xl px-4 py-4"
-        style="background: rgba(5, 7, 15, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.06);"
+        class="glass-panel--floating rounded-xl px-4 py-4"
       >
         <div class="flex items-center gap-2 mb-3">
           <List class="w-3.5 h-3.5 text-white/30" />
@@ -154,7 +153,7 @@ watch(() => props.chapterId, () => {
             <div
               class="h-full rounded-full transition-all duration-500"
               :style="{
-                width: `${(progress.sectionsRead.length / sections.length) * 100}%`,
+                width: sections.length > 0 ? `${(progress.sectionsRead.length / sections.length) * 100}%` : '0%',
                 backgroundColor: partColor,
               }"
             />
@@ -183,8 +182,7 @@ watch(() => props.chapterId, () => {
       >
         <div
           v-if="!collapsed"
-          class="rounded-xl p-3 mb-2 max-h-[50vh] overflow-y-auto"
-          style="background: rgba(5, 7, 15, 0.92); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08);"
+          class="glass-panel--floating rounded-xl p-3 mb-2 max-h-[50vh] overflow-y-auto"
         >
           <ol class="space-y-0.5">
             <li v-for="(section, idx) in sections" :key="section.id">
@@ -205,7 +203,7 @@ watch(() => props.chapterId, () => {
                 </span>
                 <span
                   class="text-sm truncate"
-                  :class="activeSection === idx ? 'text-white/80 font-medium' : 'text-white/45'"
+                  :class="activeSection === idx ? 'text-white/80 font-medium' : 'text-white/35'"
                 >
                   {{ section.heading }}
                 </span>
@@ -215,20 +213,19 @@ watch(() => props.chapterId, () => {
         </div>
       </Transition>
 
-      <!-- Toggle button -->
-      <button
-        class="w-full flex items-center justify-between rounded-xl px-4 py-3 transition-colors"
-        style="background: rgba(5, 7, 15, 0.9); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08);"
-        aria-label="Toggle table of contents"
-        @click="collapsed = !collapsed"
-      >
-        <div class="flex items-center gap-2">
-          <List class="w-4 h-4 text-white/40" />
-          <span class="text-xs font-medium text-white/50">
+      <!-- Toggle bar -->
+      <div class="glass-panel--floating w-full flex items-center justify-between rounded-xl px-4 py-3">
+        <button
+          class="flex items-center gap-2 flex-1 min-w-0 transition-colors"
+          aria-label="Toggle table of contents"
+          @click="collapsed = !collapsed"
+        >
+          <List class="w-4 h-4 text-white/40 shrink-0" />
+          <span class="text-xs font-medium text-white/50 truncate">
             {{ sections[activeSection]?.heading ?? 'Contents' }}
           </span>
-        </div>
-        <div class="flex items-center gap-2">
+        </button>
+        <div class="flex items-center gap-2 shrink-0">
           <span class="text-[10px] font-mono text-white/25 tabular-nums">
             {{ activeSection + 1 }}/{{ sections.length }}
           </span>
@@ -236,22 +233,24 @@ watch(() => props.chapterId, () => {
           <button
             class="w-5 h-5 rounded-full flex items-center justify-center text-white/20 hover:text-white/50 transition-colors"
             aria-label="Dismiss table of contents"
-            @click.stop="dismiss"
+            @click="dismiss"
           >
             <X class="w-3 h-3" />
           </button>
-          <div
+          <button
             class="w-5 h-5 rounded-full flex items-center justify-center"
             :style="{ backgroundColor: `${partColor}20` }"
+            aria-label="Expand table of contents"
+            @click="collapsed = !collapsed"
           >
             <ChevronRight
               class="w-3 h-3 transition-transform duration-200"
               :class="collapsed ? '' : 'rotate-90'"
               :style="{ color: partColor }"
             />
-          </div>
+          </button>
         </div>
-      </button>
+      </div>
     </div>
   </Transition>
 </template>

@@ -86,7 +86,7 @@ const hasRichBlocks = computed(() => props.blocks && props.blocks.length > 0)
       <p
         v-for="(para, pIdx) in paragraphs"
         :key="pIdx"
-        class="text-sm leading-[1.75] text-white/60"
+        class="text-sm leading-[1.8] text-white/60"
       >
         {{ para }}
       </p>

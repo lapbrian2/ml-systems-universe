@@ -74,8 +74,7 @@ function dismiss() {
       class="absolute bottom-4 left-4 right-4 z-20 lg:bottom-6 lg:left-6 lg:right-6"
     >
       <div
-        class="rounded-xl px-4 py-3 flex items-center gap-3"
-        style="background: rgba(5, 7, 15, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08);"
+        class="glass-panel--floating rounded-xl px-4 py-3 flex items-center gap-3"
       >
         <!-- Pulsing dot -->
         <div class="relative shrink-0">
