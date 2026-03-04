@@ -4,7 +4,7 @@ import { CHAPTERS } from '~/data/chapters'
 import { PARTS } from '~/data/chapters/parts'
 import { useProgressStore } from '~/stores/progress'
 import {
-  BookOpen, Clock, Lock, CheckCircle2, ArrowRight,
+  BookOpen, Clock, CheckCircle2, ArrowRight,
   GraduationCap, Layers, FlaskConical, Cpu, Brain,
   BarChart3, Zap, Shield, Globe,
 } from 'lucide-vue-next'
@@ -243,26 +243,17 @@ const partDescriptions: Record<string, string> = {
 
         <!-- Chapter cards -->
         <div class="grid gap-2">
-          <component
-            :is="store.getChapterState(chapter.id) !== 'locked' ? 'NuxtLink' : 'div'"
+          <NuxtLink
             v-for="chapter in getPartChapters(part.id)"
             :key="chapter.id"
-            :to="store.getChapterState(chapter.id) !== 'locked' ? `/chapter/${chapter.slug}` : undefined"
-            class="group glass-panel rounded-xl px-5 py-4 flex items-center gap-4 transition-all duration-300 relative overflow-hidden"
-            :class="[
-              store.getChapterState(chapter.id) === 'locked'
-                ? 'opacity-35 cursor-not-allowed'
-                : 'hover:border-white/10 hover:bg-white/[0.04] hover:shadow-lg',
-            ]"
-            :style="store.getChapterState(chapter.id) !== 'locked' ? {
-              '--hover-shadow': `0 4px 24px ${part.color}10`,
-            } : {}"
+            :to="`/chapter/${chapter.slug}`"
+            class="group glass-panel rounded-xl px-5 py-4 flex items-center gap-4 transition-all duration-300 relative overflow-hidden hover:border-white/10 hover:bg-white/[0.04] hover:shadow-lg"
+            :style="{ '--hover-shadow': `0 4px 24px ${part.color}10` }"
           >
             <!-- Left accent bar -->
             <div
-              class="absolute left-0 top-0 bottom-0 w-[2px] transition-all duration-300"
+              class="absolute left-0 top-0 bottom-0 w-[2px] transition-all duration-300 opacity-20 group-hover:opacity-70"
               :style="{ backgroundColor: part.color }"
-              :class="store.getChapterState(chapter.id) === 'locked' ? 'opacity-0' : 'opacity-20 group-hover:opacity-70'"
             />
 
             <!-- Chapter number -->
@@ -276,19 +267,13 @@ const partDescriptions: Record<string, string> = {
               :style="{
                 backgroundColor: store.getChapterState(chapter.id) === 'completed'
                   ? `${part.color}20`
-                  : store.getChapterState(chapter.id) === 'locked'
-                    ? 'rgba(255,255,255,0.03)'
-                    : `${part.color}08`,
+                  : `${part.color}08`,
               }"
             >
               <CheckCircle2
                 v-if="store.getChapterState(chapter.id) === 'completed'"
                 class="w-4 h-4"
                 :style="{ color: part.color }"
-              />
-              <Lock
-                v-else-if="store.getChapterState(chapter.id) === 'locked'"
-                class="w-3.5 h-3.5 text-white/15"
               />
               <BookOpen
                 v-else
@@ -314,11 +299,10 @@ const partDescriptions: Record<string, string> = {
                 {{ chapter.estimatedMinutes }}m
               </span>
               <ArrowRight
-                v-if="store.getChapterState(chapter.id) !== 'locked'"
                 class="w-4 h-4 text-white/15 group-hover:text-white/50 group-hover:translate-x-0.5 transition-all duration-300"
               />
             </div>
-          </component>
+          </NuxtLink>
         </div>
       </div>
     </main>
