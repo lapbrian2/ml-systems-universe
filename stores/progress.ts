@@ -31,25 +31,8 @@ export const useProgressStore = defineStore('progress', {
     },
 
     getChapterState: (state) => (chapterId: string): ChapterState => {
-      // ch01 and ch21 always available
-      if (chapterId === 'ch01' || chapterId === 'ch21') {
-        const p = state.chapters[chapterId]
-        if (!p) return 'available'
-        if (p.phases.read && p.phases.exercise && p.phases.quiz.passed) return 'completed'
-        if (p.phases.read || p.phases.exercise || p.phases.quiz.attempts > 0) return 'in-progress'
-        return 'available'
-      }
-
       const chapter = CHAPTERS.find(c => c.id === chapterId)
-      if (!chapter) return 'locked'
-
-      // Check prerequisites
-      const prereqsMet = chapter.prerequisites.every(prereqId => {
-        const prereqProgress = state.chapters[prereqId]
-        return prereqProgress?.phases.read && prereqProgress?.phases.exercise && prereqProgress?.phases.quiz.passed
-      })
-
-      if (!prereqsMet) return 'locked'
+      if (!chapter) return 'available'
 
       const p = state.chapters[chapterId]
       if (!p) return 'available'

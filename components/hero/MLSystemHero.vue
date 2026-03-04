@@ -263,15 +263,17 @@ function getNode(id: string) {
   overflow: hidden;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 .ml-system-hero__svg {
-  width: 100%;
-  max-width: 1200px;
+  width: 85%;
+  max-width: 1100px;
   height: auto;
-  opacity: 0.6;
+  opacity: 0.55;
   transition: transform 0.3s ease-out;
+  mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,1) 40%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,1) 40%);
 }
 
 /* Node breathing animation */
@@ -320,11 +322,26 @@ function getNode(id: string) {
 .packet--e5, .packet--e5-b { fill: rgba(34, 197, 94, 0.5); }
 .packet--e6, .packet--e6-b { fill: rgba(236, 72, 153, 0.4); }
 
-/* Mobile: scale down, reduce opacity */
-@media (max-width: 768px) {
+/* Tablet: shift further right */
+@media (max-width: 1024px) {
   .ml-system-hero__svg {
-    opacity: 0.35;
-    transform: scale(1.2) !important;
+    width: 90%;
+    opacity: 0.4;
+    mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.2) 20%, rgba(0,0,0,1) 50%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.2) 20%, rgba(0,0,0,1) 50%);
+  }
+}
+
+/* Mobile: center but very faded */
+@media (max-width: 768px) {
+  .ml-system-hero {
+    justify-content: center;
+  }
+  .ml-system-hero__svg {
+    width: 110%;
+    opacity: 0.25;
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
   }
 }
 </style>
