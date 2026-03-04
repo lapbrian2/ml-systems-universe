@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useMemo } from 'react';
+import { useEffect, useRef, useMemo, useCallback } from 'react';
 import ScrollytellingLayout from './ScrollytellingLayout';
 import ChapterHeader from './ChapterHeader';
 import SectionBlock from './SectionBlock';
@@ -8,6 +8,7 @@ import PhaseGate from './PhaseGate';
 import KeyTakeaways from './KeyTakeaways';
 import GlossarySidebar from './GlossarySidebar';
 import ChapterNav from './ChapterNav';
+import StickyVisualization from './StickyVisualization';
 import { useScrollSpy } from '@/hooks/useScrollSpy';
 import { useProgressStore } from '@/lib/progress-store';
 import { getNextChapter, getPrevChapter, getPartForChapter } from '@/lib/chapter-utils';
@@ -32,8 +33,12 @@ export default function ChapterShell({ chapter, sections, glossary, keyTakeaways
   );
   const activeSection = useScrollSpy(sectionIds);
 
-  const { markSectionRead, markChapterRead, getProgress } = useProgressStore();
+  const { markSectionRead, markChapterRead, markExerciseComplete, getProgress } = useProgressStore();
   const progress = getProgress(chapter.id);
+
+  const handleExerciseComplete = useCallback(() => {
+    markExerciseComplete(chapter.id);
+  }, [chapter.id, markExerciseComplete]);
 
   // Track section reads
   useEffect(() => {
@@ -61,22 +66,6 @@ export default function ChapterShell({ chapter, sections, glossary, keyTakeaways
 
   const partColor = part?.color || '#4a6aff';
 
-  // Placeholder visualization
-  const vizPlaceholder = (
-    <div className="w-full h-full flex flex-col items-center justify-center text-center gap-4">
-      <div
-        className="w-20 h-20 rounded-2xl flex items-center justify-center text-3xl"
-        style={{ backgroundColor: `${partColor}15`, border: `1px solid ${partColor}30` }}
-      >
-        {String(chapter.number).padStart(2, '0')}
-      </div>
-      <div>
-        <p className="text-sm font-semibold text-foreground">{chapter.title}</p>
-        <p className="text-xs text-muted-foreground mt-1">Interactive visualization</p>
-      </div>
-    </div>
-  );
-
   return (
     <>
       <ChapterProgress
@@ -85,7 +74,13 @@ export default function ChapterShell({ chapter, sections, glossary, keyTakeaways
         partColor={partColor}
       />
 
-      <ScrollytellingLayout visualization={vizPlaceholder}>
+      <ScrollytellingLayout visualization={
+        <StickyVisualization
+          chapter={chapter}
+          activeSection={activeSection}
+          onExerciseComplete={handleExerciseComplete}
+        />
+      }>
         <ChapterHeader chapter={chapter} part={part!} />
 
         {sections.map((section, index) => (
