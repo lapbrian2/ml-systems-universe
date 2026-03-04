@@ -271,6 +271,7 @@ const vizComponent = computed(() => {
               :id="section.id"
               :heading="section.heading"
               :body="section.body"
+              :blocks="section.blocks"
               :index="idx"
               :key-concepts="section.keyConcepts"
             />

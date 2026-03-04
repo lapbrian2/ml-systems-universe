@@ -2,12 +2,13 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import type { KeyConcept } from '~/types/chapter'
+import type { KeyConcept, ContentBlock } from '~/types/chapter'
 
 const props = defineProps<{
   id: string
   heading: string
   body: string
+  blocks?: ContentBlock[]
   index: number
   keyConcepts?: KeyConcept[]
 }>()
@@ -37,7 +38,9 @@ onUnmounted(() => {
   ctx?.revert()
 })
 
+// Legacy fallback: split body by double newlines
 const paragraphs = computed(() => props.body.split('\n\n'))
+const hasRichBlocks = computed(() => props.blocks && props.blocks.length > 0)
 </script>
 
 <template>
@@ -53,8 +56,11 @@ const paragraphs = computed(() => props.body.split('\n\n'))
       {{ heading }}
     </h2>
 
-    <!-- Body paragraphs -->
-    <div class="space-y-4">
+    <!-- Rich content blocks (new textbook format) -->
+    <ContentRenderer v-if="hasRichBlocks" :blocks="blocks!" />
+
+    <!-- Legacy: plain text paragraphs -->
+    <div v-else class="space-y-4">
       <p
         v-for="(para, pIdx) in paragraphs"
         :key="pIdx"
