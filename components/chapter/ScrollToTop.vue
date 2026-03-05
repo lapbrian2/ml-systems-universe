@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { ArrowUp } from 'lucide-vue-next'
+import { useLenis } from '~/composables/useLenis'
 
 defineProps<{
   partColor: string
 }>()
 
+const lenis = useLenis()
 const visible = ref(false)
 let rafId: number | null = null
 
 function checkScroll() {
+  if (!import.meta.client) return
   visible.value = window.scrollY > 600
   rafId = null
 }
@@ -21,7 +24,11 @@ function onScroll() {
 }
 
 function scrollToTop() {
-  window.scrollTo({ top: 0, behavior: 'smooth' })
+  if (lenis) {
+    lenis.scrollTo(0, { duration: 1.2 })
+  } else {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 }
 
 onMounted(() => {
@@ -45,7 +52,7 @@ onUnmounted(() => {
   >
     <button
       v-if="visible"
-      class="fixed bottom-20 xl:bottom-6 right-6 z-50 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 shadow-lg"
+      class="fixed bottom-20 xl:bottom-16 right-6 z-50 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 shadow-lg"
       :style="{
         backgroundColor: partColor,
         boxShadow: `0 4px 20px ${partColor}40`,

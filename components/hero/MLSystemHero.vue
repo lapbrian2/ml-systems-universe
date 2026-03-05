@@ -10,13 +10,24 @@
  */
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 
-// Subtle parallax based on mouse
-const offsetX = ref(0)
-const offsetY = ref(0)
+// Subtle parallax based on mouse — RAF-throttled, bypasses Vue reactivity
+const svgRef = ref<SVGElement | null>(null)
+let rafPending = false
+let targetX = 0
+let targetY = 0
 
 function onMouseMove(e: MouseEvent) {
-  offsetX.value = (e.clientX / window.innerWidth - 0.5) * 12
-  offsetY.value = (e.clientY / window.innerHeight - 0.5) * 8
+  targetX = (e.clientX / window.innerWidth - 0.5) * 12
+  targetY = (e.clientY / window.innerHeight - 0.5) * 8
+  if (!rafPending) {
+    rafPending = true
+    requestAnimationFrame(() => {
+      if (svgRef.value) {
+        svgRef.value.style.transform = `translate(${targetX}px, ${targetY}px)`
+      }
+      rafPending = false
+    })
+  }
 }
 
 onMounted(() => {
@@ -57,11 +68,9 @@ function getNode(id: string) {
     <svg
       viewBox="0 0 1040 420"
       preserveAspectRatio="xMidYMid meet"
+      ref="svgRef"
       class="ml-system-hero__svg"
       aria-hidden="true"
-      :style="{
-        transform: `translate(${offsetX}px, ${offsetY}px)`,
-      }"
     >
       <defs>
         <!-- Node glow filters -->
@@ -289,8 +298,12 @@ function getNode(id: string) {
 .node--monitor .node-glow  { animation-delay: 3.0s; }
 
 @keyframes nodeBreath {
-  0%, 100% { opacity: 0.03; r: 32; }
-  50% { opacity: 0.08; r: 36; }
+  0%, 100% { opacity: 0.03; transform: scale(0.89); }
+  50% { opacity: 0.08; transform: scale(1); }
+}
+.node-glow {
+  transform-origin: center;
+  transform-box: fill-box;
 }
 
 /* Inner ring subtle pulse */

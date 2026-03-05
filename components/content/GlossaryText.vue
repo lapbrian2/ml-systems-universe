@@ -49,7 +49,12 @@ const segments = computed<TextSegment[]>(() => {
 
     // Only highlight the first occurrence of each term per paragraph
     if (matched.has(termKey)) {
-      // Advance lastIndex past the duplicate to avoid text duplication
+      // Push text between lastIndex and the duplicate as plain text
+      if (match.index > lastIndex) {
+        result.push({ type: 'text', value: source.slice(lastIndex, match.index) })
+      }
+      result.push({ type: 'text', value: match[1] })
+      lastIndex = match.index + match[1].length
       continue
     }
     matched.add(termKey)

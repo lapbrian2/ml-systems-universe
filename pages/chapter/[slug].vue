@@ -56,6 +56,30 @@ if (!chapter.value) {
 // ── Progress ──────────────────────────────────────────────────────────
 const store = useProgressStore()
 
+// ── Time tracking ─────────────────────────────────────────────────────
+let visitStart = Date.now()
+
+function flushTime() {
+  if (chapter.value) {
+    const elapsed = Math.floor((Date.now() - visitStart) / 1000)
+    if (elapsed > 0) store.addTimeSpent(chapter.value.id, elapsed)
+  }
+  visitStart = Date.now()
+}
+
+if (import.meta.client) {
+  onMounted(() => {
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) flushTime()
+      else visitStart = Date.now()
+    })
+  })
+
+  onUnmounted(() => {
+    flushTime()
+  })
+}
+
 // ── Scroll progress bar ───────────────────────────────────────────────
 const progressWidth = ref(0)
 const contentColumn = ref<HTMLElement | null>(null)

@@ -35,6 +35,11 @@ function dismiss() {
   dismissed.value = true
 }
 
+function restore() {
+  dismissed.value = false
+  collapsed.value = true
+}
+
 // Only show TOC after scrolling past 400px
 let ticking = false
 function onScroll() {
@@ -252,5 +257,22 @@ watch(() => props.chapterId, () => {
         </div>
       </div>
     </div>
+  </Transition>
+
+  <!-- Restore button (appears when TOC is dismissed) -->
+  <Transition
+    enter-active-class="transition-all duration-300 ease-out"
+    enter-from-class="opacity-0 scale-75"
+    leave-active-class="transition-all duration-200 ease-in"
+    leave-to-class="opacity-0 scale-75"
+  >
+    <button
+      v-if="showToc && dismissed"
+      class="fixed z-40 w-9 h-9 rounded-full flex items-center justify-center glass-panel--floating transition-colors hover:bg-white/[0.08] xl:right-6 xl:top-1/2 xl:-translate-y-1/2 bottom-4 right-4 xl:bottom-auto"
+      aria-label="Show table of contents"
+      @click="restore"
+    >
+      <List class="w-4 h-4 text-white/40" />
+    </button>
   </Transition>
 </template>

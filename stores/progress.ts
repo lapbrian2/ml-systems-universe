@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { CHAPTERS } from '~/data/chapters'
+import { CHAPTER_DEPENDENCIES } from '~/data/chapters/dependencies'
 import type { ChapterProgress, ChapterState, PhaseState } from '~/types/progress'
 
 function defaultPhases(): PhaseState {
@@ -33,6 +34,14 @@ export const useProgressStore = defineStore('progress', {
     getChapterState: (state) => (chapterId: string): ChapterState => {
       const chapter = CHAPTERS.find(c => c.id === chapterId)
       if (!chapter) return 'available'
+
+      // Check prerequisites
+      const prereqs = CHAPTER_DEPENDENCIES[chapterId] ?? []
+      const prereqsMet = prereqs.every(depId => {
+        const dep = state.chapters[depId]
+        return dep?.phases.read && dep?.phases.exercise && dep?.phases.quiz.passed
+      })
+      if (prereqs.length > 0 && !prereqsMet) return 'locked'
 
       const p = state.chapters[chapterId]
       if (!p) return 'available'
@@ -88,6 +97,22 @@ export const useProgressStore = defineStore('progress', {
       }
       if (passed) {
         quiz.passed = true
+      }
+
+      // Badge: perfect quiz
+      if (score === 100) this.unlockBadge('perfect_quiz')
+
+      // Badge: first chapter complete
+      if (passed) {
+        const p = this.chapters[chapterId]
+        if (p.phases.read && p.phases.exercise) {
+          const completedCount = Object.values(this.chapters)
+            .filter(ch => ch.phases.read && ch.phases.exercise && ch.phases.quiz.passed).length
+          if (completedCount === 1) this.unlockBadge('first_chapter')
+
+          // Badge: completionist (all 21 chapters)
+          if (completedCount >= CHAPTERS.length) this.unlockBadge('completionist')
+        }
       }
     },
 
