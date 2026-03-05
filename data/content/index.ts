@@ -43,9 +43,14 @@ export async function loadChapterContent(chapterId: string): Promise<ChapterCont
   if (contentCache[chapterId]) return contentCache[chapterId];
   const loader = contentLoaders[chapterId];
   if (!loader) return null;
-  const content = await loader();
-  contentCache[chapterId] = content;
-  return content;
+  try {
+    const content = await loader();
+    contentCache[chapterId] = content;
+    return content;
+  } catch {
+    console.error(`[content] Failed to load ${chapterId}`);
+    return null;
+  }
 }
 
 /**

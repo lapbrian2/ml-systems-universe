@@ -27,8 +27,12 @@ const partColor = computed(() => part.value?.color ?? '#14b8a6')
 // Load content for current chapter
 async function ensureContent() {
   if (chapter.value) {
-    await loadChapterContent(chapter.value.id)
-    contentReady.value = true
+    try {
+      await loadChapterContent(chapter.value.id)
+      contentReady.value = true
+    } catch {
+      contentReady.value = false
+    }
   }
 }
 // SSR: load eagerly during setup; client: also on navigation
@@ -61,6 +65,7 @@ useSeoMeta({
   description: computed(() => chapter.value?.description ?? ''),
   ogDescription: computed(() => chapter.value?.description ?? ''),
   ogImage: '/og-default.png',
+  ogUrl: computed(() => `https://mlsystemsuniverse.com/chapter/${slug.value}`),
   twitterCard: 'summary_large_image',
 })
 
@@ -220,6 +225,12 @@ function onQuizComplete(_score: number) {
 }
 
 // ── Exercise complete handler (from viz component interaction) ────────
+function scrollToViz() {
+  if (import.meta.client) {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+}
+
 function onExerciseComplete() {
   if (chapter.value) {
     store.markExerciseComplete(chapter.value.id)
@@ -227,7 +238,7 @@ function onExerciseComplete() {
 }
 
 // ── Viz component: dynamic import per chapter ───────────────────────
-const vizImportMap: Record<string, () => Promise<any>> = {
+const vizImportMap: Record<string, () => Promise<{ default: ReturnType<typeof defineComponent> }>> = {
   ch01: () => import('~/components/viz/MLPipelineFlow.vue'),
   ch02: () => import('~/components/viz/SystemArchitectureBuilder.vue'),
   ch03: () => import('~/components/viz/NeuralNetworkPlayground.vue'),
@@ -495,7 +506,7 @@ const vizComponent = computed(() => {
           border: `1px solid ${partColor}30`,
         }"
         aria-label="Scroll to visualization"
-        @click="window.scrollTo({ top: 0, behavior: 'smooth' })"
+        @click="scrollToViz"
       >
         <Eye class="w-3 h-3" />
         Viz

@@ -148,8 +148,7 @@ function formatNumber(n: number): string {
   return n.toFixed(3)
 }
 
-/* ── Reset on section change ── */
-watch(() => props.activeSection, () => {})
+/* activeSection drives context text reactively — no watcher needed */
 </script>
 
 <template>

@@ -150,6 +150,31 @@ function handleHardwareClick(hw: Hardware, event: MouseEvent) {
   }
 }
 
+function handleHardwareKeyboard(hw: Hardware, event: KeyboardEvent) {
+  selectedHardware.value = hw.id
+  clickedHardware.value = new Set([...clickedHardware.value, hw.id])
+
+  const el = event.currentTarget as SVGElement
+  const svg = el.closest('svg')
+  if (svg) {
+    const elRect = el.getBoundingClientRect()
+    const svgRect = svg.getBoundingClientRect()
+    const scaleX = SVG_W / svgRect.width
+    const scaleY = SVG_H / svgRect.height
+    tooltip.value = {
+      visible: true,
+      x: (elRect.left + elRect.width / 2 - svgRect.left) * scaleX,
+      y: (elRect.top - svgRect.top) * scaleY,
+      hardware: hw,
+    }
+  }
+
+  if (clickedHardware.value.size >= 3 && !exerciseEmitted.value) {
+    exerciseEmitted.value = true
+    emit('exerciseComplete')
+  }
+}
+
 function closeTooltip() {
   tooltip.value.visible = false
   selectedHardware.value = null
@@ -209,19 +234,16 @@ watch(() => props.activeSection, () => {
     </div>
 
     <!-- Metric selector tabs -->
-    <div class="mlperf__tabs" role="tablist" aria-label="Benchmark metrics">
-      <button
+    <div class="mlperf__tabs" aria-label="Current benchmark metric">
+      <span
         v-for="(label, key) in metricLabels"
         :key="key"
         class="mlperf__tab"
         :class="{ 'mlperf__tab--active': activeMetric === key }"
-        role="tab"
-        :aria-selected="activeMetric === key"
-        :aria-label="`Show ${label} metric`"
-        @click="() => {}"
+        :aria-current="activeMetric === key ? 'true' : undefined"
       >
         {{ label }}
-      </button>
+      </span>
     </div>
 
     <!-- SVG Chart -->
@@ -230,6 +252,8 @@ watch(() => props.activeSection, () => {
         :viewBox="`0 0 ${SVG_W} ${SVG_H}`"
         class="mlperf__svg"
         preserveAspectRatio="xMidYMid meet"
+        role="img"
+        :aria-label="`Bar chart comparing ${metricLabels[activeMetric]} across 5 hardware platforms`"
         @click.self="closeTooltip"
       >
         <defs>
@@ -294,8 +318,8 @@ watch(() => props.activeSection, () => {
           :tabindex="0"
           :aria-label="`${hw.name}: ${hw.metrics[activeMetric]} ${metricUnits[activeMetric]}`"
           @click.stop="handleHardwareClick(hw, $event)"
-          @keydown.enter.stop="handleHardwareClick(hw, $event as unknown as MouseEvent)"
-          @keydown.space.prevent.stop="handleHardwareClick(hw, $event as unknown as MouseEvent)"
+          @keydown.enter.stop="handleHardwareKeyboard(hw, $event)"
+          @keydown.space.prevent.stop="handleHardwareKeyboard(hw, $event)"
         >
           <!-- Bar glow -->
           <rect

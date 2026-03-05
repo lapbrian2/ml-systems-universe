@@ -11,12 +11,14 @@ defineProps<{
     <!-- Scrollable wrapper -->
     <div class="overflow-x-auto rounded-lg border border-white/[0.06]">
       <table class="w-full text-sm">
+        <caption v-if="caption" class="sr-only">{{ caption }}</caption>
         <!-- Header -->
         <thead>
           <tr class="bg-primary/10">
             <th
               v-for="(header, hIdx) in headers"
               :key="hIdx"
+              scope="col"
               class="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-primary whitespace-nowrap"
             >
               {{ header }}

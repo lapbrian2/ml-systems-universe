@@ -35,7 +35,9 @@ const contentLoaded = ref(false)
 // Lazy-load all chapter content when palette first opens
 watch(isOpen, async (open) => {
   if (open && !contentLoaded.value) {
-    await loadAllChapterContent()
+    try {
+      await loadAllChapterContent()
+    } catch { /* search will work with whatever loaded */ }
     contentLoaded.value = true
   }
 })

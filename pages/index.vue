@@ -219,7 +219,7 @@ const partDescriptions: Record<string, string> = {
     </header>
 
     <!-- ═══ Features ═══ -->
-    <section class="max-w-5xl mx-auto px-6 pb-16">
+    <section class="max-w-5xl mx-auto px-6 pb-16" aria-label="Features">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div
           v-for="feature in features"
