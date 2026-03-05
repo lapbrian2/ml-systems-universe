@@ -4,7 +4,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowLeft, Eye } from 'lucide-vue-next'
 import { getChapterBySlug, getPartForChapter, getNextChapter, getPrevChapter } from '~/lib/chapter-utils'
-import { getChapterContent } from '~/data/content'
+import { getChapterContent, loadChapterContent } from '~/data/content'
 import { useProgressStore } from '~/stores/progress'
 import type { ChapterMeta, Part } from '~/types/chapter'
 import type { ChapterContent } from '~/data/content'
@@ -17,10 +17,26 @@ const chapter = computed<ChapterMeta | undefined>(() => getChapterBySlug(slug.va
 const part = computed<Part | undefined>(() =>
   chapter.value ? getPartForChapter(chapter.value.id) : undefined
 )
+// Content is loaded async then accessed via sync getter
+const contentReady = ref(false)
 const content = computed<ChapterContent | null>(() =>
-  chapter.value ? getChapterContent(chapter.value.id) : null
+  contentReady.value && chapter.value ? getChapterContent(chapter.value.id) : null
 )
 const partColor = computed(() => part.value?.color ?? '#14b8a6')
+
+// Load content for current chapter
+async function ensureContent() {
+  if (chapter.value) {
+    await loadChapterContent(chapter.value.id)
+    contentReady.value = true
+  }
+}
+// SSR: load eagerly during setup; client: also on navigation
+await ensureContent()
+watch(() => chapter.value?.id, async () => {
+  contentReady.value = false
+  await ensureContent()
+})
 
 // Head meta
 useHead({

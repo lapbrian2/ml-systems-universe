@@ -9,7 +9,7 @@ import {
   Command,
 } from 'lucide-vue-next'
 import { CHAPTERS } from '~/data/chapters'
-import { getChapterContent } from '~/data/content'
+import { getChapterContent, loadAllChapterContent } from '~/data/content'
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface SearchResult {
@@ -30,9 +30,20 @@ const selectedIndex = ref(0)
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
 const inputRef = ref<HTMLInputElement | null>(null)
 const resultsRef = ref<HTMLDivElement | null>(null)
+const contentLoaded = ref(false)
+
+// Lazy-load all chapter content when palette first opens
+watch(isOpen, async (open) => {
+  if (open && !contentLoaded.value) {
+    await loadAllChapterContent()
+    contentLoaded.value = true
+  }
+})
 
 // ── Build search index ─────────────────────────────────────────────────────
 const searchIndex = computed<SearchResult[]>(() => {
+  // Re-evaluate when content finishes loading
+  const _loaded = contentLoaded.value
   const items: SearchResult[] = []
 
   for (const chapter of CHAPTERS) {

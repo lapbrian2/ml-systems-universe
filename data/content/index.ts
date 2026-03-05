@@ -1,28 +1,5 @@
 import type { ChapterSection, GlossaryTerm } from '~/types/chapter';
 
-// Eagerly import all content files
-import * as ch01 from './ch01-introduction';
-import * as ch02 from './ch02-ml-systems';
-import * as ch03 from './ch03-dl-primer';
-import * as ch04 from './ch04-dnn-architectures';
-import * as ch05 from './ch05-model-lifecycle';
-import * as ch06 from './ch06-data-engineering';
-import * as ch07 from './ch07-frameworks';
-import * as ch08 from './ch08-ai-training';
-import * as ch09 from './ch09-efficient-ai';
-import * as ch10 from './ch10-model-optimizations';
-import * as ch11 from './ch11-hw-acceleration';
-import * as ch12 from './ch12-benchmarking';
-import * as ch13 from './ch13-training-infra';
-import * as ch14 from './ch14-deployment';
-import * as ch15 from './ch15-security';
-import * as ch16 from './ch16-robustness';
-import * as ch17 from './ch17-fairness';
-import * as ch18 from './ch18-sustainability';
-import * as ch19 from './ch19-applications';
-import * as ch20 from './ch20-responsible-ai';
-import * as ch21 from './ch21-conclusion';
-
 export interface ChapterContent {
   sections: ChapterSection[];
   glossary: GlossaryTerm[];
@@ -30,11 +7,61 @@ export interface ChapterContent {
   learningObjectives?: string[];
 }
 
-const contentModules: Record<string, ChapterContent> = {
-  ch01, ch02, ch03, ch04, ch05, ch06, ch07, ch08, ch09, ch10,
-  ch11, ch12, ch13, ch14, ch15, ch16, ch17, ch18, ch19, ch20, ch21,
+// Dynamic import map — each chapter is only loaded when requested
+const contentLoaders: Record<string, () => Promise<ChapterContent>> = {
+  ch01: () => import('./ch01-introduction').then(m => m as unknown as ChapterContent),
+  ch02: () => import('./ch02-ml-systems').then(m => m as unknown as ChapterContent),
+  ch03: () => import('./ch03-dl-primer').then(m => m as unknown as ChapterContent),
+  ch04: () => import('./ch04-dnn-architectures').then(m => m as unknown as ChapterContent),
+  ch05: () => import('./ch05-model-lifecycle').then(m => m as unknown as ChapterContent),
+  ch06: () => import('./ch06-data-engineering').then(m => m as unknown as ChapterContent),
+  ch07: () => import('./ch07-frameworks').then(m => m as unknown as ChapterContent),
+  ch08: () => import('./ch08-ai-training').then(m => m as unknown as ChapterContent),
+  ch09: () => import('./ch09-efficient-ai').then(m => m as unknown as ChapterContent),
+  ch10: () => import('./ch10-model-optimizations').then(m => m as unknown as ChapterContent),
+  ch11: () => import('./ch11-hw-acceleration').then(m => m as unknown as ChapterContent),
+  ch12: () => import('./ch12-benchmarking').then(m => m as unknown as ChapterContent),
+  ch13: () => import('./ch13-training-infra').then(m => m as unknown as ChapterContent),
+  ch14: () => import('./ch14-deployment').then(m => m as unknown as ChapterContent),
+  ch15: () => import('./ch15-security').then(m => m as unknown as ChapterContent),
+  ch16: () => import('./ch16-robustness').then(m => m as unknown as ChapterContent),
+  ch17: () => import('./ch17-fairness').then(m => m as unknown as ChapterContent),
+  ch18: () => import('./ch18-sustainability').then(m => m as unknown as ChapterContent),
+  ch19: () => import('./ch19-applications').then(m => m as unknown as ChapterContent),
+  ch20: () => import('./ch20-responsible-ai').then(m => m as unknown as ChapterContent),
+  ch21: () => import('./ch21-conclusion').then(m => m as unknown as ChapterContent),
 };
 
+// In-memory cache to avoid re-importing
+const contentCache: Record<string, ChapterContent> = {};
+
+/**
+ * Load chapter content asynchronously (with cache).
+ * Returns null if chapterId is unknown.
+ */
+export async function loadChapterContent(chapterId: string): Promise<ChapterContent | null> {
+  if (contentCache[chapterId]) return contentCache[chapterId];
+  const loader = contentLoaders[chapterId];
+  if (!loader) return null;
+  const content = await loader();
+  contentCache[chapterId] = content;
+  return content;
+}
+
+/**
+ * Synchronous getter — returns cached content or null.
+ * Call loadChapterContent first to populate the cache.
+ */
 export function getChapterContent(chapterId: string): ChapterContent | null {
-  return contentModules[chapterId] || null;
+  return contentCache[chapterId] ?? null;
+}
+
+/**
+ * Load ALL chapter content (for search index building).
+ * Returns map of chapterId → ChapterContent.
+ */
+export async function loadAllChapterContent(): Promise<Record<string, ChapterContent>> {
+  const ids = Object.keys(contentLoaders);
+  await Promise.all(ids.map(id => loadChapterContent(id)));
+  return { ...contentCache };
 }

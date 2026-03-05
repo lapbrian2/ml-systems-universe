@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import { CHAPTERS } from '~/data/chapters'
+import { PARTS } from '~/data/chapters/parts'
+import { CHAPTER_DEPENDENCIES } from '~/data/chapters/dependencies'
 
 const props = defineProps<{
   activeSection: number
@@ -20,37 +23,57 @@ interface ChapterNode {
   connections: number[]
 }
 
-const partColors: Record<number, string> = {
-  1: '#14b8a6', 2: '#a855f7', 3: '#22c55e', 4: '#f0a500', 5: '#ec4899', 6: '#ff6b6b',
-}
-const partNames: Record<number, string> = {
-  1: 'ML Foundations', 2: 'Training & Data', 3: 'Deployment & Ops',
-  4: 'Advanced Systems', 5: 'Impact & Ethics', 6: 'Frontiers',
+// Derive part colors and names from real PARTS data
+const partIndexMap: Record<string, number> = {}
+const partColors: Record<number, string> = {}
+const partNames: Record<number, string> = {}
+PARTS.forEach((p, i) => {
+  const idx = i + 1
+  partIndexMap[p.id] = idx
+  partColors[idx] = p.color
+  partNames[idx] = p.shortName
+})
+
+// SVG layout positions per chapter (hand-tuned for visual clarity)
+const nodePositions: Record<number, { x: number; y: number }> = {
+  1: { x: 100, y: 80 }, 2: { x: 200, y: 50 }, 3: { x: 160, y: 140 }, 4: { x: 300, y: 100 },
+  5: { x: 340, y: 60 }, 6: { x: 430, y: 100 }, 7: { x: 370, y: 150 }, 8: { x: 260, y: 230 },
+  9: { x: 140, y: 260 }, 10: { x: 350, y: 270 }, 11: { x: 470, y: 230 }, 12: { x: 580, y: 120 },
+  13: { x: 640, y: 200 }, 14: { x: 570, y: 280 }, 15: { x: 100, y: 350 }, 16: { x: 210, y: 370 },
+  17: { x: 310, y: 390 }, 18: { x: 420, y: 370 }, 19: { x: 540, y: 390 }, 20: { x: 650, y: 350 },
+  21: { x: 700, y: 290 },
 }
 
-const chapters: ChapterNode[] = [
-  { id: 1, title: 'Introduction to ML Systems', short: 'Intro', part: 1, color: partColors[1], x: 100, y: 80, connections: [2, 3, 4] },
-  { id: 2, title: 'ML Fundamentals', short: 'ML Basics', part: 1, color: partColors[1], x: 200, y: 50, connections: [3, 5, 6] },
-  { id: 3, title: 'Deep Learning', short: 'Deep Learning', part: 1, color: partColors[1], x: 160, y: 140, connections: [4, 7, 8] },
-  { id: 4, title: 'Data Engineering', short: 'Data Eng', part: 2, color: partColors[2], x: 340, y: 60, connections: [5, 6] },
-  { id: 5, title: 'Training Pipelines', short: 'Training', part: 2, color: partColors[2], x: 430, y: 100, connections: [6, 7] },
-  { id: 6, title: 'Distributed Training', short: 'Distributed', part: 2, color: partColors[2], x: 370, y: 150, connections: [7, 9] },
-  { id: 7, title: 'Model Optimization', short: 'Optimization', part: 3, color: partColors[3], x: 260, y: 230, connections: [8, 9, 10] },
-  { id: 8, title: 'Edge Deployment', short: 'Edge', part: 3, color: partColors[3], x: 140, y: 260, connections: [9, 14] },
-  { id: 9, title: 'Serving Infrastructure', short: 'Serving', part: 3, color: partColors[3], x: 350, y: 270, connections: [10, 11] },
-  { id: 10, title: 'MLOps & Monitoring', short: 'MLOps', part: 3, color: partColors[3], x: 470, y: 230, connections: [11, 12] },
-  { id: 11, title: 'AutoML & NAS', short: 'AutoML', part: 4, color: partColors[4], x: 580, y: 120, connections: [12, 13] },
-  { id: 12, title: 'Federated Learning', short: 'Federated', part: 4, color: partColors[4], x: 640, y: 200, connections: [13, 15] },
-  { id: 13, title: 'On-Device Learning', short: 'On-Device', part: 4, color: partColors[4], x: 570, y: 280, connections: [14, 15] },
-  { id: 14, title: 'Transfer Learning', short: 'Transfer', part: 4, color: partColors[4], x: 500, y: 340, connections: [15] },
-  { id: 15, title: 'Adversarial Security', short: 'Security', part: 5, color: partColors[5], x: 100, y: 350, connections: [16, 17] },
-  { id: 16, title: 'Robustness Testing', short: 'Robustness', part: 5, color: partColors[5], x: 210, y: 370, connections: [17, 18] },
-  { id: 17, title: 'Fairness & Bias', short: 'Fairness', part: 5, color: partColors[5], x: 310, y: 390, connections: [18, 19] },
-  { id: 18, title: 'Sustainability', short: 'Green ML', part: 5, color: partColors[5], x: 420, y: 370, connections: [19] },
-  { id: 19, title: 'Real-World Applications', short: 'Applications', part: 6, color: partColors[6], x: 540, y: 390, connections: [20, 21] },
-  { id: 20, title: 'Responsible AI', short: 'Responsible', part: 6, color: partColors[6], x: 650, y: 350, connections: [21] },
-  { id: 21, title: 'Future Directions', short: 'Future', part: 6, color: partColors[6], x: 700, y: 290, connections: [1] },
-]
+// Build dependency graph: each chapter connects to chapters that depend on it
+const forwardConnections: Record<string, number[]> = {}
+for (const [chId, deps] of Object.entries(CHAPTER_DEPENDENCIES)) {
+  const num = parseInt(chId.replace('ch', ''), 10)
+  for (const dep of deps) {
+    const depNum = parseInt(dep.replace('ch', ''), 10)
+    if (!forwardConnections[depNum]) forwardConnections[depNum] = []
+    forwardConnections[depNum].push(num)
+  }
+}
+// ch21 loops back to ch01 for visual completeness
+if (!forwardConnections[21]) forwardConnections[21] = []
+forwardConnections[21].push(1)
+
+// Generate ChapterNodes from real data
+const chapters: ChapterNode[] = CHAPTERS.map((ch) => {
+  const num = ch.number
+  const partIdx = partIndexMap[ch.partId] ?? 1
+  const pos = nodePositions[num] ?? { x: 400, y: 250 }
+  return {
+    id: num,
+    title: ch.title,
+    short: ch.title.length > 12 ? ch.title.slice(0, 10) + '...' : ch.title,
+    part: partIdx,
+    color: partColors[partIdx],
+    x: pos.x,
+    y: pos.y,
+    connections: forwardConnections[num] ?? [],
+  }
+})
 
 const selectedNode = ref<number | null>(null)
 const clickedNodes = ref<Set<number>>(new Set())
@@ -151,13 +174,13 @@ watch(() => props.activeSection, () => { selectedNode.value = null })
             class="km__conn" :class="{ 'km__conn--hl': c.highlighted }" :marker-end="c.highlighted ? 'url(#km-arr-a)' : 'url(#km-arr)'" />
         </g>
 
-        <!-- Cluster labels -->
-        <text x="150" y="30" text-anchor="middle" class="km__cluster" :fill="partColors[1]">Foundations</text>
-        <text x="400" y="30" text-anchor="middle" class="km__cluster" :fill="partColors[2]">Training</text>
-        <text x="300" y="210" text-anchor="middle" class="km__cluster" :fill="partColors[3]">Deployment</text>
-        <text x="620" y="100" text-anchor="middle" class="km__cluster" :fill="partColors[4]">Advanced</text>
-        <text x="250" y="420" text-anchor="middle" class="km__cluster" :fill="partColors[5]">Impact</text>
-        <text x="650" y="420" text-anchor="middle" class="km__cluster" :fill="partColors[6]">Frontiers</text>
+        <!-- Cluster labels derived from real PARTS data -->
+        <text x="150" y="30" text-anchor="middle" class="km__cluster" :fill="partColors[1]">{{ partNames[1] }}</text>
+        <text x="380" y="30" text-anchor="middle" class="km__cluster" :fill="partColors[2]">{{ partNames[2] }}</text>
+        <text x="300" y="210" text-anchor="middle" class="km__cluster" :fill="partColors[3]">{{ partNames[3] }}</text>
+        <text x="620" y="170" text-anchor="middle" class="km__cluster" :fill="partColors[4]">{{ partNames[4] }}</text>
+        <text x="280" y="430" text-anchor="middle" class="km__cluster" :fill="partColors[5]">{{ partNames[5] }}</text>
+        <text x="660" y="320" text-anchor="middle" class="km__cluster" :fill="partColors[6]">{{ partNames[6] }}</text>
 
         <g v-for="n in chapters" :key="n.id" class="km__node"
           :class="{ 'km__node--sel': selectedNode === n.id, 'km__node--clicked': clickedNodes.has(n.id) }"
