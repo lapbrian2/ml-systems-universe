@@ -8,6 +8,14 @@ nuxtApp.hook('page:finish', () => { isLoading.value = false })
 
 <template>
   <div class="grain-overlay">
+    <!-- Skip to content (accessibility) -->
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[999] focus:px-4 focus:py-2 focus:bg-teal-500 focus:text-white focus:rounded-lg"
+    >
+      Skip to content
+    </a>
+
     <!-- Page loading indicator -->
     <Transition
       enter-active-class="transition-opacity duration-200"

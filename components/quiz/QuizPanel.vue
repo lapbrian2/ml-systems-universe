@@ -163,7 +163,7 @@ function getOptionClass(optionIndex: number): string {
           <h3 class="font-display text-base font-semibold text-white">
             {{ quizData?.title ?? 'Chapter Quiz' }}
           </h3>
-          <p v-if="quizData?.description && !finished" class="text-[11px] text-white/35 mt-0.5">
+          <p v-if="quizData?.description && !finished" class="text-[11px] text-white/55 mt-0.5">
             {{ quizData.description }}
           </p>
         </div>
@@ -172,7 +172,7 @@ function getOptionClass(optionIndex: number): string {
           v-if="store.getProgress(chapterId).phases.quiz.attempts > 0 && !finished"
           class="text-right"
         >
-          <p class="text-[9px] text-white/25 uppercase tracking-wider">Best</p>
+          <p class="text-[9px] text-white/50 uppercase tracking-wider">Best</p>
           <p class="text-sm font-mono font-semibold tabular-nums" :style="{ color: partColor }">
             {{ store.getProgress(chapterId).phases.quiz.bestScore }}%
           </p>
@@ -181,14 +181,14 @@ function getOptionClass(optionIndex: number): string {
 
       <div class="px-6 pb-6">
         <!-- No quiz data -->
-        <div v-if="!quizData" class="py-10 text-center text-sm text-white/30">
+        <div v-if="!quizData" class="py-10 text-center text-sm text-white/50">
           No quiz available for this chapter.
         </div>
 
         <!-- Quiz intro screen -->
         <div v-else-if="showIntro" class="py-8 text-center space-y-4">
           <p class="text-sm text-white/50">Ready to test your knowledge?</p>
-          <div class="flex items-center justify-center gap-4 text-xs text-white/30">
+          <div class="flex items-center justify-center gap-4 text-xs text-white/50">
             <span>{{ quizData.selectCount }} questions</span>
             <span class="w-1 h-1 rounded-full bg-white/15" />
             <span>Randomized from pool</span>
@@ -389,9 +389,9 @@ function getOptionClass(optionIndex: number): string {
               >
                 {{ passed ? 'Excellent work!' : 'Keep learning!' }}
               </p>
-              <p class="text-sm text-white/35 mt-1">
+              <p class="text-sm text-white/55 mt-1">
                 {{ correctCount }} of {{ totalQuestions }} correct
-                <span v-if="!passed" class="text-white/25"> · Need {{ quizData?.passingScore ?? 70 }}% to pass</span>
+                <span v-if="!passed" class="text-white/50"> · Need {{ quizData?.passingScore ?? 70 }}% to pass</span>
               </p>
             </div>
 

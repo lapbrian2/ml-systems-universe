@@ -35,7 +35,7 @@ const expanded = ref(true)
         <h3 class="text-sm font-semibold text-white/90">
           Learning Objectives
         </h3>
-        <p class="text-[11px] text-white/35 mt-0.5">
+        <p class="text-[11px] text-white/55 mt-0.5">
           By the end of this chapter, you will be able to:
         </p>
       </div>
@@ -65,7 +65,7 @@ const expanded = ref(true)
               class="w-3.5 h-3.5 shrink-0 mt-0.5"
               :style="{ color: `${partColor}80` }"
             />
-            <span class="text-sm leading-relaxed text-white/55">
+            <span class="text-sm leading-relaxed text-white/60">
               {{ objective }}
             </span>
           </li>

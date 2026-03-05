@@ -60,7 +60,7 @@ async function shareNative() {
 <template>
   <div class="relative">
     <button
-      class="flex items-center gap-1.5 text-xs text-white/30 hover:text-white/50 transition-colors"
+      class="flex items-center gap-1.5 text-xs text-white/50 hover:text-white/70 transition-colors"
       aria-label="Share progress"
       @click="isOpen = !isOpen"
     >
@@ -101,7 +101,7 @@ async function shareNative() {
               }"
             />
           </div>
-          <div class="text-[10px] text-white/30">
+          <div class="text-[10px] text-white/50">
             {{ completedCount }}/{{ CHAPTERS.length }} chapters · ML Systems Universe
           </div>
         </div>

@@ -131,7 +131,7 @@ watch(() => props.chapterId, () => {
               <span
                 class="text-[11px] leading-tight truncate transition-colors duration-200"
                 :class="[
-                  activeSection === idx ? 'text-white/80 font-medium' : 'text-white/35 group-hover:text-white/55',
+                  activeSection === idx ? 'text-white/80 font-medium' : 'text-white/50 group-hover:text-white/65',
                 ]"
               >
                 {{ section.heading }}
@@ -149,8 +149,8 @@ watch(() => props.chapterId, () => {
         <!-- Progress bar -->
         <div class="mt-3 pt-3 border-t border-white/[0.06]">
           <div class="flex items-center justify-between mb-1.5">
-            <span class="text-[9px] text-white/25">Read</span>
-            <span class="text-[9px] font-mono text-white/25 tabular-nums">
+            <span class="text-[9px] text-white/50">Read</span>
+            <span class="text-[9px] font-mono text-white/50 tabular-nums">
               {{ progress.sectionsRead.length }}/{{ sections.length }}
             </span>
           </div>
@@ -208,7 +208,7 @@ watch(() => props.chapterId, () => {
                 </span>
                 <span
                   class="text-sm truncate"
-                  :class="activeSection === idx ? 'text-white/80 font-medium' : 'text-white/35'"
+                  :class="activeSection === idx ? 'text-white/80 font-medium' : 'text-white/50'"
                 >
                   {{ section.heading }}
                 </span>
@@ -231,7 +231,7 @@ watch(() => props.chapterId, () => {
           </span>
         </button>
         <div class="flex items-center gap-2 shrink-0">
-          <span class="text-[10px] font-mono text-white/25 tabular-nums">
+          <span class="text-[10px] font-mono text-white/50 tabular-nums">
             {{ activeSection + 1 }}/{{ sections.length }}
           </span>
           <!-- Dismiss button -->

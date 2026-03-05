@@ -34,7 +34,7 @@ const sortedTerms = computed(() =>
         <span class="text-sm font-medium text-white/80">
           Glossary
         </span>
-        <span class="text-xs text-white/30">
+        <span class="text-xs text-white/50">
           ({{ terms.length }} terms)
         </span>
       </div>
@@ -64,7 +64,7 @@ const sortedTerms = computed(() =>
             <dt class="text-xs font-semibold text-white/80 mb-1">
               {{ term.term }}
             </dt>
-            <dd class="text-sm text-white/45 leading-relaxed">
+            <dd class="text-sm text-white/60 leading-relaxed">
               {{ term.definition }}
             </dd>
           </div>

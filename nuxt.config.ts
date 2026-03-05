@@ -2,11 +2,44 @@ export default defineNuxtConfig({
   compatibilityDate: '2026-03-04',
   devtools: { enabled: true },
 
+  site: {
+    url: 'https://mlsystemsuniverse.com',
+  },
+
   modules: [
     '@tresjs/nuxt',
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
+    '@nuxtjs/sitemap',
   ],
+
+  sitemap: {
+    urls: [
+      '/',
+      '/review',
+      '/chapter/introduction',
+      '/chapter/ml-systems',
+      '/chapter/dl-primer',
+      '/chapter/dnn-architectures',
+      '/chapter/ai-workflow',
+      '/chapter/data-engineering',
+      '/chapter/ai-frameworks',
+      '/chapter/ai-training',
+      '/chapter/efficient-ai',
+      '/chapter/model-optimizations',
+      '/chapter/ai-acceleration',
+      '/chapter/benchmarking',
+      '/chapter/ml-operations',
+      '/chapter/on-device-learning',
+      '/chapter/security-privacy',
+      '/chapter/robust-ai',
+      '/chapter/responsible-ai',
+      '/chapter/sustainable-ai',
+      '/chapter/ai-for-good',
+      '/chapter/agi-systems',
+      '/chapter/conclusion',
+    ],
+  },
 
   css: [
     '~/assets/css/main.css',
@@ -33,6 +66,16 @@ export default defineNuxtConfig({
         { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+        {
+          rel: 'preload',
+          href: 'https://fonts.googleapis.com/css2?family=Syne:wght@700;800&display=swap',
+          as: 'style',
+        },
+        {
+          rel: 'preload',
+          href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap',
+          as: 'style',
+        },
         {
           rel: 'stylesheet',
           href: 'https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap',

@@ -549,7 +549,7 @@ onMounted(() => {
   color: rgba(255, 255, 255, 0.15);
 }
 .cp-empty-text {
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.55);
   font-family: 'Inter', sans-serif;
   font-size: 0.85rem;
   text-align: center;
@@ -624,7 +624,7 @@ onMounted(() => {
   text-overflow: ellipsis;
 }
 .cp-result-subtitle {
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.50);
   font-family: 'Inter', sans-serif;
   font-size: 0.75rem;
   white-space: nowrap;
@@ -637,7 +637,7 @@ onMounted(() => {
   border-radius: 0.35rem;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.50);
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.62rem;
   font-weight: 500;

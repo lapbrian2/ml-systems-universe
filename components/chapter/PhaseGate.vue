@@ -90,7 +90,7 @@ watch(allComplete, async (isComplete, wasComplete) => {
           <!-- Label -->
           <span
             class="text-xs font-medium transition-colors duration-300"
-            :class="phase.done ? 'text-white/80' : 'text-white/30'"
+            :class="phase.done ? 'text-white/80' : 'text-white/50'"
           >
             {{ phase.label }}
           </span>
@@ -106,7 +106,7 @@ watch(allComplete, async (isComplete, wasComplete) => {
           <!-- Exercise hint -->
           <p
             v-if="phase.id === 'exercise' && !phase.done"
-            class="text-[9px] text-white/25 text-center px-1 leading-tight"
+            class="text-[9px] text-white/50 text-center px-1 leading-tight"
           >
             Interact with the visualization
           </p>

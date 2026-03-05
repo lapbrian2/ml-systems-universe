@@ -109,7 +109,7 @@ const progressPercentage = computed(() =>
 </script>
 
 <template>
-  <div class="min-h-screen bg-cosmic-bg">
+  <div id="main-content" class="min-h-screen bg-cosmic-bg">
     <!-- Back link -->
     <div class="fixed top-3 left-4 z-50">
       <NuxtLink

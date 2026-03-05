@@ -38,7 +38,7 @@ const nextPart = computed(() => next.value ? getPartForChapter(next.value.id) : 
           <ArrowLeft class="w-4 h-4 text-white/30 group-hover:text-white/60 transition-colors" />
         </div>
         <div class="min-w-0">
-          <span class="text-[10px] text-white/25 uppercase tracking-wider font-medium">Previous</span>
+          <span class="text-[10px] text-white/50 uppercase tracking-wider font-medium">Previous</span>
           <p class="text-sm font-medium text-white/65 group-hover:text-white/90 transition-colors truncate mt-0.5">
             {{ prev.title }}
           </p>
@@ -63,7 +63,7 @@ const nextPart = computed(() => next.value ? getPartForChapter(next.value.id) : 
           :style="{ backgroundColor: nextPart.color }"
         />
         <div class="min-w-0">
-          <span class="text-[10px] text-white/25 uppercase tracking-wider font-medium">Next</span>
+          <span class="text-[10px] text-white/50 uppercase tracking-wider font-medium">Next</span>
           <p class="text-sm font-medium text-white/65 group-hover:text-white/90 transition-colors truncate mt-0.5">
             {{ next.title }}
           </p>

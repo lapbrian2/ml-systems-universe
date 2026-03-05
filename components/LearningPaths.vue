@@ -68,7 +68,7 @@ const difficultyLabel: Record<string, string> = {
       </div>
       <div>
         <h2 class="text-lg font-display font-bold text-white">Learning Paths</h2>
-        <p class="text-xs text-white/40">Curated chapter sequences for different goals</p>
+        <p class="text-xs text-white/55">Curated chapter sequences for different goals</p>
       </div>
     </div>
 
@@ -101,16 +101,16 @@ const difficultyLabel: Record<string, string> = {
               {{ path.name }}
             </h3>
             <div class="flex items-center gap-2 mt-0.5">
-              <span class="text-[10px] text-white/35">
+              <span class="text-[10px] text-white/50">
                 {{ difficultyLabel[path.difficulty] }}
               </span>
               <span class="text-[10px] text-white/20">·</span>
-              <span class="text-[10px] text-white/35 flex items-center gap-1">
+              <span class="text-[10px] text-white/50 flex items-center gap-1">
                 <Clock class="w-2.5 h-2.5" />
                 {{ path.estimatedHours }}h
               </span>
               <span class="text-[10px] text-white/20">·</span>
-              <span class="text-[10px] text-white/35">
+              <span class="text-[10px] text-white/50">
                 {{ path.chapters.length }} chapters
               </span>
             </div>
@@ -118,14 +118,14 @@ const difficultyLabel: Record<string, string> = {
         </div>
 
         <!-- Description -->
-        <p class="text-xs text-white/45 leading-relaxed mb-3 line-clamp-2">
+        <p class="text-xs text-white/55 leading-relaxed mb-3 line-clamp-2">
           {{ path.description }}
         </p>
 
         <!-- Progress bar -->
         <div class="mb-3">
           <div class="flex justify-between items-center mb-1">
-            <span class="text-[10px] text-white/30">Progress</span>
+            <span class="text-[10px] text-white/50">Progress</span>
             <span
               class="text-[10px] font-semibold"
               :style="{ color: pathProgress[path.id].percentage > 0 ? path.color : 'rgba(255,255,255,0.3)' }"
@@ -153,7 +153,7 @@ const difficultyLabel: Record<string, string> = {
             :class="
               store.getChapterState(chId) === 'completed'
                 ? 'bg-white/[0.06] text-white/60'
-                : 'bg-white/[0.02] text-white/25'
+                : 'bg-white/[0.02] text-white/50'
             "
           >
             <CheckCircle2

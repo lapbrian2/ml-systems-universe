@@ -302,7 +302,7 @@ const vizComponent = computed(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-cosmic-bg">
+  <div id="main-content" class="min-h-screen bg-cosmic-bg">
     <!-- Fixed progress bar -->
     <div
       class="chapter-progress-bar"
@@ -316,7 +316,7 @@ const vizComponent = computed(() => {
     <div class="fixed top-3 left-4 z-50">
       <NuxtLink
         to="/"
-        class="flex items-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition-colors"
+        class="flex items-center gap-1.5 text-xs text-white/50 hover:text-white/70 transition-colors"
         aria-label="Back to chapter list"
       >
         <ArrowLeft class="w-3.5 h-3.5" />
@@ -393,7 +393,7 @@ const vizComponent = computed(() => {
                 {{ String(chapter?.number ?? 0).padStart(2, '0') }}
               </span>
             </div>
-            <p class="text-xs text-white/20 max-w-[200px]">
+            <p class="text-xs text-white/50 max-w-[200px]">
               Interactive visualization for this chapter coming soon
             </p>
           </div>

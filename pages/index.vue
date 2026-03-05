@@ -99,7 +99,7 @@ const partDescriptions: Record<string, string> = {
 </script>
 
 <template>
-  <div class="min-h-screen bg-cosmic-bg">
+  <div id="main-content" class="min-h-screen bg-cosmic-bg">
     <!-- ═══ Hero ═══ -->
     <header class="relative overflow-hidden">
       <!-- ML System Architecture Background -->
@@ -163,7 +163,7 @@ const partDescriptions: Record<string, string> = {
         </p>
 
         <!-- Subtitle -->
-        <p class="text-white/45 text-lg lg:text-xl max-w-xl leading-relaxed">
+        <p class="text-white/60 text-lg lg:text-xl max-w-xl leading-relaxed">
           From data pipelines to production deployment — an interactive deep-dive into the full ML systems stack, with hands-on visualizations and assessments.
         </p>
 
@@ -189,7 +189,7 @@ const partDescriptions: Record<string, string> = {
 
         <!-- Overall progress -->
         <div class="mt-8 max-w-md" v-if="store.getOverallCompletion > 0">
-          <div class="flex items-center justify-between text-xs text-white/30 mb-2">
+          <div class="flex items-center justify-between text-xs text-white/50 mb-2">
             <span class="font-medium">Your Progress</span>
             <span class="font-mono tabular-nums">{{ store.getOverallCompletion }}%</span>
           </div>
@@ -246,7 +246,7 @@ const partDescriptions: Record<string, string> = {
             <component :is="feature.icon" class="w-5 h-5" :style="{ color: feature.color }" />
           </div>
           <h3 class="text-sm font-semibold text-white/85 mb-2">{{ feature.title }}</h3>
-          <p class="text-xs text-white/35 leading-relaxed">{{ feature.description }}</p>
+          <p class="text-xs text-white/55 leading-relaxed">{{ feature.description }}</p>
         </div>
       </div>
     </section>
@@ -276,7 +276,7 @@ const partDescriptions: Record<string, string> = {
               >
                 {{ part.name }}
               </h2>
-              <p class="text-xs text-white/30 mt-1 max-w-sm leading-relaxed">
+              <p class="text-xs text-white/55 mt-1 max-w-sm leading-relaxed">
                 {{ partDescriptions[part.id] ?? '' }}
               </p>
             </div>
@@ -293,7 +293,7 @@ const partDescriptions: Record<string, string> = {
                 }"
               />
             </div>
-            <span class="text-[10px] font-mono text-white/25 tabular-nums w-8 text-right">
+            <span class="text-[10px] font-mono text-white/50 tabular-nums w-8 text-right">
               {{ getPartProgress(part.id) }}%
             </span>
           </div>
@@ -345,14 +345,14 @@ const partDescriptions: Record<string, string> = {
               <h3 class="text-sm font-medium text-white/85 group-hover:text-white transition-colors truncate">
                 {{ chapter.title }}
               </h3>
-              <p class="text-xs text-white/25 mt-0.5 truncate leading-relaxed">
+              <p class="text-xs text-white/55 mt-0.5 truncate leading-relaxed">
                 {{ chapter.description }}
               </p>
             </div>
 
             <!-- Time + arrow -->
             <div class="flex items-center gap-3 shrink-0">
-              <span class="text-[11px] text-white/15 flex items-center gap-1">
+              <span class="text-[11px] text-white/40 flex items-center gap-1">
                 <Clock class="w-3 h-3" />
                 {{ chapter.estimatedMinutes }}m
               </span>
@@ -378,7 +378,7 @@ const partDescriptions: Record<string, string> = {
             </div>
             <div>
               <p class="text-sm font-semibold text-white/70">ML Systems Universe</p>
-              <p class="text-[11px] text-white/25">Understanding ML systems from data collection to production deployment</p>
+              <p class="text-[11px] text-white/50">Understanding ML systems from data collection to production deployment</p>
             </div>
           </div>
           <div class="flex items-center gap-6">
@@ -386,7 +386,7 @@ const partDescriptions: Record<string, string> = {
               href="https://mlsysbook.ai"
               target="_blank"
               rel="noopener noreferrer"
-              class="text-xs text-white/25 hover:text-primary transition-colors"
+              class="text-xs text-white/50 hover:text-primary transition-colors"
             >
               mlsysbook.ai
             </a>

@@ -30,7 +30,7 @@ const partIndex = computed(() => PARTS.findIndex(p => p.id === props.part.id) + 
       <ArrowRight class="w-2.5 h-2.5" />
       <span class="uppercase" :style="{ color: `${part.color}80` }">Part {{ partIndex }}: {{ systemLayer }}</span>
       <ArrowRight class="w-2.5 h-2.5" />
-      <span class="text-white/30">Chapter {{ chapter.number }}</span>
+      <span class="text-white/50">Chapter {{ chapter.number }}</span>
     </div>
 
     <!-- Part badge + chapter number -->
@@ -50,11 +50,11 @@ const partIndex = computed(() => PARTS.findIndex(p => p.id === props.part.id) + 
         {{ part.shortName }}
       </span>
 
-      <span class="text-xs font-mono text-white/25 tabular-nums">
+      <span class="text-xs font-mono text-white/50 tabular-nums">
         CH.{{ String(chapter.number).padStart(2, '0') }}
       </span>
 
-      <span class="flex items-center gap-1 text-xs text-white/30 ml-auto">
+      <span class="flex items-center gap-1 text-xs text-white/50 ml-auto">
         <Clock class="w-3 h-3" />
         ~{{ chapter.estimatedMinutes }} min
       </span>
@@ -78,7 +78,7 @@ const partIndex = computed(() => PARTS.findIndex(p => p.id === props.part.id) + 
       <span
         v-for="topic in chapter.topics"
         :key="topic"
-        class="text-[10px] font-medium uppercase tracking-wider px-2.5 py-1 rounded-full border border-white/[0.06] text-white/35 bg-white/[0.02]"
+        class="text-[10px] font-medium uppercase tracking-wider px-2.5 py-1 rounded-full border border-white/[0.06] text-white/50 bg-white/[0.02]"
       >
         {{ topic }}
       </span>

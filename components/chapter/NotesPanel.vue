@@ -74,7 +74,7 @@ function exportNotes() {
     <!-- Toggle button -->
     <button
       class="flex items-center gap-1 text-[10px] px-2 py-1 rounded transition-colors"
-      :class="isOpen ? 'bg-white/[0.06] text-white/60' : 'text-white/25 hover:text-white/45'"
+      :class="isOpen ? 'bg-white/[0.06] text-white/60' : 'text-white/50 hover:text-white/65'"
       :aria-label="`Notes for this section (${sectionNotes.length})`"
       @click="isOpen = !isOpen"
     >
@@ -119,7 +119,7 @@ function exportNotes() {
         <div class="overflow-y-auto max-h-48 p-2 space-y-2">
           <div v-if="sectionNotes.length === 0" class="py-4 text-center">
             <PenLine class="w-4 h-4 text-white/15 mx-auto mb-1" />
-            <p class="text-[10px] text-white/25">No notes yet. Add one below.</p>
+            <p class="text-[10px] text-white/50">No notes yet. Add one below.</p>
           </div>
 
           <div
@@ -135,7 +135,7 @@ function exportNotes() {
                 @keydown.escape="editingId = null"
               />
               <div class="flex justify-end gap-1 mt-1">
-                <button class="text-[9px] text-white/30 hover:text-white/50" @click="editingId = null">Cancel</button>
+                <button class="text-[9px] text-white/50 hover:text-white/70" @click="editingId = null">Cancel</button>
                 <button class="text-[9px] text-primary" @click="saveEdit">Save</button>
               </div>
             </template>
