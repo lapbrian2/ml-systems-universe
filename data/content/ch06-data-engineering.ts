@@ -16,6 +16,13 @@ export const sections: ChapterSection[] = [
         definition: 'An automated system for collecting, transforming, validating, and delivering data from source systems to ML training and serving infrastructure. Pipelines handle the full ETL (Extract, Transform, Load) process and must maintain data quality, freshness, and schema consistency.',
       },
       {
+        type: 'figure',
+        caption: 'Lambda architecture combining batch and stream processing. Batch processing (blue) handles historical data while stream processing (green) handles real-time data, merging at the serving layer.',
+        alt: 'Lambda architecture diagram with two parallel paths: batch processing on top and stream processing on bottom, both merging at a serving layer that feeds query results.',
+        number: 'Figure 6.1',
+        component: 'DataPipelineArchitecture',
+      },
+      {
         type: 'heading',
         level: 3,
         text: 'Batch vs. Stream Processing',

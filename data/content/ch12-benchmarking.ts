@@ -16,6 +16,13 @@ export const sections: ChapterSection[] = [
         definition: 'An industry-standard benchmark suite maintained by the MLCommons consortium that provides standardized workloads, datasets, and measurement rules for comparing ML training and inference performance across hardware platforms and software frameworks.',
       },
       {
+        type: 'figure',
+        caption: 'Radar chart comparing benchmark dimensions across hardware targets. Each polygon represents a different platform (GPU, TPU, Edge) across throughput, latency, accuracy, power efficiency, memory, and cost.',
+        alt: 'Radar chart with six axes showing benchmark dimensions, with overlapping colored polygons for GPU, TPU, and Edge hardware platforms.',
+        number: 'Figure 12.1',
+        component: 'BenchmarkRadar',
+      },
+      {
         type: 'heading',
         level: 3,
         text: 'Training and Inference Benchmark Suites',

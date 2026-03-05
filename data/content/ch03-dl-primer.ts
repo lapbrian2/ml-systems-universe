@@ -21,6 +21,13 @@ export const sections: ChapterSection[] = [
         label: 'Equation 3.1: A single neural network layer. Input vector x is multiplied by weight matrix W, bias b is added, and activation function sigma is applied element-wise to produce hidden representation h.',
       },
       {
+        type: 'figure',
+        caption: 'Forward and backward pass through a neural network. Blue arrows show the forward pass (input to output), orange arrows show gradient flow during backpropagation.',
+        alt: 'Diagram of a 3-layer neural network with forward pass arrows flowing left to right in blue and backward pass gradient arrows flowing right to left in orange.',
+        number: 'Figure 3.1',
+        component: 'BackpropagationFlow',
+      },
+      {
         type: 'heading',
         level: 3,
         text: 'From Perceptrons to Deep Networks',

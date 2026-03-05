@@ -16,6 +16,13 @@ export const sections: ChapterSection[] = [
         definition: 'The structured sequence of stages from problem definition through data preparation, model development, training, evaluation, deployment, and monitoring that governs ML project development. It is inherently iterative, with feedback from later stages driving improvements to earlier ones.',
       },
       {
+        type: 'figure',
+        caption: 'The ML development lifecycle is a continuous cycle. Each stage feeds into the next, with monitoring driving feedback to all upstream stages.',
+        alt: 'Circular diagram showing the ML lifecycle stages: Problem Definition, Data Collection, Data Preparation, Model Training, Evaluation, Deployment, and Monitoring connected in a cycle.',
+        number: 'Figure 5.1',
+        component: 'ModelLifecycle',
+      },
+      {
         type: 'heading',
         level: 3,
         text: 'Problem Formulation',

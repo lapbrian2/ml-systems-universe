@@ -16,6 +16,13 @@ export const sections: ChapterSection[] = [
         definition: 'Continuous Integration and Continuous Delivery practices adapted for machine learning systems, which must validate not only code changes but also data quality, model performance, and configuration consistency through automated pipelines.',
       },
       {
+        type: 'figure',
+        caption: 'ML training infrastructure pipeline. From data ingestion through feature engineering, training, validation, model registry, to deployment, with resource requirements at each stage.',
+        alt: 'Pipeline diagram showing ML training infrastructure stages as connected boxes, with Kubernetes pods, GPU clusters, and artifact storage components labeled.',
+        number: 'Figure 13.1',
+        component: 'TrainingInfrastructure',
+      },
+      {
         type: 'callout',
         variant: 'note',
         title: 'Beyond Code Changes',

@@ -11,6 +11,13 @@ export const sections: ChapterSection[] = [
         text: 'A production ML pipeline is far more than a model. It is a complex system of interconnected components that together transform raw data into actionable predictions. The pipeline typically begins with data ingestion, proceeds through feature engineering and model training, and culminates in serving predictions to end users or downstream systems.',
       },
       {
+        type: 'figure',
+        caption: 'ML system architecture layers. From hardware through infrastructure and platform to application, each layer provides services to the layer above.',
+        alt: 'Layered architecture diagram showing hardware, infrastructure, ML platform, and application layers stacked vertically with data flow arrows between them.',
+        number: 'Figure 2.1',
+        component: 'MLSystemLayers',
+      },
+      {
         type: 'definition',
         term: 'ML Pipeline',
         definition: 'An automated, end-to-end sequence of data processing, feature engineering, model training, evaluation, and serving steps that transforms raw data into predictions in a reproducible and scalable manner.',

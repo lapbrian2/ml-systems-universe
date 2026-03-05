@@ -16,6 +16,13 @@ export const sections: ChapterSection[] = [
         definition: 'The ability of an ML system to consistently produce correct outputs under expected conditions and degrade gracefully under unexpected conditions. Unlike traditional software where failures are binary (crash or no crash), ML reliability operates on a continuous spectrum of prediction quality.',
       },
       {
+        type: 'figure',
+        caption: 'ML failure modes matrix. Each failure mode is mapped to its detection method, impact level, and mitigation strategy.',
+        alt: 'Grid showing ML failure modes (data drift, concept drift, adversarial input, edge cases, system failures) with columns for detection, impact, and mitigation.',
+        number: 'Figure 16.1',
+        component: 'RobustnessFailureModes',
+      },
+      {
         type: 'heading',
         level: 3,
         text: 'SRE Principles for ML',

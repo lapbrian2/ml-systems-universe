@@ -16,6 +16,13 @@ export const sections: ChapterSection[] = [
         definition: 'The practice of maximizing model quality relative to consumed resources. Efficiency is multidimensional, spanning FLOPs, memory footprint, inference latency, energy consumption, and monetary cost. Improving efficiency means pushing the Pareto frontier of these trade-offs.',
       },
       {
+        type: 'figure',
+        caption: 'The efficiency-accuracy spectrum. Model families are plotted by compute cost vs. accuracy, with circle size proportional to parameter count. The Pareto frontier connects optimal trade-off points.',
+        alt: 'Scatter plot showing model families like MobileNet, EfficientNet, ResNet, BERT, GPT, and LLaMA plotted on axes of compute cost versus accuracy, with a Pareto frontier line.',
+        number: 'Figure 9.1',
+        component: 'EfficientAISpectrum',
+      },
+      {
         type: 'heading',
         level: 3,
         text: 'Dimensions of Efficiency',
