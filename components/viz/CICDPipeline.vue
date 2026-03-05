@@ -2,9 +2,14 @@
 import { ref, computed, watch, onUnmounted } from 'vue'
 
 /* ── Props & Emits ── */
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   activeSection: number
-}>()
+  scrollProgress?: number
+  sectionProgress?: number
+}>(), {
+  scrollProgress: 0,
+  sectionProgress: 0,
+})
 
 const emit = defineEmits<{
   exerciseComplete: []
@@ -141,6 +146,37 @@ const NODE_R = 28
 const START_X = 60
 const SPACING = (SVG_W - 120) / (stages.length - 1)
 
+/* ── Scroll-driven animation state ── */
+// How many stages are "complete" based on scroll progress
+const scrollCompletedCount = computed(() => {
+  if (!props.scrollProgress) return -1
+  return props.scrollProgress * stages.length
+})
+
+// Is a given stage index "lit up" by scroll?
+function isScrollLit(index: number): boolean {
+  return scrollCompletedCount.value >= 0 && index < scrollCompletedCount.value
+}
+
+// Scroll-driven success indicator: stage is "passing" when fully scrolled past
+function scrollStageStatus(index: number): 'idle' | 'running' | 'passed' {
+  const completed = scrollCompletedCount.value
+  if (completed < 0) return 'idle'
+  if (index < completed - 0.5) return 'passed'
+  if (index < completed) return 'running'
+  return 'idle'
+}
+
+// Scroll-driven particle position (overrides timer-based when scrolling)
+const scrollParticleX = computed(() => {
+  if (!props.scrollProgress) return null
+  const idx = props.scrollProgress * (stages.length - 1)
+  const base = Math.floor(idx)
+  const frac = idx - base
+  if (base >= stages.length - 1) return stageX(stages.length - 1)
+  return stageX(base) + frac * SPACING
+})
+
 /* ── Animation state ── */
 const flowProgress = ref(0)
 const flowTimer = ref<ReturnType<typeof setInterval> | null>(null)
@@ -211,8 +247,15 @@ const highlightedPhase = computed<string | null>(() => {
   }
 })
 
-function stageOpacity(stage: PipelineStage): number {
+function stageOpacity(stage: PipelineStage, index?: number): number {
   if (selectedStage.value === stage.id) return 1
+  // Scroll-driven sequential lighting
+  if (props.scrollProgress > 0 && index !== undefined) {
+    const completed = scrollCompletedCount.value
+    if (index < completed) return 1
+    if (index < completed + 1) return 0.4 + (completed - index + 1) * 0.6
+    return 0.15
+  }
   if (highlightedPhase.value === null) return 0.85
   return stage.phase === highlightedPhase.value ? 1 : 0.2
 }
@@ -367,13 +410,14 @@ watch(() => props.activeSection, () => {
           marker-end="url(#ci-arrow)"
           class="cicd__connection"
           :class="{
-            'cicd__connection--active': stageOpacity(stages[i]) > 0.5 && stageOpacity(stages[i + 1]) > 0.5,
+            'cicd__connection--active': stageOpacity(stages[i], i) > 0.5 && stageOpacity(stages[i + 1], i + 1) > 0.5,
+            'cicd__connection--scroll-lit': isScrollLit(i) && isScrollLit(i + 1),
           }"
         />
 
-        <!-- Flow particle -->
+        <!-- Flow particle (scroll-driven when scrolling, timer-based otherwise) -->
         <circle
-          :cx="particleX"
+          :cx="scrollParticleX ?? particleX"
           :cy="PIPE_Y"
           r="4"
           :fill="particleActive.color"
@@ -381,7 +425,7 @@ watch(() => props.activeSection, () => {
           class="cicd__particle"
         />
         <circle
-          :cx="particleX"
+          :cx="scrollParticleX ?? particleX"
           :cy="PIPE_Y"
           r="8"
           :fill="particleActive.color"
@@ -397,7 +441,7 @@ watch(() => props.activeSection, () => {
             'cicd__stage--selected': selectedStage === stage.id,
             'cicd__stage--clicked': clickedStages.has(stage.id),
           }"
-          :style="{ opacity: stageOpacity(stage) }"
+          :style="{ opacity: stageOpacity(stage, i) }"
           role="button"
           :tabindex="0"
           :aria-label="`${stage.label}: ${stage.description}`"
@@ -493,6 +537,35 @@ watch(() => props.activeSection, () => {
           >
             {{ stage.duration }}
           </text>
+
+          <!-- Scroll-driven status indicator -->
+          <g v-if="scrollStageStatus(i) === 'passed'">
+            <circle
+              :cx="stageX(i) + NODE_R - 4"
+              :cy="PIPE_Y - NODE_R + 4"
+              r="7"
+              fill="#22c55e"
+              class="cicd__scroll-check-bg"
+            />
+            <text
+              :x="stageX(i) + NODE_R - 4"
+              :y="PIPE_Y - NODE_R + 8"
+              text-anchor="middle"
+              fill="#fff"
+              font-size="9"
+              font-weight="700"
+            >&#x2713;</text>
+          </g>
+          <circle
+            v-else-if="scrollStageStatus(i) === 'running'"
+            :cx="stageX(i) + NODE_R - 4"
+            :cy="PIPE_Y - NODE_R + 4"
+            r="5"
+            fill="none"
+            :stroke="stage.color"
+            stroke-width="2"
+            class="cicd__scroll-spinner"
+          />
         </g>
 
         <!-- Tooltip -->
@@ -840,6 +913,40 @@ watch(() => props.activeSection, () => {
 @keyframes contextFade {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 0.7; transform: translateY(0); }
+}
+
+/* ── Scroll-driven status indicators ── */
+.cicd__scroll-check-bg {
+  animation: cicdCheckIn 0.3s ease;
+}
+
+@keyframes cicdCheckIn {
+  from { r: 0; opacity: 0; }
+  to { r: 7; opacity: 1; }
+}
+
+.cicd__scroll-spinner {
+  stroke-dasharray: 12 8;
+  animation: cicdSpin 1s linear infinite;
+}
+
+@keyframes cicdSpin {
+  to { stroke-dashoffset: -40; }
+}
+
+.cicd__connection--scroll-lit {
+  stroke: rgba(20, 184, 166, 0.35);
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .cicd__scroll-check-bg,
+  .cicd__scroll-spinner {
+    animation: none;
+  }
+  .cicd__connection {
+    animation: none;
+  }
 }
 
 @media (max-width: 768px) {

@@ -2,9 +2,14 @@
 import { ref, computed, watch } from 'vue'
 
 /* ── Props & Emits ── */
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   activeSection: number
-}>()
+  scrollProgress?: number
+  sectionProgress?: number
+}>(), {
+  scrollProgress: 0,
+  sectionProgress: 0,
+})
 
 const emit = defineEmits<{
   exerciseComplete: []
@@ -46,6 +51,36 @@ const storageNodes: PipelineNode[] = [
 ]
 
 const allNodes = computed(() => [...sources, ...etlStages, ...storageNodes])
+
+/* ── Scroll-driven animation state ── */
+// All groups in pipeline order for progressive fill
+const groupOrder = ['source', 'etl', 'storage', 'serve']
+
+// Which groups are "filled" based on scroll progress
+const scrollFilledGroups = computed<Set<string>>(() => {
+  if (!props.scrollProgress) return new Set()
+  const filled = new Set<string>()
+  const threshold = props.scrollProgress * groupOrder.length
+  for (let i = 0; i < groupOrder.length; i++) {
+    if (i < threshold) filled.add(groupOrder[i])
+  }
+  return filled
+})
+
+// Fill level within the current group (0 to 1) — for progress bar effect
+const scrollGroupFill = computed(() => {
+  if (!props.scrollProgress) return 0
+  const scaled = props.scrollProgress * groupOrder.length
+  return scaled - Math.floor(scaled)
+})
+
+// Validation checkpoints: each group gets a "check" when fully scrolled past
+function isScrollChecked(group: string): boolean {
+  const idx = groupOrder.indexOf(group)
+  if (idx < 0 || !props.scrollProgress) return false
+  const threshold = props.scrollProgress * groupOrder.length
+  return idx < threshold - 0.5
+}
 
 /* ── Highlight per section ── */
 const highlightedGroups = computed<Set<string>>(() => {
@@ -107,6 +142,15 @@ function isSelected(id: string): boolean {
 
 function nodeOpacity(group: string, id: string): number {
   if (isSelected(id)) return 1
+  // Scroll-driven progressive fill
+  if (props.scrollProgress > 0) {
+    if (scrollFilledGroups.value.has(group)) return 1
+    // Partially filling current group
+    const idx = groupOrder.indexOf(group)
+    const threshold = props.scrollProgress * groupOrder.length
+    if (idx >= 0 && idx < threshold) return 0.4 + (threshold - idx) * 0.6
+    return 0.2
+  }
   if (highlightedGroups.value.size === 0) return 0.7
   return isGroupHighlighted(group) ? 1 : 0.25
 }
@@ -186,7 +230,10 @@ watch(
             x2="275"
             :y2="95 + 35"
             class="dp-sim__pipe"
-            :class="{ 'dp-sim__pipe--active': isGroupHighlighted('source') || isGroupHighlighted('etl') }"
+            :class="{
+              'dp-sim__pipe--active': isGroupHighlighted('source') || isGroupHighlighted('etl'),
+              'dp-sim__pipe--scroll-lit': scrollFilledGroups.has('source'),
+            }"
           />
         </g>
 
@@ -239,6 +286,30 @@ watch(
               path="M 170 120 L 340 130 L 405 240 L 470 350 L 620 170 L 800 170"
             />
           </circle>
+        </g>
+
+        <!-- Scroll-driven progress bars under group labels -->
+        <g v-if="scrollProgress > 0.01">
+          <!-- Sources progress -->
+          <rect x="20" y="31" width="140" height="3" rx="1.5" fill="rgba(255,255,255,0.04)" />
+          <rect x="20" y="31" :width="140 * Math.min(scrollProgress * 4, 1)" height="3" rx="1.5" fill="#14b8a6" opacity="0.6" class="dp-sim__scroll-bar" />
+          <!-- ETL progress -->
+          <rect x="290" y="31" width="140" height="3" rx="1.5" fill="rgba(255,255,255,0.04)" />
+          <rect x="290" y="31" :width="140 * Math.max(0, Math.min((scrollProgress - 0.25) * 4, 1))" height="3" rx="1.5" fill="#a855f7" opacity="0.6" class="dp-sim__scroll-bar" />
+          <!-- Storage progress -->
+          <rect x="555" y="31" width="140" height="3" rx="1.5" fill="rgba(255,255,255,0.04)" />
+          <rect x="555" y="31" :width="140 * Math.max(0, Math.min((scrollProgress - 0.5) * 4, 1))" height="3" rx="1.5" fill="#22c55e" opacity="0.6" class="dp-sim__scroll-bar" />
+          <!-- Serving progress -->
+          <rect x="745" y="31" width="120" height="3" rx="1.5" fill="rgba(255,255,255,0.04)" />
+          <rect x="745" y="31" :width="120 * Math.max(0, Math.min((scrollProgress - 0.75) * 4, 1))" height="3" rx="1.5" fill="#5b78ff" opacity="0.6" class="dp-sim__scroll-bar" />
+        </g>
+
+        <!-- Scroll-driven validation checkmarks -->
+        <g v-if="scrollProgress > 0.01" class="dp-sim__checks">
+          <text v-if="isScrollChecked('source')" x="160" y="20" class="dp-sim__check-mark">&#x2713;</text>
+          <text v-if="isScrollChecked('etl')" x="430" y="20" class="dp-sim__check-mark">&#x2713;</text>
+          <text v-if="isScrollChecked('storage')" x="695" y="20" class="dp-sim__check-mark">&#x2713;</text>
+          <text v-if="isScrollChecked('serve')" x="865" y="20" class="dp-sim__check-mark">&#x2713;</text>
         </g>
 
         <!-- Source nodes -->
@@ -778,6 +849,43 @@ watch(
 @keyframes dpContextIn {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 0.7; transform: translateY(0); }
+}
+
+/* ── Scroll-driven elements ── */
+.dp-sim__scroll-bar {
+  transition: width 0.1s linear;
+}
+
+.dp-sim__check-mark {
+  fill: #22c55e;
+  font-size: 14px;
+  font-weight: 700;
+  animation: dpCheckIn 0.3s ease;
+}
+
+@keyframes dpCheckIn {
+  from { opacity: 0; transform: scale(0.5); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.dp-sim__pipe--scroll-lit {
+  stroke: var(--viz-primary);
+  stroke-opacity: 0.4;
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .dp-sim__scroll-bar,
+  .dp-sim__check-mark {
+    transition: none;
+    animation: none;
+  }
+  .dp-sim__particle {
+    display: none;
+  }
+  .dp-sim__pipe {
+    animation: none;
+  }
 }
 
 /* ── Responsive ── */

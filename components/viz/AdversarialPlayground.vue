@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import { adversarialPlaygroundTour } from '~/data/tours'
+import type { TourStep } from '~/components/viz/GuidedTour.vue'
 
 /* ── Props & Emits ── */
 const props = defineProps<{
@@ -185,10 +187,31 @@ watch(
     selectedPixel.value = null
   }
 )
+
+/* ── Guided Tour steps with reactive checks ── */
+const tourSteps = computed<TourStep[]>(() =>
+  adversarialPlaygroundTour.map((step, i) => ({
+    ...step,
+    check: i === 0 ? undefined
+      : i === 1 ? () => noiseType.value !== 'fgsm'
+      : i === 2 ? () => epsilon.value > 0
+      : i === 3 ? () => epsilon.value > 5
+      : i === 4 ? () => isAdversarialSuccess.value && epsilon.value / 100 < 0.1
+      : undefined,
+  }))
+)
 </script>
 
 <template>
   <div class="adversarial" role="region" aria-label="Adversarial Attack Playground">
+    <!-- Guided Tour -->
+    <GuidedTour
+      :steps="tourSteps"
+      chapter-id="ch15"
+      tour-id="adversarial-playground"
+      color="#ff6b6b"
+    />
+
     <!-- Header -->
     <div class="adversarial__header">
       <span class="adversarial__badge">Interactive</span>

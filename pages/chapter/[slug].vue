@@ -7,6 +7,7 @@ import { getChapterBySlug, getPartForChapter, getNextChapter, getPrevChapter } f
 import { getChapterContent, loadChapterContent } from '~/data/content'
 import { useProgressStore } from '~/stores/progress'
 import { useChapterJsonLd } from '~/composables/useJsonLd'
+import { useScrollProgress } from '~/composables/useScrollProgress'
 import type { ChapterMeta, Part } from '~/types/chapter'
 import type { ChapterContent } from '~/data/content'
 
@@ -113,6 +114,13 @@ const contentColumn = ref<HTMLElement | null>(null)
 
 // ── Active section (drives viz panel highlights) ──────────────────────
 const activeSection = ref(0)
+
+// ── Continuous scroll progress (drives smooth viz animations) ─────────
+const sectionCount = computed(() => content.value?.sections.length ?? 0)
+const {
+  scrollProgress: vizScrollProgress,
+  sectionProgress: vizSectionProgress,
+} = useScrollProgress(contentColumn, sectionCount)
 
 // ── GSAP context ──────────────────────────────────────────────────────
 let gsapCtx: gsap.Context | null = null
@@ -378,6 +386,8 @@ const vizComponent = computed(() => {
             :is="vizComponent"
             v-if="vizComponent"
             :active-section="activeSection"
+            :scroll-progress="vizScrollProgress"
+            :section-progress="vizSectionProgress"
             @exercise-complete="onExerciseComplete"
           />
           <!-- Placeholder for chapters without viz -->

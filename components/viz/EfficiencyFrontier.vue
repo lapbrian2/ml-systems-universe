@@ -2,9 +2,14 @@
 import { ref, computed, watch } from 'vue'
 
 /* ── Props & Emits ── */
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   activeSection: number
-}>()
+  scrollProgress?: number
+  sectionProgress?: number
+}>(), {
+  scrollProgress: 0,
+  sectionProgress: 0,
+})
 
 const emit = defineEmits<{
   exerciseComplete: []
@@ -163,6 +168,35 @@ const models: ModelPoint[] = [
   },
 ]
 
+/* ── Scroll-driven animation state ── */
+// Number of models visible based on scroll progress
+const scrollVisibleCount = computed(() => {
+  if (!props.scrollProgress) return models.length // show all by default
+  return Math.ceil(props.scrollProgress * models.length)
+})
+
+// Pareto frontier draw progress (0 to 1) — used as SVG stroke-dashoffset
+const scrollParetoProgress = computed(() => {
+  if (!props.scrollProgress) return 1
+  // Pareto line should be fully drawn by 80% scroll
+  return Math.min(props.scrollProgress / 0.8, 1)
+})
+
+// Which models are visible based on scroll
+function isScrollVisible(index: number): boolean {
+  return index < scrollVisibleCount.value
+}
+
+// Label fade-in opacity based on scroll proximity
+function scrollLabelOpacity(index: number): number {
+  if (!props.scrollProgress) return 0.7
+  const visible = scrollVisibleCount.value
+  if (index >= visible) return 0
+  // Recently appeared models have lower opacity
+  const diff = visible - index
+  return Math.min(diff / 2, 1) * 0.7 + 0.3
+}
+
 /* ── Interaction state ── */
 const clickedModels = ref<Set<string>>(new Set())
 const selectedModel = ref<string | null>(null)
@@ -202,8 +236,13 @@ const highlightCategory = computed<string | null>(() => {
 
 const showParetoHighlight = computed(() => props.activeSection === 3)
 
-function modelOpacity(model: ModelPoint): number {
+function modelOpacity(model: ModelPoint, index: number): number {
   if (selectedModel.value === model.id) return 1
+  // Scroll-driven: models appear one by one
+  if (props.scrollProgress > 0) {
+    if (!isScrollVisible(index)) return 0
+    return scrollLabelOpacity(index)
+  }
   if (highlightCategory.value === null) return 0.85
   return model.category === highlightCategory.value ? 1 : 0.2
 }
@@ -360,7 +399,7 @@ watch(() => props.activeSection, () => {
           class="eff-frontier__pareto-fill"
         />
 
-        <!-- Pareto frontier line -->
+        <!-- Pareto frontier line (scroll-driven draw animation) -->
         <path
           v-if="paretoLine"
           :d="paretoLine"
@@ -369,7 +408,9 @@ watch(() => props.activeSection, () => {
           :stroke-width="showParetoHighlight ? 3 : 2"
           stroke-linecap="round"
           stroke-linejoin="round"
-          :stroke-dasharray="showParetoHighlight ? 'none' : '8 4'"
+          pathLength="1"
+          :stroke-dasharray="scrollProgress > 0 ? '1' : (showParetoHighlight ? 'none' : '8 4')"
+          :stroke-dashoffset="scrollProgress > 0 ? (1 - scrollParetoProgress) : 0"
           class="eff-frontier__pareto-line"
         />
 
@@ -395,14 +436,15 @@ watch(() => props.activeSection, () => {
 
         <!-- Model dots -->
         <g
-          v-for="model in models"
+          v-for="(model, mi) in models"
           :key="model.id"
           class="eff-frontier__model"
           :class="{
             'eff-frontier__model--selected': selectedModel === model.id,
             'eff-frontier__model--pareto': model.isPareto && showParetoHighlight,
+            'eff-frontier__model--scroll-hidden': scrollProgress > 0 && !isScrollVisible(mi),
           }"
-          :style="{ opacity: modelOpacity(model) }"
+          :style="{ opacity: modelOpacity(model, mi) }"
           role="button"
           :tabindex="0"
           :aria-label="`${model.name}: ${model.accuracy}% accuracy, ${model.efficiency}% efficiency. ${model.params} parameters, ${model.latency} latency.`"
@@ -816,6 +858,28 @@ watch(() => props.activeSection, () => {
 @keyframes contextFade {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 0.7; transform: translateY(0); }
+}
+
+/* ── Scroll-driven elements ── */
+.eff-frontier__model--scroll-hidden {
+  pointer-events: none;
+}
+
+.eff-frontier__pareto-line {
+  transition: stroke-dashoffset 0.15s linear;
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .eff-frontier__pareto-line {
+    stroke-dashoffset: 0 !important;
+    stroke-dasharray: none !important;
+    transition: none;
+  }
+  .eff-frontier__model--scroll-hidden {
+    opacity: 0.85 !important;
+    pointer-events: auto;
+  }
 }
 
 @media (max-width: 768px) {

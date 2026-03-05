@@ -206,6 +206,11 @@ export const sections: ChapterSection[] = [
         text: 'When a ReLU neuron receives only negative inputs, its output is always zero and its gradient is always zero. This means the neuron stops learning entirely and is effectively "dead." In large networks, a significant fraction of neurons can die during training, reducing model capacity. Leaky ReLU and ELU mitigate this by allowing small gradients for negative inputs.',
       },
       {
+        type: 'mini-viz',
+        vizType: 'activation',
+        config: {},
+      },
+      {
         type: 'heading',
         level: 3,
         text: 'Modern Activation Functions',
@@ -273,6 +278,16 @@ export const sections: ChapterSection[] = [
         type: 'equation',
         latex: 'L_{\\text{CE}} = -\\sum_{i=1}^{C} y_i \\log(\\hat{y}_i)',
         label: 'Equation 3.4: Cross-entropy loss for classification with C classes. y_i is the true label (one-hot) and y-hat_i is the predicted probability for class i.',
+      },
+      {
+        type: 'interactive-equation',
+        latex: 'L_{\\text{CE}} = -\\frac{1}{ {{N}} }\\sum_{i=1}^{ {{N}} } y_i \\log({{yhat}})',
+        variables: [
+          { name: 'N', label: 'Sample size', min: 1, max: 100, step: 1, default: 10, unit: 'samples' },
+          { name: 'yhat', label: 'Predicted prob', min: 0.01, max: 0.99, step: 0.01, default: 0.7 },
+        ],
+        computeResult: '-(1/N) * N * Math.log(yhat)',
+        resultLabel: 'Cross-entropy loss',
       },
       {
         type: 'table',
@@ -432,6 +447,11 @@ export const sections: ChapterSection[] = [
         variant: 'tip',
         title: 'Build Diagnostics Into Your Training Loop',
         text: 'Convergence diagnostics should be integrated into the training infrastructure as a first-class concern, not an afterthought. Log these metrics to a tracking platform (W&B, MLflow, TensorBoard) from the start of every project. The cost of logging is negligible compared to the cost of a failed training run you cannot diagnose.',
+      },
+      {
+        type: 'mini-viz',
+        vizType: 'confusion-matrix',
+        config: {},
       },
       {
         type: 'callout',

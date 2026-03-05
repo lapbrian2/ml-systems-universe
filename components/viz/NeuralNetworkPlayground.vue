@@ -2,9 +2,14 @@
 import { ref, computed, watch } from 'vue'
 
 /* ── Props & Emits ── */
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   activeSection: number
-}>()
+  scrollProgress?: number
+  sectionProgress?: number
+}>(), {
+  scrollProgress: 0,
+  sectionProgress: 0,
+})
 
 const emit = defineEmits<{
   exerciseComplete: []
@@ -140,6 +145,34 @@ function connectionOpacity(conn: Connection): number {
 /* ── Signal animation direction ── */
 const isBackprop = computed(() => highlightZone.value === 'backprop')
 
+/* ── Scroll-driven animation state ── */
+// Pulse intensity for nodes: nodes in earlier layers glow first as scroll advances
+function scrollNodeGlow(layerIdx: number): number {
+  if (!props.scrollProgress) return 0
+  const totalLayers = allLayerSizes.value.length
+  const scrollLayer = props.scrollProgress * totalLayers
+  if (layerIdx > scrollLayer) return 0
+  const intensity = Math.max(0, Math.min(1, scrollLayer - layerIdx))
+  return intensity * 0.25
+}
+
+// Connection thickness driven by scroll — simulates weight update during training
+function scrollConnectionWidth(conn: Connection): number {
+  if (!props.scrollProgress) return 1
+  const totalLayers = allLayerSizes.value.length
+  const scrollLayer = props.scrollProgress * totalLayers
+  // Connection is "reached" when scroll passes fromLayer
+  if (conn.fromLayer > scrollLayer) return 0.5
+  const intensity = Math.max(0, Math.min(1, scrollLayer - conn.fromLayer))
+  return 0.5 + intensity * 2
+}
+
+// Forward pass data flow: a "wave" that moves left-to-right as user scrolls
+const scrollWaveX = computed(() => {
+  if (!props.scrollProgress) return 0
+  return props.scrollProgress * 900 // SVG width
+})
+
 /* ── Node highlight ── */
 function nodeHighlight(layerIdx: number): boolean {
   const sizes = allLayerSizes.value
@@ -152,6 +185,13 @@ function nodeHighlight(layerIdx: number): boolean {
 }
 
 function nodeOpacity(layerIdx: number): number {
+  // Scroll-driven progressive reveal
+  if (props.scrollProgress > 0) {
+    const totalLayers = allLayerSizes.value.length
+    const scrollLayer = props.scrollProgress * totalLayers
+    if (layerIdx <= scrollLayer) return 0.5 + Math.min(scrollLayer - layerIdx, 1) * 0.5
+    return 0.2
+  }
   if (highlightZone.value === 'none') return 0.7
   return nodeHighlight(layerIdx) ? 1 : 0.25
 }
@@ -284,7 +324,10 @@ watch(
               :x2="conn.x2"
               :y2="conn.y2"
               class="nn-playground__connection"
-              :style="{ opacity: connectionOpacity(conn) }"
+              :style="{
+                opacity: connectionOpacity(conn),
+                strokeWidth: scrollConnectionWidth(conn) + 'px',
+              }"
             />
             <!-- Animated signal along connection -->
             <circle
@@ -301,6 +344,20 @@ watch(
             />
           </g>
         </g>
+
+        <!-- Scroll-driven forward pass wave -->
+        <line
+          v-if="scrollProgress > 0.01"
+          :x1="scrollWaveX"
+          y1="0"
+          :x2="scrollWaveX"
+          y2="400"
+          stroke="#14b8a6"
+          stroke-width="1"
+          stroke-opacity="0.15"
+          stroke-dasharray="4 4"
+          class="nn-playground__scroll-wave"
+        />
 
         <!-- Nodes -->
         <g
@@ -326,6 +383,7 @@ watch(
             class="nn-playground__node-glow"
             :fill="nodeColor(node.layer)"
             :filter="selectedNode === `${node.layer}-${node.index}` ? 'url(#nn-glow-strong)' : 'url(#nn-glow)'"
+            :style="scrollProgress > 0 ? { opacity: scrollNodeGlow(node.layer) } : {}"
           />
           <!-- Node body -->
           <circle
@@ -710,6 +768,22 @@ watch(
 @keyframes nnContextIn {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 0.7; transform: translateY(0); }
+}
+
+/* ── Scroll-driven wave ── */
+.nn-playground__scroll-wave {
+  transition: x1 0.1s linear, x2 0.1s linear;
+  pointer-events: none;
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .nn-playground__signal {
+    display: none;
+  }
+  .nn-playground__scroll-wave {
+    display: none;
+  }
 }
 
 /* ── Responsive ── */

@@ -21,6 +21,15 @@ export const sections: ChapterSection[] = [
         label: 'Equation 10.1: Uniform quantization maps real value x to integer q via scale s and zero-point z. Dequantization recovers approximate value x-hat.',
       },
       {
+        type: 'interactive-equation',
+        latex: '\\text{Quantization Error} = \\frac{\\text{range}}{2^{ {{bits}} } - 1}, \\quad \\text{Levels} = 2^{ {{bits}} } = {{levels}}',
+        variables: [
+          { name: 'bits', label: 'Bit width', min: 1, max: 32, step: 1, default: 8, unit: 'bits' },
+        ],
+        computeResult: '1.0 / (Math.pow(2, bits) - 1)',
+        resultLabel: 'Max quantization step (normalized)',
+      },
+      {
         type: 'figure',
         src: '',
         alt: 'Chart comparing quantization levels (FP32, FP16, INT8, INT4, binary) across dimensions of model size, inference speed, accuracy retention, and hardware support, illustrating the trade-offs at each precision level.',

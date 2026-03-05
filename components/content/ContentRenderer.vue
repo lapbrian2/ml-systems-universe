@@ -113,6 +113,22 @@ defineProps<{
         :latex="block.latex"
         :label="block.label"
       />
+
+      <!-- Interactive Equation -->
+      <InteractiveEquation
+        v-else-if="block.type === 'interactive-equation'"
+        :latex="block.latex"
+        :variables="block.variables"
+        :compute-result="block.computeResult"
+        :result-label="block.resultLabel"
+      />
+
+      <!-- Mini Viz -->
+      <MiniViz
+        v-else-if="block.type === 'mini-viz'"
+        :viz-type="block.vizType"
+        :config="block.config"
+      />
     </template>
   </div>
 </template>

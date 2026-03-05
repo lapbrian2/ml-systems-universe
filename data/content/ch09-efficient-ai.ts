@@ -104,6 +104,16 @@ export const sections: ChapterSection[] = [
         label: 'Equation 9.1: Depthwise separable convolutions reduce cost by approximately 1/k^2 for large output channel counts.',
       },
       {
+        type: 'interactive-equation',
+        latex: '\\text{Compression Ratio} = \\frac{ {{original}} }{ {{compressed}} } = {{result}}\\text{x}',
+        variables: [
+          { name: 'original', label: 'Original size', min: 50, max: 2000, step: 10, default: 500, unit: 'MB' },
+          { name: 'compressed', label: 'Compressed size', min: 5, max: 500, step: 5, default: 125, unit: 'MB' },
+        ],
+        computeResult: 'original / compressed',
+        resultLabel: 'Compression ratio',
+      },
+      {
         type: 'callout',
         variant: 'example',
         title: 'MobileNet Cost Savings',

@@ -2,6 +2,8 @@
 import { ref, computed, watch, onMounted, onUnmounted, shallowRef } from 'vue'
 import * as THREE from 'three'
 import { gsap } from 'gsap'
+import { lossSurface3DTour } from '~/data/tours'
+import type { TourStep } from '~/components/viz/GuidedTour.vue'
 
 /* ── Props & Emits (preserved interface) ── */
 const props = defineProps<{
@@ -327,6 +329,19 @@ function onControlsStart() {
   }
 }
 
+/* ── Double-tap to reset view ── */
+let lastTapTime = 0
+const lossCanvasRef = ref<HTMLElement | null>(null)
+
+function onDoubleTap(e: TouchEvent) {
+  const now = Date.now()
+  if (now - lastTapTime < 300 && e.touches.length === 0) {
+    // Reset: re-animate paths
+    animatePaths()
+  }
+  lastTapTime = now
+}
+
 /* ── Progress display ── */
 const explorationProgress = computed(() => Math.min(interactionCount.value, 3))
 
@@ -373,10 +388,27 @@ onUnmounted(() => {
   dispose(localMinMarker.value)
   dispose(gridHelperObj.value)
 })
+
+/* ── Guided Tour steps with reactive checks ── */
+const tourSteps = computed<TourStep[]>(() =>
+  lossSurface3DTour.map((step, i) => ({
+    ...step,
+    check: i === 4 ? () => interactionCount.value >= 1
+      : undefined,
+  }))
+)
 </script>
 
 <template>
   <div class="loss-surface">
+    <!-- Guided Tour -->
+    <GuidedTour
+      :steps="tourSteps"
+      chapter-id="ch08"
+      tour-id="loss-surface"
+      color="#f0a500"
+    />
+
     <!-- Header -->
     <div class="loss-surface__header">
       <span class="loss-surface__badge">3D Interactive</span>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import { useMouseTracker } from '~/composables/useMouseTracker'
 
 /* ── Props & Emits ── */
 const props = defineProps<{
@@ -128,6 +129,9 @@ const clickedHardware = ref<Set<string>>(new Set())
 const selectedHardware = ref<string | null>(null)
 const exerciseEmitted = ref(false)
 const tooltip = ref<TooltipState>({ visible: false, x: 0, y: 0, hardware: null })
+const canvasRef = ref<HTMLElement | null>(null)
+const { mouseX, mouseY, isInside } = useMouseTracker(canvasRef)
+const hoveredHardware = ref<Hardware | null>(null)
 
 function handleHardwareClick(hw: Hardware, event: MouseEvent) {
   selectedHardware.value = hw.id
@@ -210,9 +214,23 @@ const sectionInfo = computed(() => {
   return `Comparing ${label} across hardware platforms`
 })
 
+/* ── Hover handlers for SmartTooltip ── */
+function handleHardwareHover(hw: Hardware) {
+  hoveredHardware.value = hw
+}
+function handleHardwareLeave() {
+  hoveredHardware.value = null
+}
+const smartTooltipContent = computed(() => {
+  const hw = hoveredHardware.value
+  if (!hw) return ''
+  return `**${hw.specs.memory}** | ${hw.specs.tdp} | ${hw.specs.price}\n${hw.description}`
+})
+
 watch(() => props.activeSection, () => {
   tooltip.value.visible = false
   selectedHardware.value = null
+  hoveredHardware.value = null
 })
 </script>
 
@@ -247,7 +265,17 @@ watch(() => props.activeSection, () => {
     </div>
 
     <!-- SVG Chart -->
-    <div class="mlperf__canvas">
+    <div ref="canvasRef" class="mlperf__canvas" style="position: relative;">
+      <VizSmartTooltip
+        :visible="hoveredHardware !== null && isInside"
+        :x="mouseX"
+        :y="mouseY"
+        :title="hoveredHardware?.name"
+        :content="smartTooltipContent"
+        :color="hoveredHardware?.color"
+        :container-width="canvasRef?.clientWidth || 800"
+        :container-height="canvasRef?.clientHeight || 460"
+      />
       <svg
         :viewBox="`0 0 ${SVG_W} ${SVG_H}`"
         class="mlperf__svg"
@@ -320,6 +348,8 @@ watch(() => props.activeSection, () => {
           @click.stop="handleHardwareClick(hw, $event)"
           @keydown.enter.stop="handleHardwareKeyboard(hw, $event)"
           @keydown.space.prevent.stop="handleHardwareKeyboard(hw, $event)"
+          @mouseenter="handleHardwareHover(hw)"
+          @mouseleave="handleHardwareLeave"
         >
           <!-- Bar glow -->
           <rect

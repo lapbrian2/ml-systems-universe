@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import { useMouseTracker } from '~/composables/useMouseTracker'
 
 /* ── Props & Emits ── */
 const props = defineProps<{
@@ -162,6 +163,9 @@ const clickedOps = ref<Set<string>>(new Set())
 const selectedOp = ref<string | null>(null)
 const exerciseEmitted = ref(false)
 const tooltip = ref<TooltipState>({ visible: false, x: 0, y: 0, operation: null })
+const roofCanvasRef = ref<HTMLElement | null>(null)
+const { mouseX, mouseY, isInside } = useMouseTracker(roofCanvasRef)
+const hoveredOp = ref<Operation | null>(null)
 
 function handleOpClick(op: Operation, event: MouseEvent) {
   selectedOp.value = op.id
@@ -218,9 +222,23 @@ const sectionInfo = computed(() => {
 
 const explorationProgress = computed(() => Math.min(clickedOps.value.size, 3))
 
+/* ── Hover handlers for SmartTooltip ── */
+function handleOpHover(op: Operation) {
+  hoveredOp.value = op
+}
+function handleOpLeave() {
+  hoveredOp.value = null
+}
+const smartTooltipContent = computed(() => {
+  const op = hoveredOp.value
+  if (!op) return ''
+  return `**${op.flops} TFLOPS** | \`${op.arithmeticIntensity} FLOP/B\`\n${op.description}`
+})
+
 watch(() => props.activeSection, () => {
   tooltip.value.visible = false
   selectedOp.value = null
+  hoveredOp.value = null
 })
 </script>
 
@@ -242,7 +260,17 @@ watch(() => props.activeSection, () => {
     </div>
 
     <!-- SVG -->
-    <div class="roofline__canvas">
+    <div ref="roofCanvasRef" class="roofline__canvas" style="position: relative;">
+      <VizSmartTooltip
+        :visible="hoveredOp !== null && isInside"
+        :x="mouseX"
+        :y="mouseY"
+        :title="hoveredOp?.name"
+        :content="smartTooltipContent"
+        :color="hoveredOp?.color"
+        :container-width="roofCanvasRef?.clientWidth || 800"
+        :container-height="roofCanvasRef?.clientHeight || 500"
+      />
       <svg
         :viewBox="`0 0 ${SVG_W} ${SVG_H}`"
         class="roofline__svg"
@@ -425,6 +453,8 @@ watch(() => props.activeSection, () => {
           @click.stop="handleOpClick(op, $event)"
           @keydown.enter.stop="handleOpClick(op, $event as unknown as MouseEvent)"
           @keydown.space.prevent.stop="handleOpClick(op, $event as unknown as MouseEvent)"
+          @mouseenter="handleOpHover(op)"
+          @mouseleave="handleOpLeave"
         >
           <!-- Performance target line (dashed to ceiling) -->
           <line

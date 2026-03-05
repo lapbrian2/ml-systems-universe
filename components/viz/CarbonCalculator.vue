@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import { useAnimatedValue } from '~/composables/useAnimatedValue'
+import { carbonCalculatorTour } from '~/data/tours'
+import type { TourStep } from '~/components/viz/GuidedTour.vue'
 
 /* ── Props & Emits ── */
 const props = defineProps<{
@@ -159,11 +162,41 @@ function formatNumber(n: number): string {
   return n.toFixed(3)
 }
 
+/* ── Animated display values ── */
+const { displayValue: animatedEnergy, targetValue: energyTarget } = useAnimatedValue(0, 0.5)
+const { displayValue: animatedCO2, targetValue: co2Target } = useAnimatedValue(0, 0.5)
+const { displayValue: animatedIntensity, targetValue: intensityTarget } = useAnimatedValue(0, 0.4)
+
+watch(energyConsumedKwh, (v) => { energyTarget.value = v }, { immediate: true })
+watch(co2Kg, (v) => { co2Target.value = v }, { immediate: true })
+watch(() => currentLocation.value.carbonIntensity, (v) => { intensityTarget.value = v }, { immediate: true })
+
 /* activeSection drives context text reactively — no watcher needed */
+
+/* ── Guided Tour steps with reactive checks ── */
+const tourSteps = computed<TourStep[]>(() =>
+  carbonCalculatorTour.map((step, i) => ({
+    ...step,
+    check: i === 0 ? undefined
+      : i === 1 ? () => selectedGpu.value !== 'a100'
+      : i === 2 ? () => trainingHours.value !== 100
+      : i === 3 ? () => selectedLocation.value !== 'us-west'
+      : i === 4 ? () => co2Kg.value < 50
+      : undefined,
+  }))
+)
 </script>
 
 <template>
   <div class="carbon" role="region" aria-label="ML Training Carbon Footprint Calculator">
+    <!-- Guided Tour -->
+    <GuidedTour
+      :steps="tourSteps"
+      chapter-id="ch18"
+      tour-id="carbon-calculator"
+      color="#22c55e"
+    />
+
     <!-- Header -->
     <div class="carbon__header">
       <span class="carbon__badge">Interactive</span>
@@ -219,7 +252,7 @@ function formatNumber(n: number): string {
           </g>
           <text x="44" y="32" class="carbon__output-label">Energy Consumed</text>
           <text x="44" y="58" class="carbon__output-value" fill="#f0a500">
-            {{ formatNumber(energyConsumedKwh) }} kWh
+            {{ formatNumber(animatedEnergy) }} kWh
           </text>
 
           <!-- CO2 Card -->
@@ -231,7 +264,7 @@ function formatNumber(n: number): string {
           </g>
           <text x="294" y="32" class="carbon__output-label">Carbon Emissions</text>
           <text x="294" y="58" class="carbon__output-value" fill="#ff6b6b">
-            {{ formatNumber(co2Kg) }} kg CO2
+            {{ formatNumber(animatedCO2) }} kg CO2
           </text>
 
           <!-- Efficiency Card -->
@@ -243,7 +276,7 @@ function formatNumber(n: number): string {
           </g>
           <text x="544" y="32" class="carbon__output-label">Carbon Intensity</text>
           <text x="544" y="58" class="carbon__output-value" fill="#22c55e">
-            {{ currentLocation.carbonIntensity }} gCO2/kWh
+            {{ Math.round(animatedIntensity) }} gCO2/kWh
           </text>
         </g>
 

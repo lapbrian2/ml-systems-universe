@@ -4,6 +4,7 @@ import { Brain, CheckCircle2, XCircle, ArrowRight, RotateCcw, Trophy, Sparkles, 
 import { getQuizForChapter } from '~/data/quizzes'
 import { selectQuizQuestions } from '~/lib/quiz-scorer'
 import { useProgressStore } from '~/stores/progress'
+import { useCelebration } from '~/composables/useCelebration'
 import type { QuizQuestion } from '~/types/quiz'
 
 const props = defineProps<{
@@ -16,6 +17,7 @@ const emit = defineEmits<{
 }>()
 
 const store = useProgressStore()
+const { celebrateQuizPassed } = useCelebration()
 
 // Quiz state
 const quizData = getQuizForChapter(props.chapterId)
@@ -99,22 +101,14 @@ function advance() {
   }
 }
 
-async function finishQuiz() {
+function finishQuiz() {
   finished.value = true
   store.submitQuizResult(props.chapterId, scorePercentage.value, passed.value)
   emit('complete', scorePercentage.value)
 
   // Fire confetti on pass
   if (passed.value && import.meta.client) {
-    try {
-      const confetti = (await import('canvas-confetti')).default
-      confetti({
-        particleCount: 150,
-        spread: 90,
-        origin: { y: 0.65 },
-        colors: [props.partColor, '#14b8a6', '#22c55e', '#f0a500', '#a855f7'],
-      })
-    } catch {}
+    celebrateQuizPassed(scorePercentage.value)
   }
 }
 

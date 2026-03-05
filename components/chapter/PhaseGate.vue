@@ -2,6 +2,7 @@
 import { computed, watch } from 'vue'
 import { BookCheck, FlaskConical, Brain, PartyPopper } from 'lucide-vue-next'
 import { useProgressStore } from '~/stores/progress'
+import { useCelebration } from '~/composables/useCelebration'
 
 const props = defineProps<{
   chapterId: string
@@ -9,6 +10,7 @@ const props = defineProps<{
 }>()
 
 const store = useProgressStore()
+const { celebrateChapterComplete } = useCelebration()
 const progress = computed(() => store.getProgress(props.chapterId))
 
 const phases = computed(() => [
@@ -36,22 +38,11 @@ const allComplete = computed(() => phases.value.every(p => p.done))
 
 // Fire confetti once when all phases complete (not on re-mount)
 let confettiFired = false
-watch(allComplete, async (isComplete, wasComplete) => {
+watch(allComplete, (isComplete, wasComplete) => {
   if (!isComplete || wasComplete || confettiFired) return
   if (import.meta.server) return
   confettiFired = true
-
-  try {
-    const confetti = (await import('canvas-confetti')).default
-    confetti({
-      particleCount: 120,
-      spread: 80,
-      origin: { y: 0.7 },
-      colors: [props.partColor, '#14b8a6', '#22c55e', '#f0a500'],
-    })
-  } catch {
-    // canvas-confetti not available; silently skip
-  }
+  celebrateChapterComplete()
 })
 </script>
 

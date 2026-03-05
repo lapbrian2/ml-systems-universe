@@ -33,6 +33,8 @@ export type ContentBlock =
   | { type: 'quote'; text: string; attribution?: string }
   | { type: 'definition'; term: string; definition: string }
   | { type: 'equation'; latex: string; label?: string }
+  | { type: 'interactive-equation'; latex: string; variables: Array<{ name: string; label: string; min: number; max: number; step: number; default: number; unit?: string }>; computeResult?: string; resultLabel?: string }
+  | { type: 'mini-viz'; vizType: 'activation' | 'gradient' | 'distribution' | 'confusion-matrix'; config: Record<string, unknown> }
 
 export interface ChapterSection {
   id: string;

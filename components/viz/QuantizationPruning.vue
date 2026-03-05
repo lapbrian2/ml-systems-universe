@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import { useAnimatedValue } from '~/composables/useAnimatedValue'
+import { quantizationPruningTour } from '~/data/tours'
+import type { TourStep } from '~/components/viz/GuidedTour.vue'
 
 /* ── Props & Emits ── */
 const props = defineProps<{
@@ -197,6 +200,17 @@ const quantLabel = computed(() => {
 /* ── Progress ── */
 const explorationProgress = computed(() => Math.min(interactionCount.value, 3))
 
+/* ── Animated display values ── */
+const { displayValue: animatedSize, targetValue: sizeTarget } = useAnimatedValue(baseModelSize, 0.5)
+const { displayValue: animatedLatency, targetValue: latencyTarget } = useAnimatedValue(baseLatency, 0.5)
+const { displayValue: animatedAccuracy, targetValue: accuracyTarget } = useAnimatedValue(baseAccuracy, 0.5)
+const { displayValue: animatedCompression, targetValue: compressionTarget } = useAnimatedValue(1, 0.5)
+
+watch(modelSizeMB, (v) => { sizeTarget.value = v }, { immediate: true })
+watch(latencyMs, (v) => { latencyTarget.value = v }, { immediate: true })
+watch(accuracy, (v) => { accuracyTarget.value = v }, { immediate: true })
+watch(compressionRatio, (v) => { compressionTarget.value = v }, { immediate: true })
+
 watch(() => props.activeSection, () => {
   // Auto-set controls based on section
   if (props.activeSection === 0) {
@@ -207,10 +221,31 @@ watch(() => props.activeSection, () => {
     distillationOn.value = true
   }
 })
+
+/* ── Guided Tour steps with reactive checks ── */
+const tourSteps = computed<TourStep[]>(() =>
+  quantizationPruningTour.map((step, i) => ({
+    ...step,
+    check: i === 0 ? undefined
+      : i === 1 ? () => quantizationLevel.value <= 8
+      : i === 2 ? () => pruningPercent.value >= 45
+      : i === 3 ? () => distillationOn.value
+      : i === 4 ? () => modelSizeMB.value < 1 && accuracy.value > 90
+      : undefined,
+  }))
+)
 </script>
 
 <template>
   <div class="quant-prune">
+    <!-- Guided Tour -->
+    <GuidedTour
+      :steps="tourSteps"
+      chapter-id="ch10"
+      tour-id="quantization-pruning"
+      color="#14b8a6"
+    />
+
     <!-- Header -->
     <div class="quant-prune__header">
       <span class="quant-prune__badge">Interactive</span>
@@ -389,37 +424,37 @@ watch(() => props.activeSection, () => {
     <div class="quant-prune__metrics">
       <div class="quant-prune__metric">
         <span class="quant-prune__metric-label">Model Size</span>
-        <span class="quant-prune__metric-value">{{ modelSizeMB }} MB</span>
+        <span class="quant-prune__metric-value">{{ (Math.round(animatedSize * 10) / 10) }} MB</span>
         <div class="quant-prune__metric-bar">
           <div
             class="quant-prune__metric-fill quant-prune__metric-fill--size"
-            :style="{ width: `${(modelSizeMB / baseModelSize) * 100}%` }"
+            :style="{ width: `${(animatedSize / baseModelSize) * 100}%` }"
           />
         </div>
       </div>
       <div class="quant-prune__metric">
         <span class="quant-prune__metric-label">Latency</span>
-        <span class="quant-prune__metric-value">{{ latencyMs }} ms</span>
+        <span class="quant-prune__metric-value">{{ (Math.round(animatedLatency * 10) / 10) }} ms</span>
         <div class="quant-prune__metric-bar">
           <div
             class="quant-prune__metric-fill quant-prune__metric-fill--latency"
-            :style="{ width: `${(latencyMs / baseLatency) * 100}%` }"
+            :style="{ width: `${(animatedLatency / baseLatency) * 100}%` }"
           />
         </div>
       </div>
       <div class="quant-prune__metric">
         <span class="quant-prune__metric-label">Accuracy</span>
-        <span class="quant-prune__metric-value">{{ accuracy }}%</span>
+        <span class="quant-prune__metric-value">{{ (Math.round(animatedAccuracy * 10) / 10) }}%</span>
         <div class="quant-prune__metric-bar">
           <div
             class="quant-prune__metric-fill quant-prune__metric-fill--accuracy"
-            :style="{ width: `${accuracy}%` }"
+            :style="{ width: `${animatedAccuracy}%` }"
           />
         </div>
       </div>
       <div class="quant-prune__metric">
         <span class="quant-prune__metric-label">Compression</span>
-        <span class="quant-prune__metric-value quant-prune__metric-value--accent">{{ compressionRatio }}x</span>
+        <span class="quant-prune__metric-value quant-prune__metric-value--accent">{{ (Math.round(animatedCompression * 10) / 10) }}x</span>
       </div>
     </div>
 

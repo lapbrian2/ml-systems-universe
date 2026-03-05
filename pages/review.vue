@@ -12,6 +12,7 @@ import {
   Lightbulb,
 } from 'lucide-vue-next'
 import { useFlashcardStore } from '~/stores/flashcards'
+import { useCelebration } from '~/composables/useCelebration'
 import { loadAllChapterContent, getChapterContent } from '~/data/content'
 import { CHAPTERS, CHAPTER_MAP } from '~/data/chapters'
 import { PART_MAP } from '~/data/chapters/parts'
@@ -24,6 +25,7 @@ useSeoMeta({
 })
 
 const store = useFlashcardStore()
+const { celebrateStreak } = useCelebration()
 const loaded = ref(false)
 const reviewing = ref(false)
 const showAnswer = ref(false)
@@ -93,6 +95,10 @@ function rate(quality: ReviewQuality) {
     showAnswer.value = false
   } else {
     sessionDone.value = true
+    // Celebrate streak if > 3 days
+    if (store.streak > 3) {
+      celebrateStreak(store.streak)
+    }
   }
 }
 

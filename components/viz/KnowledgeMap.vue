@@ -3,6 +3,8 @@ import { ref, computed, watch } from 'vue'
 import { CHAPTERS } from '~/data/chapters'
 import { PARTS } from '~/data/chapters/parts'
 import { CHAPTER_DEPENDENCIES } from '~/data/chapters/dependencies'
+import { useMouseTracker } from '~/composables/useMouseTracker'
+import { useGestures } from '~/composables/useGestures'
 
 const props = defineProps<{
   activeSection: number
@@ -78,6 +80,25 @@ const chapters: ChapterNode[] = CHAPTERS.map((ch) => {
 const selectedNode = ref<number | null>(null)
 const clickedNodes = ref<Set<number>>(new Set())
 const exerciseEmitted = ref(false)
+
+/* ── Mouse tracker + gesture support ── */
+const kmCanvasRef = ref<HTMLElement | null>(null)
+const { mouseX, mouseY, isInside } = useMouseTracker(kmCanvasRef)
+const { pinchScale, panX, panY, reset: resetGestures } = useGestures(kmCanvasRef)
+const hoveredNode = ref<ChapterNode | null>(null)
+
+function handleNodeHover(node: ChapterNode) {
+  hoveredNode.value = node
+}
+function handleNodeLeave() {
+  hoveredNode.value = null
+}
+const smartTooltipContent = computed(() => {
+  const n = hoveredNode.value
+  if (!n) return ''
+  const conns = n.connections.length
+  return `**Part ${n.part}**: ${partNames[n.part]}\n${conns} outgoing connection${conns !== 1 ? 's' : ''}`
+})
 
 const activePartId = computed(() => {
   switch (props.activeSection) {
@@ -160,8 +181,20 @@ watch(() => props.activeSection, () => { selectedNode.value = null })
       </div>
     </div>
 
-    <div class="km__canvas" @click.self="closeNode">
-      <svg viewBox="0 0 800 470" class="km__svg" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Concept graph of 21 chapters" @click.self="closeNode">
+    <div ref="kmCanvasRef" class="km__canvas" style="position: relative;" @click.self="closeNode">
+      <VizSmartTooltip
+        :visible="hoveredNode !== null && isInside && selectedNode === null"
+        :x="mouseX"
+        :y="mouseY"
+        :title="hoveredNode ? `Ch. ${hoveredNode.id}: ${hoveredNode.title}` : ''"
+        :content="smartTooltipContent"
+        :color="hoveredNode?.color"
+        :container-width="kmCanvasRef?.clientWidth || 800"
+        :container-height="kmCanvasRef?.clientHeight || 470"
+      />
+      <svg viewBox="0 0 800 470" class="km__svg" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Concept graph of 21 chapters"
+        :style="{ transform: `scale(${pinchScale}) translate(${panX / pinchScale}px, ${panY / pinchScale}px)`, transformOrigin: 'center center' }"
+        @click.self="closeNode">
         <defs>
           <filter id="km-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4" result="b" /><feComposite in="SourceGraphic" in2="b" operator="over" /></filter>
           <filter id="km-glow-s" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="8" result="b" /><feComposite in="SourceGraphic" in2="b" operator="over" /></filter>
@@ -186,7 +219,8 @@ watch(() => props.activeSection, () => { selectedNode.value = null })
           :class="{ 'km__node--sel': selectedNode === n.id, 'km__node--clicked': clickedNodes.has(n.id) }"
           :style="{ '--c': n.color, opacity: nodeOpacity(n) }" role="button" :tabindex="0"
           :aria-label="`Chapter ${n.id}: ${n.title}`"
-          @click.stop="handleNodeClick(n)" @keydown.enter.stop="handleNodeClick(n)" @keydown.space.prevent.stop="handleNodeClick(n)">
+          @click.stop="handleNodeClick(n)" @keydown.enter.stop="handleNodeClick(n)" @keydown.space.prevent.stop="handleNodeClick(n)"
+          @mouseenter="handleNodeHover(n)" @mouseleave="handleNodeLeave">
           <circle :cx="n.x" :cy="n.y" r="26" class="km__glow" :filter="selectedNode === n.id ? 'url(#km-glow-s)' : 'url(#km-glow)'" />
           <circle :cx="n.x" :cy="n.y" r="18" class="km__circle" />
           <circle :cx="n.x" :cy="n.y" r="18" class="km__border" />

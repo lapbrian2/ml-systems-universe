@@ -2,9 +2,14 @@
 import { ref, computed, watch } from 'vue'
 
 /* ── Props & Emits ── */
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   activeSection: number
-}>()
+  scrollProgress?: number
+  sectionProgress?: number
+}>(), {
+  scrollProgress: 0,
+  sectionProgress: 0,
+})
 
 const emit = defineEmits<{
   exerciseComplete: []
@@ -106,6 +111,33 @@ const highlightedStageIds = computed<Set<string>>(() => {
 
 const showFeedbackArrows = computed(() => props.activeSection === 3)
 
+/* ── Scroll-driven animation state ── */
+// How many stages should be "lit up" based on continuous scroll (0 to stages.length)
+const scrollLitCount = computed(() => {
+  if (!props.scrollProgress) return 0
+  return props.scrollProgress * stages.length
+})
+
+// Dash offset for arrow animation tied to scroll
+const scrollDashOffset = computed(() => {
+  return -(props.scrollProgress * 200)
+})
+
+// Per-stage glow intensity driven by scroll position
+function scrollStageGlow(index: number): number {
+  const lit = scrollLitCount.value
+  if (index < lit - 1) return 0.15 // fully passed
+  if (index > lit) return 0 // not reached
+  // Transitioning stage: fraction of glow
+  const frac = lit - index
+  return Math.max(0, Math.min(0.15, frac * 0.15))
+}
+
+// Data flow particle position along the pipeline (0 to ~total width)
+const particleProgress = computed(() => {
+  return props.scrollProgress * 100 // percentage
+})
+
 /* ── Interaction State ── */
 const clickedStages = ref<Set<string>>(new Set())
 const selectedStage = ref<string | null>(null)
@@ -157,8 +189,14 @@ function isClicked(id: string): boolean {
   return clickedStages.value.has(id)
 }
 
-function stageOpacity(id: string): number {
+function stageOpacity(id: string, index: number): number {
   if (isSelected(id)) return 1
+  // Scroll-driven: stages progressively light up
+  if (props.scrollProgress > 0) {
+    const lit = scrollLitCount.value
+    if (index <= lit) return 0.4 + Math.min((lit - index), 1) * 0.6
+    return 0.2
+  }
   if (highlightedStageIds.value.size === 0) return 0.7
   return isHighlighted(id) ? 1 : 0.25
 }
@@ -262,7 +300,10 @@ watch(
             :class="{
               'pipeline-flow__connection-line--active':
                 isHighlighted(stages[i].id) && isHighlighted(stages[i + 1].id),
+              'pipeline-flow__connection-line--scroll-lit':
+                scrollProgress > 0 && i < scrollLitCount - 1,
             }"
+            :style="scrollProgress > 0 ? { strokeDashoffset: scrollDashOffset + 'px' } : {}"
             marker-end="url(#arrowhead)"
           />
         </g>
@@ -288,6 +329,16 @@ watch(
           />
         </g>
 
+        <!-- Scroll-driven data flow particle (horizontal) -->
+        <circle
+          v-if="scrollProgress > 0.01"
+          :cx="68 + 45 + (scrollProgress * (stages.length - 1) * 133)"
+          cy="100"
+          r="5"
+          class="pipeline-flow__scroll-particle"
+          :style="{ '--particle-color': stages[Math.min(Math.floor(scrollProgress * stages.length), stages.length - 1)].color }"
+        />
+
         <!-- Stages (horizontal) -->
         <g
           v-for="(stage, i) in stages"
@@ -300,7 +351,7 @@ watch(
           }"
           :style="{
             '--stage-color': stage.color,
-            opacity: stageOpacity(stage.id),
+            opacity: stageOpacity(stage.id, i),
           }"
           :transform="`translate(${68 + i * 133}, 55)`"
           role="button"
@@ -531,7 +582,7 @@ watch(
           }"
           :style="{
             '--stage-color': stage.color,
-            opacity: stageOpacity(stage.id),
+            opacity: stageOpacity(stage.id, i),
           }"
           :transform="`translate(30, ${40 + i * 130})`"
           role="button"
@@ -1032,6 +1083,29 @@ watch(
   to {
     opacity: 0.7;
     transform: translateY(0);
+  }
+}
+
+/* ── Scroll-driven particle ── */
+.pipeline-flow__scroll-particle {
+  fill: var(--particle-color, var(--viz-primary));
+  filter: url(#glow);
+  transition: cx 0.1s linear;
+}
+
+/* ── Scroll-lit connection ── */
+.pipeline-flow__connection-line--scroll-lit {
+  stroke: var(--viz-primary);
+  stroke-opacity: 0.5;
+}
+
+/* ── Reduced motion: disable scroll animations ── */
+@media (prefers-reduced-motion: reduce) {
+  .pipeline-flow__scroll-particle {
+    display: none;
+  }
+  .pipeline-flow__connection-line {
+    animation: none;
   }
 }
 

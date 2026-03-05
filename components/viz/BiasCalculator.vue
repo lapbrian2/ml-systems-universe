@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import { useAnimatedValue } from '~/composables/useAnimatedValue'
+import { biasCalculatorTour } from '~/data/tours'
+import type { TourStep } from '~/components/viz/GuidedTour.vue'
 
 /* ── Props & Emits ── */
 const props = defineProps<{
@@ -166,15 +169,55 @@ watch(
   }
 )
 
+/* ── Animated fairness percentages ── */
+const { displayValue: animatedAccA, targetValue: accATarget } = useAnimatedValue(0, 0.5)
+const { displayValue: animatedAccB, targetValue: accBTarget } = useAnimatedValue(0, 0.5)
+const { displayValue: animatedScore, targetValue: scoreTarget } = useAnimatedValue(0, 0.4)
+
+watch(
+  () => computeMetrics(groupA.value).accuracy,
+  (v) => { accATarget.value = v },
+  { immediate: true }
+)
+watch(
+  () => computeMetrics(groupB.value).accuracy,
+  (v) => { accBTarget.value = v },
+  { immediate: true }
+)
+watch(overallFairnessScore, (v) => { scoreTarget.value = v }, { immediate: true })
+
 /* ── Reset on section change ── */
 watch(
   () => props.activeSection,
   () => { selectedMetric.value = null }
 )
+
+/* ── Guided Tour steps with reactive checks ── */
+const tourSteps = computed<TourStep[]>(() =>
+  biasCalculatorTour.map((step, i) => ({
+    ...step,
+    check: i === 0 ? undefined
+      : i === 1 ? () => interactionCount.value >= 1
+      : i === 2 ? () => {
+          const dp = fairnessMetrics.value.find(m => m.shortName === 'DP')
+          return !!dp && dp.difference < 0.05
+        }
+      : i === 3 ? () => interactionCount.value >= 2
+      : undefined,
+  }))
+)
 </script>
 
 <template>
   <div class="bias" role="region" aria-label="Fairness Metrics Calculator">
+    <!-- Guided Tour -->
+    <GuidedTour
+      :steps="tourSteps"
+      chapter-id="ch17"
+      tour-id="bias-calculator"
+      color="#ef4444"
+    />
+
     <!-- Header -->
     <div class="bias__header">
       <span class="bias__badge">Interactive</span>
@@ -332,7 +375,7 @@ watch(
           <!-- Overall score -->
           <rect x="90" y="10" width="160" height="36" rx="18" class="bias__score-bg" />
           <text x="170" y="34" text-anchor="middle" class="bias__score-text">
-            {{ overallFairnessScore }}/{{ fairnessMetrics.length }} Passing
+            {{ Math.round(animatedScore) }}/{{ fairnessMetrics.length }} Passing
           </text>
 
           <!-- Individual metrics -->
@@ -458,14 +501,14 @@ watch(
             <rect
               x="22"
               y="2"
-              :width="150 * computeMetrics(groupA).accuracy"
+              :width="150 * animatedAccA"
               height="8"
               rx="4"
               fill="#14b8a6"
               class="bias__metric-bar"
             />
             <text :x="180" y="10" class="bias__bar-value">
-              {{ (computeMetrics(groupA).accuracy * 100).toFixed(1) }}%
+              {{ (animatedAccA * 100).toFixed(1) }}%
             </text>
 
             <text x="210" y="10" class="bias__bar-label" fill="#a855f7">B:</text>
@@ -473,14 +516,14 @@ watch(
             <rect
               x="228"
               y="2"
-              :width="120 * computeMetrics(groupB).accuracy"
+              :width="120 * animatedAccB"
               height="8"
               rx="4"
               fill="#a855f7"
               class="bias__metric-bar"
             />
             <text :x="355" y="10" class="bias__bar-value">
-              {{ (computeMetrics(groupB).accuracy * 100).toFixed(1) }}%
+              {{ (animatedAccB * 100).toFixed(1) }}%
             </text>
           </g>
         </g>
