@@ -28,8 +28,14 @@ function restoreState() {
   try {
     const savedPlaying = localStorage.getItem('ambient-audio-playing')
     const savedVolume = localStorage.getItem('ambient-audio-volume')
-    if (savedPlaying !== null) isPlaying.value = JSON.parse(savedPlaying)
-    if (savedVolume !== null) volume.value = JSON.parse(savedVolume)
+    if (savedPlaying !== null) {
+      const parsed = JSON.parse(savedPlaying)
+      if (typeof parsed === 'boolean') isPlaying.value = parsed
+    }
+    if (savedVolume !== null) {
+      const parsed = JSON.parse(savedVolume)
+      if (typeof parsed === 'number' && parsed >= 0 && parsed <= 1) volume.value = parsed
+    }
   } catch {
     // localStorage unavailable
   }

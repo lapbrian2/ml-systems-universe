@@ -1,6 +1,6 @@
 export default defineNuxtConfig({
   compatibilityDate: '2026-03-04',
-  devtools: { enabled: true },
+  devtools: { enabled: process.env.NODE_ENV === 'development' },
 
   site: {
     url: 'https://mlsystemsuniverse.com',
@@ -88,6 +88,9 @@ export default defineNuxtConfig({
     optimizeDeps: {
       include: ['three', 'gsap'],
     },
+    build: {
+      sourcemap: false,
+    },
   },
 
   components: [
@@ -97,6 +100,14 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'vercel',
     routeRules: {
+      '/**': {
+        headers: {
+          'X-Frame-Options': 'DENY',
+          'X-Content-Type-Options': 'nosniff',
+          'Referrer-Policy': 'strict-origin-when-cross-origin',
+          'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+        },
+      },
       '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
       '/favicon.svg': { headers: { 'cache-control': 'public, max-age=86400' } },
       '/og-default.png': { headers: { 'cache-control': 'public, max-age=86400' } },

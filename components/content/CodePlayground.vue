@@ -36,6 +36,7 @@ function getPyodide(): Promise<unknown> {
 
     const script = document.createElement('script')
     script.src = 'https://cdn.jsdelivr.net/pyodide/v0.27.1/full/pyodide.js'
+    script.crossOrigin = 'anonymous'
     script.onload = () => {
       ;(win.loadPyodide as () => Promise<unknown>)()
         .then(resolve)

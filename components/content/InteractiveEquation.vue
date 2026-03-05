@@ -40,23 +40,106 @@ const substitutedLatex = computed(() => {
   return result
 })
 
-// Compute numerical result if expression is provided
-const computedResult = computed(() => {
-  if (!props.computeResult) return null
-  try {
-    // Create a function with variable names as parameters
-    const varNames = props.variables.map(v => v.name)
-    const varValues = varNames.map(n => values.value[n] ?? props.variables.find(v => v.name === n)?.default ?? 0)
-    // eslint-disable-next-line no-new-func
-    const fn = new Function(...varNames, `return ${props.computeResult}`)
-    const result = fn(...varValues)
-    if (typeof result === 'number' && isFinite(result)) {
-      return result
+// Safe math expression evaluator — no eval/new Function
+// Supports: +, -, *, /, parentheses, unary minus, Math.fn(), variables
+const MATH_FNS: Record<string, (...args: number[]) => number> = {
+  abs: Math.abs, ceil: Math.ceil, floor: Math.floor, round: Math.round,
+  sqrt: Math.sqrt, pow: Math.pow, log: Math.log, log2: Math.log2,
+  log10: Math.log10, exp: Math.exp, min: Math.min, max: Math.max,
+  sin: Math.sin, cos: Math.cos, tan: Math.tan,
+}
+const MATH_CONSTS: Record<string, number> = { PI: Math.PI, E: Math.E }
+
+function safeEval(expr: string, vars: Record<string, number>): number | null {
+  let pos = 0
+  const s = expr.replace(/\s+/g, '')
+
+  function peek() { return s[pos] }
+  function consume(ch?: string) {
+    if (ch && s[pos] !== ch) throw new Error(`Expected ${ch}`)
+    return s[pos++]
+  }
+
+  function parseExpr(): number {
+    let left = parseTerm()
+    while (peek() === '+' || peek() === '-') {
+      const op = consume()
+      const right = parseTerm()
+      left = op === '+' ? left + right : left - right
     }
-    return null
+    return left
+  }
+
+  function parseTerm(): number {
+    let left = parseUnary()
+    while (peek() === '*' || peek() === '/') {
+      const op = consume()
+      const right = parseUnary()
+      left = op === '*' ? left * right : left / right
+    }
+    return left
+  }
+
+  function parseUnary(): number {
+    if (peek() === '-') { consume(); return -parseAtom() }
+    if (peek() === '+') { consume() }
+    return parseAtom()
+  }
+
+  function parseAtom(): number {
+    // Parenthesized expression
+    if (peek() === '(') {
+      consume('(')
+      const val = parseExpr()
+      consume(')')
+      return val
+    }
+    // Number literal
+    const numMatch = s.slice(pos).match(/^(\d+\.?\d*(?:[eE][+-]?\d+)?)/)
+    if (numMatch) {
+      pos += numMatch[0].length
+      return parseFloat(numMatch[0])
+    }
+    // Identifier: Math.fn(...), Math.CONST, or variable
+    const idMatch = s.slice(pos).match(/^(?:Math\.)?([a-zA-Z_]\w*)/)
+    if (idMatch) {
+      const name = idMatch[1]
+      pos += idMatch[0].length
+      // Function call
+      if (peek() === '(') {
+        const fn = MATH_FNS[name]
+        if (!fn) throw new Error(`Unknown function: ${name}`)
+        consume('(')
+        const args: number[] = [parseExpr()]
+        while (peek() === ',') { consume(); args.push(parseExpr()) }
+        consume(')')
+        return fn(...args)
+      }
+      // Constant or variable
+      if (name in MATH_CONSTS) return MATH_CONSTS[name]
+      if (name in vars) return vars[name]
+      throw new Error(`Unknown variable: ${name}`)
+    }
+    throw new Error(`Unexpected character: ${peek()}`)
+  }
+
+  try {
+    const result = parseExpr()
+    if (pos !== s.length) return null // leftover characters
+    return typeof result === 'number' && isFinite(result) ? result : null
   } catch {
     return null
   }
+}
+
+// Compute numerical result if expression is provided
+const computedResult = computed(() => {
+  if (!props.computeResult) return null
+  const vars: Record<string, number> = {}
+  for (const v of props.variables) {
+    vars[v.name] = values.value[v.name] ?? v.default
+  }
+  return safeEval(props.computeResult, vars)
 })
 
 // Render KaTeX HTML

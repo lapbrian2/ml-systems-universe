@@ -40,7 +40,7 @@ export const useNotesStore = defineStore('notes', {
 
   actions: {
     addNote(chapterId: string, sectionId: string, text: string, selectedText?: string) {
-      const id = `note-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+      const id = `note-${crypto.randomUUID()}`
       const now = new Date().toISOString()
       this.notes[id] = {
         id,
