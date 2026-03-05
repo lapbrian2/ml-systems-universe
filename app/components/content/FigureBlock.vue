@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent, type Component } from 'vue'
+import { computed, type Component } from 'vue'
 
 const props = defineProps<{
   src?: string
@@ -9,13 +9,17 @@ const props = defineProps<{
   component?: string
 }>()
 
-// Build a map of all infographic components using Vite's import.meta.glob
-// resolveComponent() doesn't work with Nuxt auto-imports (tree-shaken at build time)
-const infographicModules = import.meta.glob('~/components/infographics/*.vue')
+// Eager-load all infographic components so they're available synchronously.
+// Uses relative path (not ~/alias) for reliable Vite glob resolution (vitejs/vite#12180).
+// resolveComponent() can't be used — Nuxt auto-imports are tree-shaken at build time.
+const infographicModules = import.meta.glob<{ default: Component }>(
+  '../infographics/*.vue',
+  { eager: true },
+)
 const infographicMap: Record<string, Component> = {}
-for (const [path, loader] of Object.entries(infographicModules)) {
+for (const [path, mod] of Object.entries(infographicModules)) {
   const name = path.split('/').pop()!.replace('.vue', '')
-  infographicMap[name] = defineAsyncComponent(loader as () => Promise<{ default: Component }>)
+  infographicMap[name] = mod.default
 }
 
 const resolvedComponent = computed(() => {
