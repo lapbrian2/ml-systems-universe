@@ -6,8 +6,11 @@ import { useProgressStore } from '~/stores/progress'
 import {
   BookOpen, Clock, CheckCircle2, ArrowRight,
   GraduationCap, Layers, FlaskConical, Cpu, Brain,
-  BarChart3, Zap, Shield, Globe,
+  BarChart3, Zap, Shield, Globe, BookMarked,
 } from 'lucide-vue-next'
+import { useCourseJsonLd } from '~/composables/useJsonLd'
+
+useCourseJsonLd()
 
 const store = useProgressStore()
 
@@ -202,14 +205,24 @@ const partDescriptions: Record<string, string> = {
             />
           </div>
           <!-- Resume link -->
-          <NuxtLink
-            v-if="lastVisitedChapter"
-            :to="`/chapter/${lastVisitedChapter.slug}`"
-            class="mt-3 inline-flex items-center gap-2 text-xs text-primary/70 hover:text-primary transition-colors"
-          >
-            <ArrowRight class="w-3 h-3" />
-            <span>Resume: Ch {{ lastVisitedChapter.number }} — {{ lastVisitedChapter.title }}</span>
-          </NuxtLink>
+          <div class="flex items-center gap-4 mt-3">
+            <NuxtLink
+              v-if="lastVisitedChapter"
+              :to="`/chapter/${lastVisitedChapter.slug}`"
+              class="inline-flex items-center gap-2 text-xs text-primary/70 hover:text-primary transition-colors"
+            >
+              <ArrowRight class="w-3 h-3" />
+              <span>Resume: Ch {{ lastVisitedChapter.number }} — {{ lastVisitedChapter.title }}</span>
+            </NuxtLink>
+            <NuxtLink
+              to="/review"
+              class="inline-flex items-center gap-1.5 text-xs text-accent-purple/60 hover:text-accent-purple transition-colors"
+            >
+              <BookMarked class="w-3 h-3" />
+              <span>Review Cards</span>
+            </NuxtLink>
+            <ShareProgress />
+          </div>
         </div>
       </div>
       </div>
@@ -236,6 +249,11 @@ const partDescriptions: Record<string, string> = {
           <p class="text-xs text-white/35 leading-relaxed">{{ feature.description }}</p>
         </div>
       </div>
+    </section>
+
+    <!-- ═══ Learning Paths ═══ -->
+    <section class="max-w-5xl mx-auto px-6 pb-16">
+      <LearningPaths />
     </section>
 
     <!-- ═══ Chapter List by Part ═══ -->

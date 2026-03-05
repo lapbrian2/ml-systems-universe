@@ -6,6 +6,7 @@ import { ArrowLeft, Eye } from 'lucide-vue-next'
 import { getChapterBySlug, getPartForChapter, getNextChapter, getPrevChapter } from '~/lib/chapter-utils'
 import { getChapterContent, loadChapterContent } from '~/data/content'
 import { useProgressStore } from '~/stores/progress'
+import { useChapterJsonLd } from '~/composables/useJsonLd'
 import type { ChapterMeta, Part } from '~/types/chapter'
 import type { ChapterContent } from '~/data/content'
 
@@ -72,6 +73,11 @@ useSeoMeta({
 // 404 guard
 if (!chapter.value) {
   throw createError({ statusCode: 404, message: 'Chapter not found' })
+}
+
+// JSON-LD structured data
+if (chapter.value) {
+  useChapterJsonLd(chapter.value)
 }
 
 // ── Progress ──────────────────────────────────────────────────────────
@@ -367,6 +373,7 @@ const vizComponent = computed(() => {
 
         <!-- Viz component -->
         <div class="relative z-10 w-full h-full">
+          <VizFullscreen :part-color="partColor" />
           <component
             :is="vizComponent"
             v-if="vizComponent"
@@ -440,6 +447,7 @@ const vizComponent = computed(() => {
               :is-active="activeSection === idx"
               :part-color="partColor"
               :glossary="content.glossary"
+              :chapter-id="chapter!.id"
             />
 
             <!-- Key takeaways -->
