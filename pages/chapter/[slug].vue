@@ -376,9 +376,6 @@ const vizComponent = computed(() => {
           }"
         />
 
-        <!-- Ambient floating particles -->
-        <AmbientParticles :part-color="partColor" />
-
         <!-- Edge glow on divider -->
         <div
           class="absolute top-0 right-0 bottom-0 w-px hidden lg:block"

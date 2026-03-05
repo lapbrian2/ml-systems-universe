@@ -105,9 +105,6 @@ const partDescriptions: Record<string, string> = {
       <!-- ML System Architecture Background -->
       <ClientOnly>
         <MLSystemHero />
-        <div class="absolute inset-0 z-[1] pointer-events-none opacity-50">
-          <CosmicParticles />
-        </div>
       </ClientOnly>
 
       <!-- Animated gradient orbs -->
