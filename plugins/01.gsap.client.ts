@@ -6,9 +6,11 @@ export default defineNuxtPlugin(() => {
 
   gsap.registerPlugin(ScrollTrigger)
 
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
   gsap.defaults({
-    ease: 'power2.out',
-    duration: 0.8,
+    ease: prefersReduced ? 'none' : 'power2.out',
+    duration: prefersReduced ? 0 : 0.8,
   })
 
   return {

@@ -5,10 +5,12 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 export default defineNuxtPlugin(() => {
   if (import.meta.server) return
 
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
   const lenis = new Lenis({
-    duration: 1.2,
+    duration: prefersReduced ? 0 : 1.2,
     easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    smoothWheel: true,
+    smoothWheel: !prefersReduced,
     touchMultiplier: 2,
   })
 

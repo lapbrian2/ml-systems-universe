@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted, nextTick, defineAsyncComponent, defineComponent, h } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowLeft } from 'lucide-vue-next'
@@ -140,6 +140,10 @@ onUnmounted(() => {
 // ── Keyboard navigation ────────────────────────────────────────────
 function handleKeyboard(e: KeyboardEvent) {
   if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
+  if (e.target instanceof HTMLButtonElement) return
+  // Don't capture keys when focus is inside the viz panel
+  const vizPanel = document.querySelector('aside')
+  if (vizPanel?.contains(e.target as Node)) return
   if (e.key === 'ArrowLeft') {
     const prev = getPrevChapter(slug.value)
     if (prev) navigateTo(`/chapter/${prev.slug}`)
@@ -149,11 +153,26 @@ function handleKeyboard(e: KeyboardEvent) {
   }
 }
 
+// Register keyboard listener (consolidated into single onMounted below via gsapCtx setup)
 onMounted(() => {
   if (import.meta.client) {
     window.addEventListener('keydown', handleKeyboard)
   }
 })
+
+// ── Auto-mark chapter read when all sections are read ──────────────
+watch(
+  () => {
+    if (!chapter.value || !content.value) return false
+    const progress = store.getProgress(chapter.value.id)
+    return progress.sectionsRead.length >= content.value.sections.length
+  },
+  (allRead) => {
+    if (allRead && chapter.value) {
+      store.markChapterRead(chapter.value.id)
+    }
+  }
+)
 
 // ── Quiz complete handler ─────────────────────────────────────────────
 function onQuizComplete(_score: number) {
@@ -192,12 +211,36 @@ const vizImportMap: Record<string, () => Promise<any>> = {
   ch21: () => import('~/components/viz/KnowledgeMap.vue'),
 }
 
+// Pre-build async component cache (avoids creating new component on every reactive eval)
+const VizLoadingSkeleton = defineComponent({
+  setup() {
+    return () => h('div', { class: 'flex items-center justify-center h-full' }, [
+      h('div', { class: 'w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin' })
+    ])
+  }
+})
+const VizErrorFallback = defineComponent({
+  setup() {
+    return () => h('div', { class: 'flex flex-col items-center justify-center h-full text-white/40 gap-3' }, [
+      h('span', { class: 'text-2xl' }, '\u26A0'),
+      h('span', 'Visualization failed to load'),
+    ])
+  }
+})
+const asyncVizCache: Record<string, ReturnType<typeof defineAsyncComponent>> = {}
+for (const [id, loader] of Object.entries(vizImportMap)) {
+  asyncVizCache[id] = defineAsyncComponent({
+    loader,
+    loadingComponent: VizLoadingSkeleton,
+    errorComponent: VizErrorFallback,
+    delay: 200,
+    timeout: 15000,
+  })
+}
+
 const vizComponent = computed(() => {
   const id = chapter.value?.id
-  if (id && vizImportMap[id]) {
-    return defineAsyncComponent(vizImportMap[id])
-  }
-  return null
+  return id ? asyncVizCache[id] ?? null : null
 })
 </script>
 

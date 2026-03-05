@@ -100,6 +100,14 @@ watch(allComplete, async (isComplete) => {
               backgroundColor: phase.done ? partColor : 'rgba(255,255,255,0.1)',
             }"
           />
+
+          <!-- Exercise hint -->
+          <p
+            v-if="phase.id === 'exercise' && !phase.done"
+            class="text-[9px] text-white/25 text-center px-1 leading-tight"
+          >
+            Interact with the visualization
+          </p>
         </div>
       </div>
 

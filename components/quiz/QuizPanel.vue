@@ -117,8 +117,13 @@ async function finishQuiz() {
   }
 }
 
-// Start on mount
-startQuiz()
+// Show intro screen instead of auto-starting
+const showIntro = ref(true)
+
+function beginQuiz() {
+  showIntro.value = false
+  startQuiz()
+}
 
 function getOptionClass(optionIndex: number): string {
   const base = 'quiz-option'
@@ -151,7 +156,7 @@ function getOptionClass(optionIndex: number): string {
           class="w-9 h-9 rounded-lg flex items-center justify-center"
           :style="{ backgroundColor: `${partColor}15` }"
         >
-          <Brain class="w-4.5 h-4.5" :style="{ color: partColor }" />
+          <Brain class="w-4 h-4" :style="{ color: partColor }" />
         </div>
         <div class="flex-1">
           <h3 class="font-display text-base font-semibold text-white">
@@ -175,8 +180,27 @@ function getOptionClass(optionIndex: number): string {
 
       <div class="px-6 pb-6">
         <!-- No quiz data -->
-        <div v-if="!quizData || questions.length === 0" class="py-10 text-center text-sm text-white/30">
+        <div v-if="!quizData" class="py-10 text-center text-sm text-white/30">
           No quiz available for this chapter.
+        </div>
+
+        <!-- Quiz intro screen -->
+        <div v-else-if="showIntro" class="py-8 text-center space-y-4">
+          <p class="text-sm text-white/50">Ready to test your knowledge?</p>
+          <div class="flex items-center justify-center gap-4 text-xs text-white/30">
+            <span>{{ quizData.selectCount }} questions</span>
+            <span class="w-1 h-1 rounded-full bg-white/15" />
+            <span>Randomized from pool</span>
+            <span class="w-1 h-1 rounded-full bg-white/15" />
+            <span>{{ quizData.passingScore }}% to pass</span>
+          </div>
+          <button
+            class="mt-2 px-8 py-3 rounded-xl text-sm font-medium transition-all duration-200 hover:brightness-110"
+            :style="{ backgroundColor: `${partColor}20`, color: partColor, boxShadow: `0 2px 12px ${partColor}15` }"
+            @click="beginQuiz"
+          >
+            Start Quiz
+          </button>
         </div>
 
         <!-- Quiz in progress -->
@@ -387,10 +411,10 @@ function getOptionClass(optionIndex: number): string {
             <button
               class="mt-2 px-6 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 mx-auto transition-all duration-200 hover:bg-white/[0.08]"
               style="background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.6);"
-              @click="startQuiz"
+              @click="beginQuiz"
             >
               <RotateCcw class="w-3.5 h-3.5" />
-              {{ passed ? 'Try Again' : 'Retake Quiz' }}
+              {{ passed ? 'Retake Quiz' : 'Try Again' }}
             </button>
           </div>
         </template>

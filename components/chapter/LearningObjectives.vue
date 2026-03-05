@@ -29,7 +29,7 @@ const expanded = ref(true)
         class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
         :style="{ backgroundColor: `${partColor}15` }"
       >
-        <Target class="w-4.5 h-4.5" :style="{ color: partColor }" />
+        <Target class="w-5 h-5" :style="{ color: partColor }" />
       </div>
       <div class="flex-1 min-w-0">
         <h3 class="text-sm font-semibold text-white/90">

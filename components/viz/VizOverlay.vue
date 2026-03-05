@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { MousePointerClick, Scroll, Eye, X } from 'lucide-vue-next'
 
 const props = defineProps<{
@@ -41,18 +41,27 @@ const instruction = computed(() => VIZ_INSTRUCTIONS[props.chapterId] ?? { action
 const dismissed = ref(false)
 const hasInteracted = ref(false)
 
+// Timer tracking for cleanup
+let mountTimer: ReturnType<typeof setTimeout> | null = null
+let dismissTimer: ReturnType<typeof setTimeout> | null = null
+
 // Auto-dismiss after first section change (user is scrolling = engaged)
 watch(() => props.activeSection, (newVal) => {
   if (newVal > 0 && !hasInteracted.value) {
     hasInteracted.value = true
-    setTimeout(() => { dismissed.value = true }, 2000)
+    dismissTimer = setTimeout(() => { dismissed.value = true }, 2000)
   }
 })
 
 // Show on mount with delay
 const visible = ref(false)
 onMounted(() => {
-  setTimeout(() => { visible.value = true }, 800)
+  mountTimer = setTimeout(() => { visible.value = true }, 800)
+})
+
+onUnmounted(() => {
+  if (mountTimer) clearTimeout(mountTimer)
+  if (dismissTimer) clearTimeout(dismissTimer)
 })
 
 function dismiss() {

@@ -462,3 +462,28 @@ a:focus-visible {
     min-width: 44px;
   }
 }
+
+/* ── Reduced motion support (WCAG 2.3.3) ── */
+@media (prefers-reduced-motion: reduce) {
+  .viz-mesh-bg,
+  .node-glow,
+  .node-inner-ring,
+  .loss-surface__loading-spinner {
+    animation: none !important;
+  }
+  .page-enter-active,
+  .page-leave-active {
+    transition-duration: 0.01s !important;
+  }
+  .glass-panel,
+  .glass-panel--floating,
+  .glass-panel--tooltip {
+    transition-duration: 0.01s !important;
+  }
+  .quiz-option,
+  .callout-box,
+  .definition-box,
+  .code-block {
+    transition-duration: 0.01s !important;
+  }
+}
