@@ -162,11 +162,14 @@ watch(substitutedLatex, (newLatex) => {
 // GSAP animated result display
 const displayResult = ref(0)
 let gsapTween: ReturnType<typeof import('gsap')['default']['to']> | null = null
+let isMounted = true
 
 watch(computedResult, async (newVal) => {
   if (newVal === null || !import.meta.client) return
   try {
     const gsap = (await import('gsap')).default
+    // Guard against component unmounting during the async import
+    if (!isMounted) return
     if (gsapTween) gsapTween.kill()
     const target = { val: displayResult.value }
     gsapTween = gsap.to(target, {
@@ -183,6 +186,7 @@ watch(computedResult, async (newVal) => {
 }, { immediate: true })
 
 onUnmounted(() => {
+  isMounted = false
   if (gsapTween) gsapTween.kill()
 })
 

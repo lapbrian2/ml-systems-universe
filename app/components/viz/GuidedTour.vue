@@ -157,7 +157,10 @@ function highlightTarget() {
 
   // Watch for layout changes
   if (resizeObserver) resizeObserver.disconnect()
-  resizeObserver = new ResizeObserver(() => updateSpotlightRect(el))
+  resizeObserver = new ResizeObserver(() => {
+    // Guard against callback firing after element is detached from DOM
+    if (el.isConnected) updateSpotlightRect(el)
+  })
   resizeObserver.observe(el)
 }
 
