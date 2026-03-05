@@ -1,4 +1,4 @@
-import { ref, onMounted, onUnmounted, type Ref } from 'vue'
+import { ref, watch, onMounted, onUnmounted, nextTick, isRef, type Ref } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -13,6 +13,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
  *
  * Designed to work alongside the existing discrete activeSection system in
  * pages/chapter/[slug].vue without breaking backward compatibility.
+ *
+ * When the component reuses across chapter navigations (same route structure),
+ * the watcher on sectionCount tears down the old ScrollTrigger and creates a
+ * fresh one so triggers don't leak.
  */
 export function useScrollProgress(
   containerRef: Ref<HTMLElement | null>,
@@ -24,8 +28,18 @@ export function useScrollProgress(
 
   let ctx: gsap.Context | null = null
 
-  onMounted(() => {
+  function teardown() {
+    if (ctx) {
+      ctx.revert()
+      ctx = null
+    }
+  }
+
+  function setup() {
+    teardown()
+
     if (!containerRef.value) return
+    if (typeof window === 'undefined') return
 
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -56,10 +70,29 @@ export function useScrollProgress(
         },
       })
     })
+  }
+
+  onMounted(() => {
+    setup()
   })
 
+  // When sectionCount changes (chapter navigation), tear down old trigger
+  // and recreate after the DOM updates with new content.
+  if (isRef(sectionCount)) {
+    watch(sectionCount, async () => {
+      // Reset progress values immediately
+      scrollProgress.value = 0
+      sectionProgress.value = 0
+      activeSection.value = 0
+
+      // Wait for DOM to update with new chapter content
+      await nextTick()
+      setup()
+    })
+  }
+
   onUnmounted(() => {
-    ctx?.revert()
+    teardown()
   })
 
   return { scrollProgress, sectionProgress, activeSection }

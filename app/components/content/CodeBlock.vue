@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onUnmounted } from 'vue'
 import { Copy, Check, Terminal } from 'lucide-vue-next'
 
 const props = defineProps<{
@@ -19,6 +19,13 @@ function copyCode() {
     copyTimeout = setTimeout(() => { copied.value = false }, 2000)
   }).catch(() => {})
 }
+
+onUnmounted(() => {
+  if (copyTimeout) {
+    clearTimeout(copyTimeout)
+    copyTimeout = null
+  }
+})
 
 // Lightweight syntax highlighting
 const highlighted = computed(() => highlightCode(props.code, props.language))

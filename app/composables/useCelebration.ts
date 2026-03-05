@@ -52,7 +52,7 @@ export function useCelebration() {
         }
       }
       frame()
-    } else if (score > 80) {
+    } else if (score >= 70) {
       // Small confetti for passing
       confetti({
         particleCount: 60,

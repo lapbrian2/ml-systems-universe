@@ -8,6 +8,7 @@ import { getChapterContent, loadChapterContent } from '~/data/content'
 import { useProgressStore } from '~/stores/progress'
 import { useChapterJsonLd } from '~/composables/useJsonLd'
 import { useScrollProgress } from '~/composables/useScrollProgress'
+import { useLenis } from '~/composables/useLenis'
 import { useChapterTransition } from '~/composables/useChapterTransition'
 import { playCompleteSound } from '~/composables/useAmbientAudio'
 import type { ChapterMeta, Part } from '~/types/chapter'
@@ -17,6 +18,7 @@ import type { ChapterContent } from '~/data/content'
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 const { triggerTransition } = useChapterTransition()
+const lenis = useLenis()
 
 const chapter = computed<ChapterMeta | undefined>(() => getChapterBySlug(slug.value))
 const part = computed<Part | undefined>(() =>
@@ -68,6 +70,13 @@ watch(() => chapter.value?.id, async (newId, oldId) => {
 
   contentReady.value = false
   await ensureContent()
+
+  // Scroll to top for the new chapter (Lenis if available, fallback to native)
+  if (lenis) {
+    lenis.scrollTo(0, { immediate: true })
+  } else if (import.meta.client) {
+    window.scrollTo(0, 0)
+  }
 
   // Re-register ScrollTriggers for the new chapter
   await nextTick()
@@ -268,7 +277,8 @@ function navigateToChapter(target: ReturnType<typeof getNextChapter>) {
 
 // ── Keyboard navigation ────────────────────────────────────────────
 function handleKeyboard(e: KeyboardEvent) {
-  if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
+  const tag = (e.target as HTMLElement)?.tagName
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target as HTMLElement)?.isContentEditable) return
   if (e.target instanceof HTMLButtonElement) return
   // Don't capture keys when focus is inside the viz panel
   const vizPanel = document.querySelector('aside')
@@ -304,7 +314,11 @@ watch(
 // ── Exercise complete handler (from viz component interaction) ────────
 function scrollToViz() {
   if (import.meta.client) {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    if (lenis) {
+      lenis.scrollTo(0, { duration: 1.2 })
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
   }
 }
 
@@ -686,7 +700,7 @@ const vizComponent = computed(() => {
     >
       <button
         v-if="progressWidth > 5"
-        class="lg:hidden fixed bottom-20 left-4 z-40 flex items-center gap-1.5 px-3 py-2 rounded-full text-[10px] font-medium transition-colors"
+        class="lg:hidden fixed bottom-20 left-4 z-30 flex items-center gap-1.5 px-3 py-2 rounded-full text-[10px] font-medium transition-colors"
         :style="{
           backgroundColor: `${partColor}15`,
           color: partColor,

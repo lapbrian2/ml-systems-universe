@@ -60,7 +60,15 @@ const segments = computed<TextSegment[]>(() => {
     matched.add(termKey)
 
     const entry = termMap.get(termKey)
-    if (!entry) continue
+    if (!entry) {
+      // Term not found in map — emit as plain text so nothing is dropped
+      if (match.index > lastIndex) {
+        result.push({ type: 'text', value: source.slice(lastIndex, match.index) })
+      }
+      result.push({ type: 'text', value: match[1] })
+      lastIndex = match.index + match[1].length
+      continue
+    }
 
     // Push preceding plain text
     if (match.index > lastIndex) {

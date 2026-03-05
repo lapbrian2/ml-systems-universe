@@ -30,16 +30,10 @@ onMounted(() => {
   }
 })
 
-// Reactive parameter values
-const values = ref<Record<string, number>>({})
-
-onMounted(() => {
-  const initial: Record<string, number> = {}
-  for (const p of props.parameters) {
-    initial[p.name] = p.default
-  }
-  values.value = initial
-})
+// Reactive parameter values — initialize synchronously to avoid flicker
+const values = ref<Record<string, number>>(
+  Object.fromEntries(props.parameters.map(p => [p.name, p.default]))
+)
 
 function resetAll() {
   const defaults: Record<string, number> = {}

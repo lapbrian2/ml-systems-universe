@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 
 defineProps<{ config: Record<string, unknown> }>()
 
+const gradientId = `grad-flow-${Math.random().toString(36).slice(2, 8)}`
 const depth = ref(5) // 1..10 layers deep
 const mode = ref<'vanishing' | 'healthy' | 'exploding'>('vanishing')
 
@@ -94,12 +95,12 @@ function getBarColor(magnitude: number): string {
       <span class="text-[8px] text-white/30">Input</span>
       <svg width="60" height="6">
         <defs>
-          <linearGradient id="grad-flow" x1="0" x2="1" y1="0" y2="0">
+          <linearGradient :id="gradientId" x1="0" x2="1" y1="0" y2="0">
             <stop offset="0%" stop-color="rgba(255,255,255,0.1)" />
             <stop offset="100%" stop-color="rgba(255,255,255,0.4)" />
           </linearGradient>
         </defs>
-        <rect width="60" height="2" y="2" rx="1" fill="url(#grad-flow)" />
+        <rect width="60" height="2" y="2" rx="1" :fill="`url(#${gradientId})`" />
         <polygon points="55,0 60,3 55,6" fill="rgba(255,255,255,0.4)" />
       </svg>
       <span class="text-[8px] text-white/30">Output</span>

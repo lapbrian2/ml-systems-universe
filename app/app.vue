@@ -51,7 +51,7 @@ nuxtApp.hook('page:finish', () => {
     </Transition>
 
     <ClientOnly>
-      <ScrollProgressBar />
+      <ScrollProgressBar v-if="!route.path.startsWith('/chapter/')" />
     </ClientOnly>
     <NuxtPage />
     <ClientOnly>

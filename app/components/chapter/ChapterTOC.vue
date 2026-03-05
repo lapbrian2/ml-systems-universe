@@ -3,6 +3,7 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { List, Check, ChevronRight, X } from 'lucide-vue-next'
 import type { ChapterSection } from '~/types/chapter'
 import { useProgressStore } from '~/stores/progress'
+import { useLenis } from '~/composables/useLenis'
 
 const props = defineProps<{
   sections: ChapterSection[]
@@ -12,6 +13,7 @@ const props = defineProps<{
 }>()
 
 const store = useProgressStore()
+const lenis = useLenis()
 const collapsed = ref(true)
 const dismissed = ref(false) // user explicitly closed the TOC
 const showToc = ref(false) // scroll-gated visibility
@@ -25,7 +27,11 @@ function isSectionRead(index: number): boolean {
 function scrollToSection(sectionId: string) {
   const el = document.getElementById(sectionId)
   if (el) {
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    if (lenis) {
+      lenis.scrollTo(el, { offset: 0 })
+    } else {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
     collapsed.value = true
   }
 }

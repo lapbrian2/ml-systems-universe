@@ -255,6 +255,10 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   document.removeEventListener('keydown', onGlobalKeydown)
+  if (debounceTimer) {
+    clearTimeout(debounceTimer)
+    debounceTimer = null
+  }
 })
 
 // ── Highlight matching text ────────────────────────────────────────────────

@@ -17,17 +17,10 @@ const props = defineProps<{
   resultLabel?: string
 }>()
 
-// Reactive variable values
-const values = ref<Record<string, number>>({})
-
-// Initialize defaults
-onMounted(() => {
-  const initial: Record<string, number> = {}
-  for (const v of props.variables) {
-    initial[v.name] = v.default
-  }
-  values.value = initial
-})
+// Reactive variable values — initialize synchronously to avoid flicker
+const values = ref<Record<string, number>>(
+  Object.fromEntries(props.variables.map(v => [v.name, v.default]))
+)
 
 // Substitute {{var}} placeholders with actual values
 const substitutedLatex = computed(() => {
