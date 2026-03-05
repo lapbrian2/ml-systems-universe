@@ -74,8 +74,9 @@ export const sections: ChapterSection[] = [
           ['Ampere (A100)', '2020', 'TF32, BF16, 2:4 sparsity, 3rd-gen tensor cores', '312'],
           ['Hopper (H100)', '2022', 'FP8, Transformer Engine, NVLink 4.0', '990'],
           ['Blackwell (B200)', '2024', '2nd-gen Transformer Engine, NVLink 5.0', '~2250'],
+          ['Blackwell Ultra (B300)', '2025', 'HBM3e, enhanced sparsity, NVLink 5.0+', '~4500'],
         ],
-        caption: 'Table 11.2: NVIDIA GPU architecture evolution for ML workloads.',
+        caption: 'Table 11.2: NVIDIA GPU architecture evolution for ML workloads (through 2025-2026).',
       },
       {
         type: 'callout',

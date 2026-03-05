@@ -30,6 +30,7 @@ const milestones: Milestone[] = [
   { id: 'eu-ai-act', year: 2024, title: 'EU AI Act', category: 'regulation', color: '#a855f7', description: 'World\'s first comprehensive AI law with risk-based classification.', impact: 'Banned high-risk AI uses; required conformity assessments.', sectionGroup: 2 },
   { id: 'exec-order', year: 2024, title: 'US Executive Order on AI', category: 'regulation', color: '#a855f7', description: 'Executive Order on Safe, Secure, and Trustworthy AI development.', impact: 'Required safety testing for frontier models; new reporting.', sectionGroup: 3 },
   { id: 'rai-frameworks', year: 2025, title: 'Responsible AI Frameworks', category: 'framework', color: '#f0a500', description: 'Major tech companies converge on responsible AI principles and auditing.', impact: 'Industry-wide adoption of AI ethics boards and auditing.', sectionGroup: 3 },
+  { id: 'global-ai-governance', year: 2026, title: 'Global AI Governance Push', category: 'regulation', color: '#a855f7', description: 'International coordination on AI safety standards accelerates with new treaties and enforcement mechanisms.', impact: 'Cross-border AI compliance requirements begin harmonizing.', sectionGroup: 3 },
 ]
 
 const categoryLabels: Record<string, string> = {
@@ -44,7 +45,7 @@ const clickedMilestones = ref<Set<string>>(new Set())
 const exerciseEmitted = ref(false)
 
 const timelineStartYear = 2016
-const timelineEndYear = 2026
+const timelineEndYear = 2027
 const timelineWidth = 720
 
 function yearToX(year: number): number {
@@ -88,7 +89,7 @@ const explorationProgress = computed(() => Math.min(clickedMilestones.value.size
 
 const yearMarkers = computed(() => {
   const markers = []
-  for (let y = 2017; y <= 2025; y++) markers.push({ year: y, x: yearToX(y) })
+  for (let y = 2017; y <= 2026; y++) markers.push({ year: y, x: yearToX(y) })
   return markers
 })
 
@@ -114,7 +115,7 @@ watch(() => props.activeSection, () => { selectedMilestone.value = null })
     </div>
 
     <div class="tl__canvas" @click.self="closeDetail">
-      <svg viewBox="0 0 800 340" class="tl__svg" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Horizontal timeline from 2017 to 2025" @click.self="closeDetail">
+      <svg viewBox="0 0 800 340" class="tl__svg" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Horizontal timeline from 2017 to 2026" @click.self="closeDetail">
         <defs>
           <filter id="tl-glow" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation="4" result="blur" /><feComposite in="SourceGraphic" in2="blur" operator="over" />
@@ -136,8 +137,8 @@ watch(() => props.activeSection, () => { selectedMilestone.value = null })
         <text :x="yearToX(2018)" y="55" text-anchor="middle" class="tl__era">Early Principles</text>
         <rect :x="yearToX(2019)" y="60" :width="yearToX(2023) - yearToX(2019)" height="110" rx="6" fill="rgba(0,200,150,0.03)" />
         <text :x="yearToX(2021)" y="55" text-anchor="middle" class="tl__era">Tools &amp; Standards</text>
-        <rect :x="yearToX(2023)" y="60" :width="yearToX(2026) - yearToX(2023)" height="110" rx="6" fill="rgba(168,85,247,0.03)" />
-        <text :x="yearToX(2024.5)" y="55" text-anchor="middle" class="tl__era">Regulation Era</text>
+        <rect :x="yearToX(2023)" y="60" :width="yearToX(2027) - yearToX(2023)" height="110" rx="6" fill="rgba(168,85,247,0.03)" />
+        <text :x="yearToX(2025)" y="55" text-anchor="middle" class="tl__era">Regulation Era</text>
 
         <g
           v-for="(ms, i) in milestones"
@@ -187,7 +188,7 @@ watch(() => props.activeSection, () => { selectedMilestone.value = null })
       <span v-if="activeSection === 0" class="tl__ctx">2017-2018: The era of foundational AI principles and data protection law</span>
       <span v-else-if="activeSection === 1" class="tl__ctx">2019: Documentation tools like Model Cards and Datasheets emerge</span>
       <span v-else-if="activeSection === 2" class="tl__ctx">2023-2024: Governments worldwide begin comprehensive AI regulation</span>
-      <span v-else class="tl__ctx">The responsible AI landscape continues to evolve rapidly</span>
+      <span v-else class="tl__ctx">2025-2026: Global AI governance coordination and enforcement accelerate</span>
     </div>
   </div>
 </template>

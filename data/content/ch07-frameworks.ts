@@ -40,7 +40,7 @@ export const sections: ChapterSection[] = [
         type: 'callout',
         variant: 'note',
         title: 'Framework Consolidation',
-        text: 'As of 2024, PyTorch has become the dominant framework for research papers, while TensorFlow retains a strong position in production deployments. JAX is gaining momentum for large-scale training, particularly at Google DeepMind. Smaller frameworks like Caffe, Theano, and MXNet have largely been superseded.',
+        text: 'As of 2026, PyTorch dominates both research and increasingly production deployments, while TensorFlow retains legacy presence in large-scale serving. JAX has established itself as the framework of choice for large-scale training at Google DeepMind and beyond. Smaller frameworks like Caffe, Theano, and MXNet have been fully superseded.',
       },
       {
         type: 'paragraph',
@@ -231,7 +231,7 @@ export const sections: ChapterSection[] = [
         type: 'callout',
         variant: 'warning',
         title: 'TensorFlow\'s Community Trajectory',
-        text: 'While TensorFlow remains widely used in industry, its share of new research papers has declined significantly since 2020. Teams choosing TensorFlow should be aware that many cutting-edge models and techniques are first released as PyTorch implementations, sometimes with delayed or community-maintained TensorFlow ports.',
+        text: 'While TensorFlow remains used in production, its share of new research papers has declined sharply since 2020 and continues to fall through 2026. Teams choosing TensorFlow should be aware that most cutting-edge models and techniques are released as PyTorch-first implementations, with delayed or community-maintained TensorFlow ports if they exist at all.',
       },
     ],
     order: 2,

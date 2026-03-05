@@ -66,7 +66,7 @@ export const sections: ChapterSection[] = [
         type: 'callout',
         variant: 'note',
         title: 'The Exponential Cost of Scale',
-        text: 'Training costs for frontier models have increased roughly 10x per year. GPT-3 (2020) cost an estimated $4.6M to train. GPT-4 (2023) reportedly cost over $100M. This trajectory is unsustainable without fundamental efficiency improvements, making this chapter\'s techniques critically important for the future of AI.',
+        text: 'Training costs for frontier models have increased roughly 10x per year. GPT-3 (2020) cost an estimated $4.6M to train. GPT-4 (2023) reportedly cost over $100M. By 2025-2026, frontier model training runs are estimated to exceed $1B. This trajectory is unsustainable without fundamental efficiency improvements, making this chapter\'s techniques critically important for the future of AI.',
       },
     ],
     order: 0,
