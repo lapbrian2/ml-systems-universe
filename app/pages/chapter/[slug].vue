@@ -24,6 +24,7 @@ const part = computed<Part | undefined>(() =>
 )
 // Content is loaded async then accessed via sync getter
 const contentReady = ref(false)
+const contentError = ref(false)
 const content = computed<ChapterContent | null>(() =>
   contentReady.value && chapter.value ? getChapterContent(chapter.value.id) : null
 )
@@ -33,13 +34,20 @@ const nextChapter = computed(() => chapter.value ? getNextChapter(slug.value) : 
 const chapterCompleteRef = ref<HTMLElement | null>(null)
 
 // Load content for current chapter
+let navGeneration = 0
+
 async function ensureContent() {
   if (chapter.value) {
+    const gen = ++navGeneration
     try {
       await loadChapterContent(chapter.value.id)
+      if (gen !== navGeneration) return // stale nav, discard
       contentReady.value = true
+      contentError.value = false
     } catch {
+      if (gen !== navGeneration) return
       contentReady.value = false
+      contentError.value = true
     }
   }
 }
@@ -533,6 +541,20 @@ const vizComponent = computed(() => {
             :objectives="content.learningObjectives"
             :part-color="partColor"
           />
+
+          <!-- Content load error -->
+          <div v-if="contentError" class="mt-12 flex flex-col items-center gap-4 text-center">
+            <div class="w-12 h-12 rounded-full flex items-center justify-center bg-red-500/10 border border-red-500/20">
+              <span class="text-xl">⚠</span>
+            </div>
+            <p class="text-sm text-white/60">Failed to load chapter content.</p>
+            <button
+              class="px-4 py-2 text-xs font-medium rounded-lg bg-white/5 border border-white/10 text-white/70 hover:bg-white/10 transition-colors"
+              @click="ensureContent()"
+            >
+              Try again
+            </button>
+          </div>
 
           <!-- Sections -->
           <div v-if="content">

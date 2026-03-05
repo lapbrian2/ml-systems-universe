@@ -88,9 +88,11 @@ function cleanup() {
   if (hintTimer) clearTimeout(hintTimer)
   if (checkInterval) clearInterval(checkInterval)
   if (resizeObserver) resizeObserver.disconnect()
+  if (spotlightTween) spotlightTween.kill()
   hintTimer = null
   checkInterval = null
   resizeObserver = null
+  spotlightTween = null
 }
 
 function skipTour() {
@@ -159,6 +161,8 @@ function highlightTarget() {
   resizeObserver.observe(el)
 }
 
+let spotlightTween: gsap.core.Tween | null = null
+
 function updateSpotlightRect(el: HTMLElement) {
   const rect = el.getBoundingClientRect()
   const padding = 6
@@ -173,7 +177,8 @@ function updateSpotlightRect(el: HTMLElement) {
   nextTick(() => {
     const spotlight = document.querySelector('.guided-tour__spotlight') as HTMLElement | null
     if (spotlight) {
-      gsap.fromTo(spotlight,
+      if (spotlightTween) spotlightTween.kill()
+      spotlightTween = gsap.fromTo(spotlight,
         { boxShadow: `0 0 0 4px ${accentColor.value}40, 0 0 20px ${accentColor.value}20` },
         {
           boxShadow: `0 0 0 4px ${accentColor.value}80, 0 0 30px ${accentColor.value}40`,

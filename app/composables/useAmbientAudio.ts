@@ -139,7 +139,9 @@ function fadeIn() {
 
   // Resume context if suspended (autoplay policy)
   if (audioCtx.state === 'suspended') {
-    audioCtx.resume()
+    audioCtx.resume().catch(() => {
+      isPlaying.value = false
+    })
   }
 
   const now = audioCtx.currentTime

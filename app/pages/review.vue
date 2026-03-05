@@ -41,14 +41,19 @@ const activeTab = ref<'flashcards' | 'spaced'>('spaced')
 const loaded = ref(false)
 
 onMounted(async () => {
-  await loadAllChapterContent()
-  for (const ch of CHAPTERS) {
-    const content = getChapterContent(ch.id)
-    if (content?.glossary) {
-      flashcardStore.addChapterTerms(ch.id, content.glossary)
+  try {
+    await loadAllChapterContent()
+    for (const ch of CHAPTERS) {
+      const content = getChapterContent(ch.id)
+      if (content?.glossary) {
+        flashcardStore.addChapterTerms(ch.id, content.glossary)
+      }
     }
+  } catch {
+    // partial content is acceptable — continue with what loaded
+  } finally {
+    loaded.value = true
   }
-  loaded.value = true
 })
 
 // ═══════════════════════════════════════════════════════════════════════

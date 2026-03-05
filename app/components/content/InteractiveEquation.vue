@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { SlidersHorizontal } from 'lucide-vue-next'
 
 const props = defineProps<{
@@ -188,6 +188,10 @@ watch(computedResult, async (newVal) => {
     displayResult.value = newVal
   }
 }, { immediate: true })
+
+onUnmounted(() => {
+  if (gsapTween) gsapTween.kill()
+})
 
 function formatResult(val: number): string {
   if (Math.abs(val) < 0.001 && val !== 0) return val.toExponential(3)

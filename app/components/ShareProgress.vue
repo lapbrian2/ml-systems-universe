@@ -52,7 +52,7 @@ async function shareNative() {
       // user cancelled
     }
   } else {
-    copyToClipboard()
+    await copyToClipboard()
   }
 }
 </script>

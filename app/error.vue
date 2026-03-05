@@ -38,7 +38,7 @@ function handleError() {
         {{
           is404
             ? 'The chapter or page you are looking for does not exist. It may have been moved or removed.'
-            : error.message || 'An unexpected error occurred. Please try again.'
+            : 'An unexpected error occurred. Please try again.'
         }}
       </p>
 

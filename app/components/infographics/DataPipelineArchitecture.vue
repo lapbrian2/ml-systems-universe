@@ -13,25 +13,6 @@ import { ref } from 'vue'
 
 const hoveredComponent = ref<string | null>(null)
 
-interface PipelineComponent {
-  id: string
-  name: string
-  description: string
-  x: number
-  y: number
-  width: number
-  color: string
-  path: 'batch' | 'speed' | 'shared' | 'output'
-}
-
-const components: PipelineComponent[] = [
-  { id: 'raw-data', name: 'Raw Data', description: 'Immutable master dataset -- all incoming data is appended', x: 40, y: 185, width: 130, color: '#ffffff', path: 'shared' },
-  { id: 'batch-proc', name: 'Batch Processing', description: 'MapReduce / Spark jobs process entire dataset periodically', x: 230, y: 80, width: 150, color: '#3b82f6', path: 'batch' },
-  { id: 'batch-views', name: 'Batch Views', description: 'Pre-computed aggregate views updated on schedule', x: 430, y: 80, width: 130, color: '#3b82f6', path: 'batch' },
-  { id: 'stream-proc', name: 'Stream Processing', description: 'Kafka / Flink process events in real-time with low latency', x: 230, y: 300, width: 150, color: '#22c55e', path: 'speed' },
-  { id: 'rt-views', name: 'Real-time Views', description: 'Incrementally updated views from recent data only', x: 430, y: 300, width: 130, color: '#22c55e', path: 'speed' },
-  { id: 'serving', name: 'Serving Layer', description: 'Merges batch and real-time views to answer queries', x: 600, y: 185, width: 130, color: '#a855f7', path: 'shared' },
-]
 
 </script>
 
