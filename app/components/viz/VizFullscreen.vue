@@ -44,6 +44,11 @@ onUnmounted(() => {
     <Minimize2 v-else class="w-3.5 h-3.5" />
   </button>
 
+  <!-- Normal (inline) view -->
+  <div v-if="!isFullscreen" class="w-full h-full">
+    <slot />
+  </div>
+
   <!-- Fullscreen overlay -->
   <Teleport to="body">
     <Transition
