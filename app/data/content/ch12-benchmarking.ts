@@ -59,6 +59,11 @@ export const sections: ChapterSection[] = [
         text: 'When a measure becomes a target, it ceases to be a good measure. MLPerf scores drive hardware purchasing decisions worth millions of dollars, creating intense pressure to optimize specifically for benchmark workloads. Always verify that benchmark improvements translate to your actual production workloads before making investment decisions.',
       },
       {
+        type: 'aha',
+        highlight: 'Benchmarks shape the industry',
+        explanation: 'MLPerf results directly influence hardware purchase decisions worth billions of dollars annually. When a chip vendor posts a record-breaking MLPerf score, it can shift procurement decisions at hyperscalers and enterprises worldwide. The benchmarks don\'t just measure performance — they define what "good performance" means, steering R&D investment and architectural choices across the entire ML hardware ecosystem.',
+      },
+      {
         type: 'heading',
         level: 3,
         text: 'Domain-Specific Benchmarks',
@@ -82,6 +87,12 @@ export const sections: ChapterSection[] = [
           'DeepBench — Micro-benchmarks isolating individual DNN operations (GEMM, convolution).',
           'Application benchmarks — Domain-specific workloads for autonomous driving, NLP, medical imaging.',
         ],
+      },
+      {
+        type: 'stat',
+        value: 1000,
+        suffix: 'x',
+        label: 'Performance gap between unoptimized Python and optimized CUDA inference',
       },
     ],
     order: 0,
@@ -297,6 +308,13 @@ export const sections: ChapterSection[] = [
         variant: 'tip',
         title: 'How Many Repetitions?',
         text: 'Run at least 10-30 repetitions after warmup. Compute the coefficient of variation (CV = std/mean). If CV > 5%, investigate sources of variance (thermal throttling, competing processes, NUMA effects) before drawing conclusions. For publication-quality benchmarks, use at least 50 repetitions and report median with interquartile range.',
+      },
+      {
+        type: 'inline-check',
+        question: 'Why is reporting p99 latency more important than average latency for production ML systems?',
+        options: ['It shows the worst-case user experience', 'It\'s easier to measure', 'It uses less computation', 'It correlates with throughput'],
+        correctIndex: 0,
+        explanation: 'P99 (99th percentile) latency captures tail latencies that affect real users. Average latency can mask extreme outliers — a system with 10ms average but 500ms p99 means 1 in 100 users experiences a 50x slower response. In production ML serving, these tail latencies often correspond to complex inputs, cache misses, or garbage collection pauses that disproportionately impact user experience.',
       },
       {
         type: 'heading',

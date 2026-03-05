@@ -78,6 +78,19 @@ export const sections: ChapterSection[] = [
         text: 'Chouldechova (2017) and Kleinberg et al. (2016) independently proved that demographic parity, equal opportunity, and predictive parity cannot all be satisfied simultaneously unless the base rates are equal across groups or the classifier is perfect. This means every fairness-aware system must make explicit trade-offs. There is no "fair by default" -- engineers and stakeholders must choose which definition of fairness to prioritize for each deployment context.',
       },
       {
+        type: 'inline-check',
+        question: 'Can a model satisfy both demographic parity and equalized odds simultaneously?',
+        options: ['Yes, always', 'No, they are mathematically incompatible in most cases', 'Only for binary classification', 'Only with perfect accuracy'],
+        correctIndex: 1,
+        explanation: 'The impossibility theorem of fairness (Chouldechova 2017, Kleinberg et al. 2016) proves that when base rates differ across groups, demographic parity, equalized odds, and calibration cannot all be satisfied simultaneously. The only exceptions are degenerate cases: when base rates are identical across groups or when the classifier achieves perfect accuracy. In practice, engineers must choose which fairness criterion to prioritize based on the deployment context.',
+      },
+      {
+        type: 'aha',
+        highlight: 'Fairness is contextual -- there is no universal definition of "fair."',
+        explanation: 'Different applications demand different fairness criteria. A hiring system might prioritize demographic parity to ensure equal representation, while a medical screening tool should prioritize equal opportunity to avoid missing diagnoses in any group. A lending model might prioritize calibration so that predicted risk scores mean the same thing regardless of demographics. The "right" definition of fairness depends entirely on the application context, the stakeholders affected, and the specific harms at stake.',
+        analogy: 'Fairness in ML is like fairness in dividing a cake: "equal slices" (demographic parity), "slices proportional to hunger" (equalized odds), and "everyone agrees the division is fair" (individual fairness) are all reasonable but mutually incompatible approaches when people have different appetites.',
+      },
+      {
         type: 'heading',
         level: 3,
         text: 'Sources of Bias in the ML Pipeline',
@@ -391,6 +404,12 @@ export const sections: ChapterSection[] = [
         type: 'definition',
         term: 'Responsible AI',
         definition: 'An umbrella framework encompassing fairness, accountability, transparency, ethics, safety, and privacy in AI systems. Responsible AI goes beyond technical performance to consider the broader societal impact of ML deployments.',
+      },
+      {
+        type: 'stat',
+        value: 78,
+        suffix: '%',
+        label: 'of organizations report challenges implementing responsible AI practices',
       },
       {
         type: 'heading',

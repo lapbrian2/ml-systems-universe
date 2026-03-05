@@ -34,11 +34,30 @@ function getPyodide(): Promise<unknown> {
       return
     }
 
+    // Check if the Pyodide script is already in the DOM (prevents accumulation)
+    const existingScript = document.querySelector('script[src*="pyodide"]')
+    if (existingScript) {
+      // Script exists but loadPyodide isn't ready yet; wait for it
+      existingScript.addEventListener('load', () => {
+        ;(win.loadPyodide as () => Promise<unknown>)()
+          .then(resolve)
+          .catch(reject)
+      })
+      // If the script already finished loading, the load event won't fire again
+      if ((existingScript as HTMLScriptElement).dataset.loaded) {
+        ;(win.loadPyodide as () => Promise<unknown>)()
+          .then(resolve)
+          .catch(reject)
+      }
+      return
+    }
+
     const script = document.createElement('script')
     script.src = 'https://cdn.jsdelivr.net/pyodide/v0.27.1/full/pyodide.js'
     script.integrity = 'sha256-6wvt8h4MiiNneB+ZGz3GvXRP6IBZmfM4s2j1okjMgRc='
     script.crossOrigin = 'anonymous'
     script.onload = () => {
+      script.dataset.loaded = 'true'
       ;(win.loadPyodide as () => Promise<unknown>)()
         .then(resolve)
         .catch(reject)

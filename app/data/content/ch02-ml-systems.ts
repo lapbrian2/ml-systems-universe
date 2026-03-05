@@ -79,6 +79,13 @@ export const sections: ChapterSection[] = [
         code: '# Simplified Airflow DAG for an ML pipeline\nfrom airflow import DAG\nfrom airflow.operators.python import PythonOperator\nfrom datetime import datetime\n\nwith DAG(\'ml_pipeline\', start_date=datetime(2024, 1, 1),\n         schedule_interval=\'@daily\') as dag:\n    ingest = PythonOperator(task_id=\'ingest_data\', python_callable=ingest_fn)\n    features = PythonOperator(task_id=\'compute_features\', python_callable=feature_fn)\n    train = PythonOperator(task_id=\'train_model\', python_callable=train_fn)\n    evaluate = PythonOperator(task_id=\'evaluate\', python_callable=eval_fn)\n\n    ingest >> features >> train >> evaluate',
         caption: 'Example: A simple ML pipeline DAG in Apache Airflow.',
       },
+      {
+        type: 'inline-check',
+        question: 'Which component of the ML stack is most commonly the bottleneck in production systems?',
+        options: ['Data pipeline', 'Model training', 'Model serving', 'Monitoring'],
+        correctIndex: 0,
+        explanation: 'Data pipelines are the most common bottleneck in production ML systems. Issues like data quality, schema changes, ingestion failures, and feature computation inconsistencies account for the majority of production incidents. While model training and serving are computationally intensive, the data layer is where most real-world failures originate.',
+      },
     ],
     order: 0,
     keyConcepts: [
@@ -237,6 +244,12 @@ export const sections: ChapterSection[] = [
         variant: 'tip',
         title: 'Start Simple, Complicate Later',
         text: 'Begin with the simplest model that meets your requirements. Use a logistic regression or small neural network as a baseline. Only add complexity (deeper models, ensembles, feature crosses) when you have evidence that the simple approach falls short. This principle minimizes cost and maximizes maintainability.',
+      },
+      {
+        type: 'stat',
+        value: 87,
+        suffix: '%',
+        label: 'of ML projects never make it to production',
       },
       {
         type: 'paragraph',
@@ -415,6 +428,12 @@ export const sections: ChapterSection[] = [
         language: 'bash',
         code: '# Quick hardware utilization check\nnvidia-smi --query-gpu=utilization.gpu,utilization.memory,memory.used \\\n  --format=csv -l 1\n\n# PyTorch profiler for framework-level bottlenecks\n# python -c "import torch; torch.profiler.profile(...)"',
         caption: 'Quick commands for checking GPU utilization and profiling.',
+      },
+      {
+        type: 'aha',
+        highlight: 'The 80/20 rule in ML: 80% of effort goes into data, only 20% into modeling',
+        explanation: 'Despite the focus on model architectures and algorithms in academic papers, production ML engineering is dominated by data work — collecting, cleaning, labeling, validating, and maintaining data pipelines. The model itself is a surprisingly small fraction of the total system. This is why data engineering skills are often more valuable than deep learning expertise in production ML teams.',
+        analogy: 'Think of building a house: the foundation, plumbing, and electrical work (data infrastructure) take 80% of the effort, while the interior design (the model) gets most of the attention but only 20% of the work.',
       },
     ],
     order: 4,

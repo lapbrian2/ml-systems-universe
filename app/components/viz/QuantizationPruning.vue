@@ -39,7 +39,9 @@ const LAYER_X_SPACING = 120
 /* ── Interaction state ── */
 const interactionCount = ref(0)
 const exerciseEmitted = ref(false)
-const quantizationLevel = ref(32) // FP32 default
+const quantSteps = [4, 8, 16, 32] as const
+const quantBitsRaw = ref(3) // index into quantSteps; 3 = FP32 default
+const quantizationLevel = computed(() => quantSteps[quantBitsRaw.value])
 const pruningPercent = ref(0)
 const distillationOn = ref(false)
 const challengeComplete = ref(false)
@@ -99,15 +101,7 @@ const baseModelSize = 256 // MB
 const baseLatency = 45 // ms
 const baseAccuracy = 94.2
 
-const quantBits = computed(() => {
-  switch (quantizationLevel.value) {
-    case 32: return 32
-    case 16: return 16
-    case 8: return 8
-    case 4: return 4
-    default: return 32
-  }
-})
+const quantBits = computed(() => quantizationLevel.value)
 
 const modelSizeMB = computed(() => {
   let size = baseModelSize * (quantBits.value / 32)
@@ -214,7 +208,7 @@ watch(compressionRatio, (v) => { compressionTarget.value = v }, { immediate: tru
 watch(() => props.activeSection, () => {
   // Auto-set controls based on section
   if (props.activeSection === 0) {
-    quantizationLevel.value = 8
+    quantBitsRaw.value = 1 // index 1 = INT8
   } else if (props.activeSection === 1) {
     pruningPercent.value = 50
   } else if (props.activeSection === 2) {
@@ -284,10 +278,10 @@ const tourSteps = computed<TourStep[]>(() =>
         </label>
         <input
           id="quant-slider"
-          v-model.number="quantizationLevel"
+          v-model.number="quantBitsRaw"
           type="range"
-          min="4"
-          max="32"
+          min="0"
+          max="3"
           step="1"
           class="quant-prune__slider"
           aria-label="Quantization bit width"

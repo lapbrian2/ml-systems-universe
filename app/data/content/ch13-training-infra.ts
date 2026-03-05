@@ -184,6 +184,12 @@ export const sections: ChapterSection[] = [
         text: 'The most dangerous aspect of ML model degradation is that the system continues to produce outputs — they are simply wrong. A software crash triggers an immediate alert. A model that slowly loses accuracy continues serving predictions with no error signal. This is why proactive monitoring with statistical drift detection is essential, not optional.',
       },
       {
+        type: 'stat',
+        value: 40,
+        suffix: '%',
+        label: 'of ML models in production experience performance degradation within 3 months',
+      },
+      {
         type: 'heading',
         level: 3,
         text: 'Monitoring Dimensions',
@@ -207,6 +213,13 @@ export const sections: ChapterSection[] = [
         type: 'definition',
         term: 'Data Drift',
         definition: 'Changes in the statistical distribution of input features over time. Data drift can degrade model performance even when the underlying relationship between features and targets remains unchanged, because the model encounters inputs outside its training distribution.',
+      },
+      {
+        type: 'inline-check',
+        question: 'What is the most critical component of an ML monitoring system?',
+        options: ['CPU utilization tracking', 'Data drift detection', 'Log aggregation', 'A/B test results'],
+        correctIndex: 1,
+        explanation: 'Data drift detection is the most critical monitoring component because data drift is the leading cause of silent model degradation in production. Unlike infrastructure failures that trigger immediate alerts, data drift causes models to quietly produce increasingly unreliable predictions. CPU utilization and log aggregation are important operational metrics, but they do not capture the statistical shifts in input data that directly erode model accuracy.',
       },
       {
         type: 'heading',
@@ -317,6 +330,11 @@ export const sections: ChapterSection[] = [
       {
         type: 'paragraph',
         text: 'Response strategies depend on the severity and type of drift detected. Retraining with recent data is the most common response, but it requires maintaining a reliable retraining pipeline. In cases of sudden, severe drift, it may be better to fall back to a simpler model or rule-based system while investigating the root cause.',
+      },
+      {
+        type: 'aha',
+        highlight: 'The feedback loop',
+        explanation: 'Production models generate data that feeds back into training, creating either a virtuous or vicious cycle. When a recommendation model serves good predictions, users engage more, generating high-quality training data that further improves the model. But when predictions degrade, users disengage or behave differently, producing biased training data that makes the next model even worse. Recognizing and managing this feedback loop is one of the most important — and most overlooked — aspects of ML operations.',
       },
       {
         type: 'callout',

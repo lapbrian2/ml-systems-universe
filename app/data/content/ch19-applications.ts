@@ -69,6 +69,13 @@ export const sections: ChapterSection[] = [
     blocks: [
       { type: 'paragraph', text: 'Healthcare AI shows enormous promise across medical imaging, drug discovery, clinical decision support, and genomics. Deep learning models can detect diseases in medical images with accuracy comparable to or exceeding that of specialist physicians, but deploying these systems in clinical practice requires navigating regulatory, ethical, and trust challenges.' },
       { type: 'definition', term: 'Clinical Decision Support System (CDSS)', definition: 'An ML-powered tool that integrates patient data, clinical evidence, and model predictions to assist healthcare providers in diagnosis, treatment planning, or risk assessment. CDSSs must meet regulatory requirements (FDA, CE marking) and provide transparent, explainable outputs that clinicians can validate.' },
+      {
+        type: 'stat',
+        value: 50,
+        suffix: 'B+',
+        prefix: '$',
+        label: 'Estimated annual economic value of AI applications in healthcare by 2030',
+      },
       { type: 'heading', level: 3, text: 'Medical Image Classification with Transfer Learning' },
       { type: 'paragraph', text: 'Transfer learning from ImageNet-pretrained models is the standard approach for medical image classification, because labeled medical datasets are typically small (hundreds to low thousands of images). Fine-tuning a pretrained ResNet or EfficientNet on domain-specific data achieves strong performance with limited data. The following pipeline demonstrates a complete medical image classification workflow.' },
       {
@@ -211,10 +218,23 @@ export const sections: ChapterSection[] = [
         ],
         caption: 'Table 19.6: Comparison of ML system requirements across healthcare, finance, and autonomous vehicles.',
       },
+      {
+        type: 'inline-check',
+        question: 'What differentiates ML systems in healthcare vs. e-commerce from a systems perspective?',
+        options: ['Healthcare requires stricter latency', 'Healthcare requires explainability and regulatory compliance', 'E-commerce uses larger models', 'No meaningful difference'],
+        correctIndex: 1,
+        explanation: 'Healthcare ML systems must meet strict regulatory requirements (FDA clearance, CE marking) and provide explainable predictions that clinicians can validate and trust. These requirements fundamentally shape system architecture, evaluation practices, and deployment timelines. E-commerce systems, while complex, operate under far fewer regulatory constraints and can iterate faster without the same level of external oversight.',
+      },
       { type: 'heading', level: 3, text: 'The Long-Tail Safety Challenge' },
       { type: 'paragraph', text: 'The safety challenge in autonomous driving is defined by the long tail of rare events. Standard performance on common driving scenarios is relatively straightforward, but safely handling unusual situations -- construction zones, emergency vehicles, unusual road geometry, adverse weather, aggressive drivers -- requires massive datasets and sophisticated testing. A self-driving system must handle millions of unique scenarios, many of which occur too rarely to be well-represented in training data.' },
       { type: 'callout', variant: 'warning', title: 'Autonomous Vehicle Edge Cases', text: 'Real-world AV edge cases that have caused incidents include: a pedestrian crossing outside a crosswalk at night (Uber, 2018), a white tractor-trailer against a bright sky (Tesla, 2016), a stationary fire truck on a highway (Tesla, multiple), and an overturned truck blocking the road. Each of these represents a scenario that is individually rare but collectively common -- the long tail of driving scenarios is enormous. Waymo reports running over 20 billion simulated miles annually to test these edge cases.' },
       { type: 'callout', variant: 'note', title: 'Simulation-Driven Development', text: 'Waymo, Cruise, and other AV companies rely heavily on simulation to test edge cases that are too dangerous or rare to encounter naturally. Waymo reports running over 20 billion simulated miles annually, compared to 20+ million real-world miles. Simulation enables testing adversarial scenarios (a child darting into traffic), sensor degradation (fog, lens occlusion), and rare traffic configurations that would take decades to encounter on public roads.' },
+      {
+        type: 'aha',
+        highlight: 'Constraint-driven innovation -- the strictest deployment constraints drive the most creative systems engineering solutions.',
+        explanation: 'Domains like medical AI, autonomous vehicles, and aerospace face the tightest constraints: real-time latency, regulatory compliance, explainability mandates, and near-zero error tolerance. Rather than limiting progress, these constraints force engineers to develop creative solutions -- simulation-at-scale testing, sensor fusion architectures, formal verification methods, and human-in-the-loop designs -- that eventually benefit the entire field. The most robust and well-engineered ML systems almost always emerge from the most constrained domains.',
+        analogy: 'Like how Formula 1 racing constraints (weight limits, fuel restrictions, safety regulations) have driven innovations in materials science, aerodynamics, and engine efficiency that eventually make it into consumer vehicles.',
+      },
       { type: 'heading', level: 3, text: 'Robotics Beyond Driving' },
       { type: 'paragraph', text: 'The same perception, planning, and control techniques that power autonomous vehicles are being applied across robotics domains. Warehouse robots (Amazon, Ocado), surgical robots (Intuitive Surgical\'s da Vinci), agricultural robots (harvesting, weeding), and household robots (cleaning, delivery) all benefit from advances in ML-driven perception and manipulation.' },
       { type: 'list', ordered: false, items: ['Warehouse automation: Robots handle over 75% of Amazon fulfillment center operations, using vision for picking and placing diverse objects', 'Surgical robotics: ML assists with tissue identification, surgical planning, and semi-autonomous suturing', 'Agricultural robotics: Computer vision enables selective harvesting, precision weeding without herbicides, and crop health monitoring', 'Manipulation: Foundation models for robotics (RT-2, Octo) transfer knowledge across tasks, reducing the need for task-specific training data', 'Humanoid robots: Companies like Figure, Tesla (Optimus), and Boston Dynamics combine locomotion control with manipulation and language understanding'] },

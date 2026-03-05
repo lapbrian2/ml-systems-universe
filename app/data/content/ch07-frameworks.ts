@@ -79,6 +79,11 @@ export const sections: ChapterSection[] = [
         title: 'Choosing a Framework',
         text: 'If you are starting a new project, begin with PyTorch unless you have a specific reason not to. Its dominance in research means the largest ecosystem of pre-trained models, tutorials, and community support. Consider TensorFlow for production-heavy workflows with diverse deployment targets, and JAX for research into novel training algorithms or large-scale TPU training.',
       },
+      {
+        type: 'aha',
+        highlight: 'The "framework wars" have settled into ecosystem niches — PyTorch for research, TensorFlow for production, JAX for HPC',
+        explanation: 'Rather than one framework winning outright, the ML community has converged on a division of labor. PyTorch dominates research and rapid prototyping thanks to its Pythonic API and dynamic graphs. TensorFlow retains its grip on production deployment with its unmatched breadth of serving targets (mobile, web, embedded, cloud). JAX has carved out the high-performance computing niche, favored by Google DeepMind and teams training the largest foundation models on TPU pods. Understanding these niches helps teams pick the right tool for their specific context.',
+      },
     ],
     order: 0,
     keyConcepts: [
@@ -319,6 +324,12 @@ export const sections: ChapterSection[] = [
         text: 'JAX\'s functional paradigm requires thinking differently about state management. Unlike PyTorch where model parameters are mutable object attributes, JAX requires explicitly passing parameters as function arguments. Developers accustomed to object-oriented frameworks often find this transition challenging, but the benefits in composability and compiler optimization are substantial.',
       },
       {
+        type: 'stat',
+        value: 3,
+        suffix: 'x',
+        label: 'Approximate speedup from XLA compilation vs eager execution in JAX',
+      },
+      {
         type: 'callout',
         variant: 'tip',
         title: 'When to Choose JAX',
@@ -369,6 +380,13 @@ export const sections: ChapterSection[] = [
           ['Examples', 'TF 1.x, JAX/XLA', 'PyTorch eager, TF eager', 'torch.compile, tf.function'],
         ],
         caption: 'Table 7.4: Trade-offs between graph execution strategies.',
+      },
+      {
+        type: 'inline-check',
+        question: 'What is the primary advantage of dynamic computational graphs (eager execution)?',
+        options: ['Faster inference speed', 'Easier debugging and prototyping', 'Lower memory usage', 'Better GPU utilization'],
+        correctIndex: 1,
+        explanation: 'Dynamic computational graphs execute operations immediately as they are called, which means you can use standard Python debugging tools (print statements, breakpoints, pdb) to inspect intermediate values at any point. This makes prototyping and debugging dramatically easier compared to static graphs, where the graph must be fully defined before any execution occurs and debugging requires specialized tools.',
       },
       {
         type: 'callout',

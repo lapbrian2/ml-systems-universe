@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { Lightbulb, Check, X, HelpCircle, ChevronDown } from 'lucide-vue-next'
+import { Lightbulb, Check, X, HelpCircle, ChevronDown, RefreshCw } from 'lucide-vue-next'
 
 const props = defineProps<{
   question: string
@@ -18,6 +18,11 @@ const isCorrect = computed(() => selectedIndex.value === props.correctIndex)
 function select(index: number) {
   if (answered.value) return
   selectedIndex.value = index
+}
+
+function reset() {
+  selectedIndex.value = null
+  showHint.value = false
 }
 
 function optionClass(index: number) {
@@ -76,10 +81,12 @@ function optionClass(index: number) {
       </div>
 
       <!-- Options -->
-      <div class="flex flex-col gap-2 mb-1">
+      <div class="flex flex-col gap-2 mb-1" role="radiogroup" aria-label="Answer options">
         <button
           v-for="(option, idx) in options"
           :key="idx"
+          role="radio"
+          :aria-checked="selectedIndex === idx"
           class="flex items-center gap-2.5 text-left rounded-md border px-3 py-2 text-[13px] leading-snug transition-all duration-200"
           :class="optionClass(idx)"
           :disabled="answered"
@@ -125,10 +132,24 @@ function optionClass(index: number) {
         </div>
       </div>
 
+      <!-- Try again button (only shown on wrong answer) -->
+      <div
+        class="overflow-hidden transition-all duration-400"
+        :class="answered && !isCorrect ? 'max-h-10 opacity-100 mt-2' : 'max-h-0 opacity-0'"
+      >
+        <button
+          class="inline-flex items-center gap-1.5 text-[11px] text-white/35 hover:text-amber-400/70 transition-colors duration-200"
+          @click="reset()"
+        >
+          <RefreshCw class="w-3 h-3" />
+          Try again
+        </button>
+      </div>
+
       <!-- Continue indicator -->
       <div
         class="overflow-hidden transition-all duration-400"
-        :class="answered ? 'max-h-8 opacity-100 mt-2' : 'max-h-0 opacity-0'"
+        :class="answered && isCorrect ? 'max-h-8 opacity-100 mt-2' : 'max-h-0 opacity-0'"
       >
         <div class="flex items-center justify-center gap-1 text-[11px] text-white/25">
           <span>Continue reading</span>

@@ -194,6 +194,12 @@ export const sections: ChapterSection[] = [
         attribution: 'Vaswani et al., NeurIPS 2017 — the paper that introduced the Transformer architecture',
       },
       {
+        type: 'aha',
+        highlight: '"Attention Is All You Need" — removing recurrence enabled massive parallelization',
+        explanation: 'The Transformer\'s key insight was that recurrence (processing tokens one at a time) was not necessary for sequence modeling. By replacing it with self-attention, every token can attend to every other token in parallel. This single architectural change unlocked the ability to train on massive datasets using thousands of GPUs simultaneously, directly enabling the scaling revolution from BERT to GPT-4.',
+        analogy: 'Imagine reading a book one word at a time (RNN) versus being able to see the entire page at once and draw connections between any words simultaneously (Transformer). The parallel "seeing everything at once" approach is what makes Transformers so fast to train.',
+      },
+      {
         type: 'definition',
         term: 'Self-Attention',
         definition: 'A mechanism that computes weighted relationships between all positions in a sequence simultaneously. Each element computes a query (what am I looking for?), key (what do I contain?), and value (what information do I provide?), enabling rich contextual representations.',
@@ -247,6 +253,13 @@ export const sections: ChapterSection[] = [
         caption: 'Table 4.3: Efficient attention variants and their complexity-quality trade-offs.',
       },
       {
+        type: 'inline-check',
+        question: 'Why does self-attention scale quadratically with sequence length?',
+        options: ['Because attention matrices are n\u00D7n', 'Due to gradient vanishing', 'Because of batch normalization', 'Due to weight sharing'],
+        correctIndex: 0,
+        explanation: 'Self-attention computes the product Q\u00B7K^T, where Q and K each have n rows (one per token in the sequence). The resulting attention matrix is n\u00D7n, meaning every token computes a compatibility score with every other token. This produces n\u00B2 entries that must be computed and stored, giving O(n\u00B2) time and memory complexity.',
+      },
+      {
         type: 'callout',
         variant: 'tip',
         title: 'Flash Attention is Usually the Right Choice',
@@ -260,6 +273,12 @@ export const sections: ChapterSection[] = [
       {
         type: 'paragraph',
         text: 'Transformers have become the dominant architecture across natural language processing, computer vision (Vision Transformers), and multimodal learning. Their uniform structure makes them particularly amenable to hardware optimization: the attention and feed-forward layers are composed of large matrix multiplications that map efficiently onto GPU tensor cores.',
+      },
+      {
+        type: 'stat',
+        value: 175,
+        suffix: 'B',
+        label: 'Parameters in GPT-3, one of the largest dense transformer models',
       },
       {
         type: 'callout',

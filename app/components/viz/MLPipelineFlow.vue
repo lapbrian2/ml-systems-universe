@@ -139,13 +139,23 @@ function handleStageClick(stage: PipelineStage, event: MouseEvent) {
   selectedStage.value = stage.id
   clickedStages.value = new Set([...clickedStages.value, stage.id])
 
+  let x = event.clientX
+  let y = event.clientY
+  if (!x && !y) {
+    const elRect = (event.target as HTMLElement)?.getBoundingClientRect()
+    if (elRect) {
+      x = elRect.left + elRect.width / 2
+      y = elRect.top
+    }
+  }
+
   const svgEl = (event.currentTarget as SVGElement).closest('svg')
   if (svgEl) {
     const rect = svgEl.getBoundingClientRect()
     tooltip.value = {
       visible: true,
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top,
+      x: x - rect.left,
+      y: y - rect.top,
       stage,
     }
   }
@@ -228,20 +238,20 @@ watch(
       >
         <defs>
           <!-- Glow filter -->
-          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+          <filter id="pl-glow" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation="6" result="blur" />
             <feComposite in="SourceGraphic" in2="blur" operator="over" />
           </filter>
 
           <!-- Stronger glow for selected -->
-          <filter id="glow-strong" x="-50%" y="-50%" width="200%" height="200%">
+          <filter id="pl-glow-strong" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation="10" result="blur" />
             <feComposite in="SourceGraphic" in2="blur" operator="over" />
           </filter>
 
           <!-- Arrow marker -->
           <marker
-            id="arrowhead"
+            id="pl-arrowhead"
             markerWidth="8"
             markerHeight="6"
             refX="8"
@@ -257,7 +267,7 @@ watch(
 
           <!-- Feedback arrow marker -->
           <marker
-            id="arrowhead-feedback"
+            id="pl-arrowhead-feedback"
             markerWidth="8"
             markerHeight="6"
             refX="8"
@@ -289,7 +299,7 @@ watch(
                 scrollProgress > 0 && i < scrollLitCount - 1,
             }"
             :style="scrollProgress > 0 ? { strokeDashoffset: scrollDashOffset + 'px' } : {}"
-            marker-end="url(#arrowhead)"
+            marker-end="url(#pl-arrowhead)"
           />
         </g>
 
@@ -303,14 +313,14 @@ watch(
             d="M 865 130 Q 865 175 500 180 Q 135 175 135 130"
             fill="none"
             class="pipeline-flow__feedback-path"
-            marker-end="url(#arrowhead-feedback)"
+            marker-end="url(#pl-arrowhead-feedback)"
           />
           <!-- Evaluation → Model Training (short feedback) -->
           <path
             d="M 575 70 Q 575 35 467 35 Q 442 35 442 70"
             fill="none"
             class="pipeline-flow__feedback-path pipeline-flow__feedback-path--short"
-            marker-end="url(#arrowhead-feedback)"
+            marker-end="url(#pl-arrowhead-feedback)"
           />
         </g>
 
@@ -354,7 +364,7 @@ watch(
             height="106"
             rx="20"
             class="pipeline-flow__stage-glow"
-            :filter="isSelected(stage.id) ? 'url(#glow-strong)' : 'url(#glow)'"
+            :filter="isSelected(stage.id) ? 'url(#pl-glow-strong)' : 'url(#pl-glow)'"
           />
 
           <!-- Card background -->
@@ -1074,7 +1084,7 @@ watch(
 /* ── Scroll-driven particle ── */
 .pipeline-flow__scroll-particle {
   fill: var(--particle-color, var(--viz-primary));
-  filter: url(#glow);
+  filter: url(#pl-glow);
   transition: cx 0.1s linear;
 }
 

@@ -26,6 +26,7 @@ const exerciseEmitted = ref(false)
 const isUserInteracting = ref(false)
 let autoRotateTimer: ReturnType<typeof setTimeout> | null = null
 let pathTimeline: gsap.core.Tween | null = null
+const activeTweens: gsap.core.Tween[] = []
 
 /* ── Three.js objects (shallowRef prevents deep reactivity overhead) ── */
 const surfaceMesh = shallowRef<THREE.Mesh | null>(null)
@@ -277,30 +278,34 @@ const sectionInfo = computed(() => {
 watch(() => props.activeSection, (section) => {
   const hl = sectionInfo.value.highlight
 
+  // Kill any in-flight opacity tweens before creating new ones
+  activeTweens.forEach(t => t.kill())
+  activeTweens.length = 0
+
   // Animate SGD opacity
   const sgdTarget = hl === 'adam' ? 0.15 : 1
   if (sgdLineObj.value) {
-    gsap.to(sgdLineObj.value.material as THREE.LineBasicMaterial, {
+    activeTweens.push(gsap.to(sgdLineObj.value.material as THREE.LineBasicMaterial, {
       opacity: sgdTarget, duration: 0.6, ease: 'power2.out',
-    })
+    }))
   }
   if (sgdBallObj.value && sgdBallObj.value.visible) {
-    gsap.to(sgdBallObj.value.material as THREE.MeshStandardMaterial, {
+    activeTweens.push(gsap.to(sgdBallObj.value.material as THREE.MeshStandardMaterial, {
       opacity: sgdTarget, duration: 0.6, ease: 'power2.out',
-    })
+    }))
   }
 
   // Animate Adam opacity
   const adamTarget = hl === 'sgd' ? 0.15 : 1
   if (adamLineObj.value) {
-    gsap.to(adamLineObj.value.material as THREE.LineBasicMaterial, {
+    activeTweens.push(gsap.to(adamLineObj.value.material as THREE.LineBasicMaterial, {
       opacity: adamTarget, duration: 0.6, ease: 'power2.out',
-    })
+    }))
   }
   if (adamBallObj.value && adamBallObj.value.visible) {
-    gsap.to(adamBallObj.value.material as THREE.MeshStandardMaterial, {
+    activeTweens.push(gsap.to(adamBallObj.value.material as THREE.MeshStandardMaterial, {
       opacity: adamTarget, duration: 0.6, ease: 'power2.out',
-    })
+    }))
   }
 
   // Re-animate paths on section 1-3
@@ -362,6 +367,8 @@ onUnmounted(() => {
   if (pathAnimTimeout) clearTimeout(pathAnimTimeout)
   if (pathTimeline) pathTimeline.kill()
   if (autoRotateTimer) clearTimeout(autoRotateTimer)
+  activeTweens.forEach(t => t.kill())
+  activeTweens.length = 0
 
   // Dispose all Three.js resources
   const dispose = (obj: THREE.Mesh | THREE.Line | THREE.GridHelper | null) => {
@@ -418,7 +425,7 @@ const tourSteps = computed<TourStep[]>(() =>
     </div>
 
     <!-- 3D Canvas -->
-    <div class="loss-surface__canvas">
+    <div class="loss-surface__canvas" role="img" aria-label="3D loss surface visualization">
       <ClientOnly>
         <TresCanvas
           :alpha="true"

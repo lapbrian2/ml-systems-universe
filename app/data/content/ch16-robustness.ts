@@ -125,6 +125,12 @@ export const sections: ChapterSection[] = [
         text: 'Graceful degradation means the system continues to provide value even when components fail. Each fallback level provides less value but maintains system availability.',
       },
       {
+        type: 'aha',
+        highlight: 'A robust system doesn\'t need to be right all the time; it needs to know when it\'s wrong',
+        explanation: 'The most dangerous ML systems are those that fail silently with high confidence. A truly robust system distinguishes between inputs it can handle reliably and inputs where its predictions are uncertain. By detecting its own limitations — through calibrated confidence, OOD detection, or ensemble disagreement — the system can route uncertain cases to fallbacks or human review, maintaining overall reliability even when individual predictions would be unreliable.',
+        analogy: 'Think of a seasoned doctor who says "I\'m not sure — let me refer you to a specialist" versus a overconfident one who guesses. The first doctor\'s patients get better outcomes overall, even though the doctor personally handles fewer cases.',
+      },
+      {
         type: 'callout',
         variant: 'example',
         title: 'Recommendation System Fallback Chain',
@@ -193,6 +199,13 @@ export const sections: ChapterSection[] = [
         definition: 'A change between the training data distribution and the data encountered in production. Distribution shift is inevitable in real-world systems and is the primary cause of model performance degradation over time. It encompasses covariate shift, label shift, and concept drift.',
       },
       {
+        type: 'inline-check',
+        question: 'What is the difference between robustness and accuracy?',
+        options: ['Robustness measures worst-case performance; accuracy measures average-case', 'They are the same concept', 'Robustness only applies to image models', 'Accuracy is always more important'],
+        correctIndex: 0,
+        explanation: 'Robustness and accuracy measure fundamentally different things. Accuracy captures average-case performance — how well the model does on a typical input from the test distribution. Robustness captures worst-case performance — how the model behaves under adversarial perturbations, distribution shift, or edge cases. A model can have 99% accuracy on standard benchmarks yet fail catastrophically on slightly shifted inputs. Production ML systems need both: high accuracy for typical cases and robustness for the inevitable atypical ones.',
+      },
+      {
         type: 'heading',
         level: 3,
         text: 'Covariate Shift',
@@ -216,6 +229,12 @@ export const sections: ChapterSection[] = [
           ['Domain Shift', 'Both P(X) and P(Y|X)', 'Task structure', 'Model trained on hospital A, deployed at hospital B'],
         ],
         caption: 'Table 16.3: Types of distribution shift in ML systems.',
+      },
+      {
+        type: 'stat',
+        value: 25,
+        suffix: '%',
+        label: 'Average accuracy drop when models encounter distribution shift in production',
       },
       {
         type: 'callout',
