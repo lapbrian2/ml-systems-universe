@@ -240,7 +240,7 @@ onBeforeUnmount(() => {
 <template>
   <ClientOnly>
     <div class="my-5">
-      <div class="playground">
+      <div class="playground overflow-hidden">
         <!-- Header bar -->
         <div class="playground__header">
           <div class="flex items-center gap-2">

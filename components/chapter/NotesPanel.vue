@@ -91,7 +91,7 @@ function exportNotes() {
     >
       <div
         v-if="isOpen"
-        class="absolute top-8 right-0 z-30 w-72 max-h-80 glass-panel--floating rounded-xl border border-white/[0.06] shadow-xl overflow-hidden"
+        class="absolute top-8 right-0 z-30 w-72 max-w-[calc(100vw-2rem)] max-h-80 glass-panel--floating rounded-xl border border-white/[0.06] shadow-xl overflow-hidden"
       >
         <!-- Header -->
         <div class="flex items-center justify-between px-3 py-2 border-b border-white/[0.06]">

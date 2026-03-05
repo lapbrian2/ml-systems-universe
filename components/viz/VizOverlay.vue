@@ -57,12 +57,20 @@ watch(() => props.activeSection, (newVal) => {
 const visible = ref(false)
 onMounted(() => {
   mountTimer = setTimeout(() => { visible.value = true }, 800)
+  window.addEventListener('keydown', onKeydown)
 })
 
 onUnmounted(() => {
   if (mountTimer) clearTimeout(mountTimer)
   if (dismissTimer) clearTimeout(dismissTimer)
+  window.removeEventListener('keydown', onKeydown)
 })
+
+function onKeydown(e: KeyboardEvent) {
+  if (e.key === 'Escape' && visible.value && !dismissed.value) {
+    dismiss()
+  }
+}
 
 function dismiss() {
   dismissed.value = true

@@ -394,12 +394,16 @@ function getOptionClass(optionIndex: number): string {
               <div
                 v-for="(q, qIdx) in questions"
                 :key="q.id"
-                class="w-3 h-3 rounded-full"
+                class="w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold"
                 :style="{
                   backgroundColor: answers[q.id] === q.correctIndex ? '#22c55e' : '#ff6b6b',
+                  color: '#fff',
                 }"
-                :title="`Q${qIdx + 1}: ${answers[q.id] === q.correctIndex ? 'Correct' : 'Incorrect'}`"
-              />
+                :aria-label="`Question ${qIdx + 1}: ${answers[q.id] === q.correctIndex ? 'Correct' : 'Incorrect'}`"
+                role="img"
+              >
+                {{ answers[q.id] === q.correctIndex ? '✓' : '✗' }}
+              </div>
             </div>
 
             <!-- Retry button -->

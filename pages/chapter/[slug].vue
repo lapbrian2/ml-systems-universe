@@ -380,8 +380,17 @@ const vizComponent = computed(() => {
         />
 
         <!-- Viz component -->
-        <div class="relative z-10 w-full h-full">
-          <VizFullscreen :part-color="partColor" />
+        <div class="relative z-10 w-full h-full overflow-hidden">
+          <VizFullscreen :part-color="partColor">
+            <component
+              :is="vizComponent"
+              v-if="vizComponent"
+              :active-section="activeSection"
+              :scroll-progress="vizScrollProgress"
+              :section-progress="vizSectionProgress"
+              @exercise-complete="onExerciseComplete"
+            />
+          </VizFullscreen>
           <component
             :is="vizComponent"
             v-if="vizComponent"
@@ -419,8 +428,16 @@ const vizComponent = computed(() => {
           :section-count="content.sections.length"
         />
 
-        <!-- Bottom fade into content on mobile -->
-        <div class="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-cosmic-bg to-transparent lg:hidden" />
+        <!-- Bottom fade + scroll affordance on mobile -->
+        <div class="absolute bottom-0 left-0 right-0 lg:hidden flex flex-col items-center">
+          <div class="h-8 w-full bg-gradient-to-t from-cosmic-bg to-transparent" />
+          <div class="absolute bottom-2 flex flex-col items-center gap-0.5 animate-bounce" style="animation-duration: 2s;">
+            <span class="text-[10px] text-white/40 font-medium tracking-wide">Scroll to read</span>
+            <svg class="w-4 h-4 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </div>
       </aside>
 
       <!-- ─── Right: Scrolling content column ────────────────────────── -->

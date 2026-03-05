@@ -23,12 +23,13 @@ let ctx: gsap.Context | null = null
 
 onMounted(() => {
   if (!sectionRef.value) return
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
   ctx = gsap.context(() => {
     gsap.from(sectionRef.value!, {
-      y: 40,
-      opacity: 0,
-      duration: 0.8,
+      y: prefersReducedMotion ? 0 : 40,
+      opacity: prefersReducedMotion ? 1 : 0,
+      duration: prefersReducedMotion ? 0 : 0.8,
       ease: 'power2.out',
       scrollTrigger: {
         trigger: sectionRef.value!,

@@ -288,7 +288,7 @@ const progressPercentage = computed(() =>
       <!-- Dashboard (not in session) -->
       <template v-else>
         <!-- Stats bar -->
-        <div class="grid grid-cols-4 gap-3 mb-8">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
           <div class="glass-panel rounded-xl p-4 text-center">
             <div class="text-xl font-display font-bold text-primary">{{ store.getTotalDue }}</div>
             <div class="text-[10px] text-white/30">Due Today</div>
