@@ -35,7 +35,7 @@ const showTooltip = ref(false)
     >
       <div
         v-if="showTooltip"
-        class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 z-50 pointer-events-none"
+        class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 max-w-[90vw] z-50 pointer-events-none"
       >
         <div
           class="glass-panel--tooltip rounded-lg px-3 py-2.5 text-left shadow-xl"

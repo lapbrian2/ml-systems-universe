@@ -236,14 +236,14 @@ watch(() => props.chapterId, () => {
           </span>
           <!-- Dismiss button -->
           <button
-            class="w-5 h-5 rounded-full flex items-center justify-center text-white/20 hover:text-white/50 transition-colors"
+            class="w-8 h-8 rounded-full flex items-center justify-center text-white/20 hover:text-white/50 transition-colors"
             aria-label="Dismiss table of contents"
             @click="dismiss"
           >
-            <X class="w-3 h-3" />
+            <X class="w-3.5 h-3.5" />
           </button>
           <button
-            class="w-5 h-5 rounded-full flex items-center justify-center"
+            class="w-8 h-8 rounded-full flex items-center justify-center"
             :style="{ backgroundColor: `${partColor}20` }"
             aria-label="Expand table of contents"
             @click="collapsed = !collapsed"
