@@ -73,10 +73,11 @@ const difficultyLabel: Record<string, string> = {
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      <div
+      <NuxtLink
         v-for="path in LEARNING_PATHS"
         :key="path.id"
-        class="group glass-panel rounded-xl p-5 relative overflow-hidden transition-all duration-300 hover:bg-white/[0.03]"
+        :to="`/chapter/${getNextChapter(path.id) ?? CHAPTER_MAP[path.chapters[0]]?.slug ?? 'introduction'}`"
+        class="group glass-panel rounded-xl p-5 relative overflow-hidden transition-all duration-300 hover:bg-white/[0.03] cursor-pointer block no-underline"
       >
         <!-- Color accent bar -->
         <div
@@ -166,29 +167,20 @@ const difficultyLabel: Record<string, string> = {
         </div>
 
         <!-- CTA -->
-        <NuxtLink
-          v-if="getNextChapter(path.id)"
-          :to="`/chapter/${getNextChapter(path.id)}`"
-          class="flex items-center gap-1 text-xs font-medium transition-colors group-hover:translate-x-0.5 duration-200"
+        <span
+          class="flex items-center gap-1 text-xs font-medium transition-transform group-hover:translate-x-0.5 duration-200"
           :style="{ color: path.color }"
         >
           {{
             pathProgress[path.id].completed === 0
               ? 'Start Path'
               : pathProgress[path.id].percentage === 100
-                ? 'Completed!'
+                ? 'Review Path'
                 : 'Continue'
           }}
           <ChevronRight class="w-3 h-3" />
-        </NuxtLink>
-        <span
-          v-else
-          class="text-xs font-medium"
-          :style="{ color: path.color }"
-        >
-          Path Complete!
         </span>
-      </div>
+      </NuxtLink>
     </div>
   </section>
 </template>

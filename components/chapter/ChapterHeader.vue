@@ -62,10 +62,19 @@ const partIndex = computed(() => PARTS.findIndex(p => p.id === props.part.id) + 
 
     <!-- Title -->
     <h1
-      class="font-display text-3xl lg:text-[2.5rem] font-bold tracking-tight text-white leading-[1.15] mb-4"
+      class="font-display text-3xl lg:text-[2.5rem] font-bold tracking-tight text-white leading-[1.15] mb-1"
     >
       {{ chapter.title }}
     </h1>
+
+    <!-- Animated gradient underline -->
+    <div
+      class="chapter-title-underline mb-4"
+      :style="{
+        background: `linear-gradient(90deg, ${part.color}, ${part.color}80, ${part.color}30, ${part.color}80, ${part.color})`,
+        backgroundSize: '200% 100%',
+      }"
+    />
 
     <!-- Description -->
     <p class="text-white/50 text-base leading-relaxed max-w-2xl">
@@ -102,3 +111,24 @@ const partIndex = computed(() => PARTS.findIndex(p => p.id === props.part.id) + 
     <div class="mt-8 h-px" :style="{ background: `linear-gradient(90deg, ${part.color}30, transparent)` }" />
   </header>
 </template>
+
+<style scoped>
+.chapter-title-underline {
+  height: 2px;
+  width: 60%;
+  border-radius: 1px;
+  opacity: 0;
+  animation: underline-fade-in 0.5s ease-out forwards, underline-shimmer 4s ease-in-out infinite;
+  animation-delay: 0.2s, 0.7s;
+}
+
+@keyframes underline-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes underline-shimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+</style>

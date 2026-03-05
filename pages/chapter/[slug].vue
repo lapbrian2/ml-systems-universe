@@ -2,7 +2,7 @@
 import { ref, computed, watch, onMounted, onUnmounted, nextTick, defineAsyncComponent, defineComponent, h } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { ArrowLeft, Eye } from 'lucide-vue-next'
+import { ArrowLeft, Eye, CheckCircle, ArrowRight } from 'lucide-vue-next'
 import { getChapterBySlug, getPartForChapter, getNextChapter, getPrevChapter } from '~/lib/chapter-utils'
 import { getChapterContent, loadChapterContent } from '~/data/content'
 import { useProgressStore } from '~/stores/progress'
@@ -25,6 +25,9 @@ const content = computed<ChapterContent | null>(() =>
   contentReady.value && chapter.value ? getChapterContent(chapter.value.id) : null
 )
 const partColor = computed(() => part.value?.color ?? '#14b8a6')
+const nextChapter = computed(() => chapter.value ? getNextChapter(slug.value) : undefined)
+const nextChapterPart = computed(() => nextChapter.value ? getPartForChapter(nextChapter.value.id) : undefined)
+const chapterCompleteRef = ref<HTMLElement | null>(null)
 
 // Load content for current chapter
 async function ensureContent() {
@@ -187,6 +190,24 @@ onMounted(async () => {
             activeSection.value = index
           },
         })
+      })
+    }
+
+    // Chapter complete fade-in
+    if (chapterCompleteRef.value) {
+      gsap.set(chapterCompleteRef.value, { opacity: 0, y: 20 })
+      ScrollTrigger.create({
+        trigger: chapterCompleteRef.value,
+        start: 'top 85%',
+        once: true,
+        onEnter: () => {
+          gsap.to(chapterCompleteRef.value!, {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: 'power2.out',
+          })
+        },
       })
     }
   })
@@ -376,6 +397,21 @@ const vizComponent = computed(() => {
           }"
         />
 
+        <!-- Reading progress indicator (vertical line on right edge) -->
+        <div
+          class="absolute top-0 right-0 bottom-0 w-[2px] hidden lg:block overflow-hidden"
+          style="z-index: 1;"
+        >
+          <div
+            class="w-full transition-all duration-150 ease-out"
+            :style="{
+              height: `${progressWidth}%`,
+              background: `linear-gradient(180deg, ${partColor}60, ${partColor})`,
+              boxShadow: `0 0 6px ${partColor}40`,
+            }"
+          />
+        </div>
+
         <!-- Edge glow on divider -->
         <div
           class="absolute top-0 right-0 bottom-0 w-px hidden lg:block"
@@ -493,6 +529,61 @@ const vizComponent = computed(() => {
               :terms="content.glossary"
               :part-color="partColor"
             />
+          </div>
+
+          <!-- Chapter complete -->
+          <div
+            ref="chapterCompleteRef"
+            class="mt-16 mb-12 text-center"
+            style="opacity: 0;"
+          >
+            <div class="flex flex-col items-center gap-4">
+              <!-- Checkmark icon -->
+              <div
+                class="w-12 h-12 rounded-full flex items-center justify-center"
+                :style="{
+                  backgroundColor: `${partColor}12`,
+                  border: `1px solid ${partColor}25`,
+                }"
+              >
+                <CheckCircle class="w-6 h-6" :style="{ color: partColor }" />
+              </div>
+
+              <!-- Chapter number + complete text -->
+              <div>
+                <p class="text-xs font-mono text-white/30 mb-1">
+                  CH.{{ String(chapter?.number ?? 0).padStart(2, '0') }}
+                </p>
+                <p
+                  class="text-sm font-semibold tracking-wide"
+                  :style="{ color: `${partColor}cc` }"
+                >
+                  Chapter Complete
+                </p>
+              </div>
+
+              <!-- Decorative line -->
+              <div
+                class="w-16 h-px"
+                :style="{ background: `linear-gradient(90deg, transparent, ${partColor}30, transparent)` }"
+              />
+
+              <!-- Next chapter link -->
+              <NuxtLink
+                v-if="nextChapter"
+                :to="`/chapter/${nextChapter.slug}`"
+                class="group inline-flex items-center gap-2 mt-2 px-4 py-2 rounded-lg text-xs font-medium transition-all duration-300 hover:scale-[1.02]"
+                :style="{
+                  color: partColor,
+                  backgroundColor: `${partColor}08`,
+                  border: `1px solid ${partColor}15`,
+                }"
+              >
+                <span class="text-white/40">Up next:</span>
+                <span>{{ nextChapter.title }}</span>
+                <ArrowRight class="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
+              </NuxtLink>
+            </div>
           </div>
 
           <!-- Phase gate -->

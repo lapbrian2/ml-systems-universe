@@ -36,7 +36,7 @@ const layers: MemoryLayer[] = [
 
     <svg
       class="gpu-memory-hierarchy__svg"
-      viewBox="0 0 700 460"
+      viewBox="0 0 700 480"
       preserveAspectRatio="xMidYMid meet"
       role="img"
       aria-label="GPU memory hierarchy pyramid showing registers at the top (fastest, smallest) down to HBM global memory at the bottom (slowest, largest), with bandwidth and capacity for each level."
@@ -74,16 +74,16 @@ const layers: MemoryLayer[] = [
       </text>
 
       <!-- Speed arrow (left side) -->
-      <line x1="42" y1="60" x2="42" y2="380" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" />
-      <line x1="42" y1="60" x2="42" y2="55" stroke="#ef4444" stroke-width="1.5" marker-end="url(#gmh-arrow-up)" />
-      <text x="40" y="220" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-family="Inter, sans-serif" font-size="9" font-weight="500" transform="rotate(-90, 40, 220)">
+      <line x1="42" y1="80" x2="42" y2="400" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" />
+      <line x1="42" y1="80" x2="42" y2="75" stroke="#ef4444" stroke-width="1.5" marker-end="url(#gmh-arrow-up)" />
+      <text x="40" y="240" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-family="Inter, sans-serif" font-size="9" font-weight="500" transform="rotate(-90, 40, 240)">
         SPEED
       </text>
 
       <!-- Capacity arrow (right side) -->
-      <line x1="658" y1="60" x2="658" y2="380" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" />
-      <line x1="658" y1="380" x2="658" y2="385" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#gmh-arrow-down)" />
-      <text x="660" y="220" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-family="Inter, sans-serif" font-size="9" font-weight="500" transform="rotate(90, 660, 220)">
+      <line x1="658" y1="80" x2="658" y2="400" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" />
+      <line x1="658" y1="400" x2="658" y2="405" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#gmh-arrow-down)" />
+      <text x="660" y="240" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-family="Inter, sans-serif" font-size="9" font-weight="500" transform="rotate(90, 660, 240)">
         CAPACITY
       </text>
 
@@ -95,33 +95,33 @@ const layers: MemoryLayer[] = [
       >
         <polygon
           v-if="hoveredLayer === 0"
-          points="260,48 440,48 470,120 230,120"
+          points="260,68 440,68 470,140 230,140"
           :fill="`${layers[0].color}08`"
           class="gmh-glow"
         />
         <polygon
-          points="265,52 435,52 462,115 238,115"
+          points="265,72 435,72 462,135 238,135"
           :fill="hoveredLayer === 0 ? `${layers[0].color}18` : 'url(#gmh-layer-0)'"
           class="gmh-shape"
         />
         <polygon
-          points="265,52 435,52 462,115 238,115"
+          points="265,72 435,72 462,135 238,135"
           fill="none"
           :stroke="layers[0].color"
           :stroke-width="hoveredLayer === 0 ? 1.5 : 1"
           :stroke-opacity="hoveredLayer === 0 ? 0.6 : 0.3"
           class="gmh-shape"
         />
-        <text x="350" y="76" text-anchor="middle" fill="white" font-family="Inter, sans-serif" font-size="13" font-weight="600">
+        <text x="350" y="96" text-anchor="middle" fill="white" font-family="Inter, sans-serif" font-size="13" font-weight="600">
           Registers
         </text>
-        <text x="350" y="93" text-anchor="middle" :fill="layers[0].color" font-family="Inter, sans-serif" font-size="10" opacity="0.8">
+        <text x="350" y="113" text-anchor="middle" :fill="layers[0].color" font-family="Inter, sans-serif" font-size="10" opacity="0.8">
           ~20 MB | ~10 TB/s
         </text>
         <!-- Hover detail -->
         <text
           v-if="hoveredLayer === 0"
-          x="350" y="109"
+          x="350" y="129"
           text-anchor="middle" fill="rgba(255,255,255,0.5)" font-family="Inter, sans-serif" font-size="9" font-style="italic"
         >
           Per-thread, compiler-managed (~1 cycle latency)
@@ -136,32 +136,32 @@ const layers: MemoryLayer[] = [
       >
         <polygon
           v-if="hoveredLayer === 1"
-          points="225,118 475,118 520,200 180,200"
+          points="225,138 475,138 520,220 180,220"
           :fill="`${layers[1].color}08`"
           class="gmh-glow"
         />
         <polygon
-          points="230,122 470,122 512,195 188,195"
+          points="230,142 470,142 512,215 188,215"
           :fill="hoveredLayer === 1 ? `${layers[1].color}18` : 'url(#gmh-layer-1)'"
           class="gmh-shape"
         />
         <polygon
-          points="230,122 470,122 512,195 188,195"
+          points="230,142 470,142 512,215 188,215"
           fill="none"
           :stroke="layers[1].color"
           :stroke-width="hoveredLayer === 1 ? 1.5 : 1"
           :stroke-opacity="hoveredLayer === 1 ? 0.6 : 0.3"
           class="gmh-shape"
         />
-        <text x="350" y="150" text-anchor="middle" fill="white" font-family="Inter, sans-serif" font-size="13" font-weight="600">
+        <text x="350" y="170" text-anchor="middle" fill="white" font-family="Inter, sans-serif" font-size="13" font-weight="600">
           L1 / Shared Memory
         </text>
-        <text x="350" y="168" text-anchor="middle" :fill="layers[1].color" font-family="Inter, sans-serif" font-size="10" opacity="0.8">
+        <text x="350" y="188" text-anchor="middle" :fill="layers[1].color" font-family="Inter, sans-serif" font-size="10" opacity="0.8">
           ~128-228 KB/SM | ~19 TB/s
         </text>
         <text
           v-if="hoveredLayer === 1"
-          x="350" y="186"
+          x="350" y="206"
           text-anchor="middle" fill="rgba(255,255,255,0.5)" font-family="Inter, sans-serif" font-size="9" font-style="italic"
         >
           Per-SM software-managed scratchpad (~20 cycle latency)
@@ -176,32 +176,32 @@ const layers: MemoryLayer[] = [
       >
         <polygon
           v-if="hoveredLayer === 2"
-          points="175,198 525,198 580,282 120,282"
+          points="175,218 525,218 580,302 120,302"
           :fill="`${layers[2].color}08`"
           class="gmh-glow"
         />
         <polygon
-          points="180,202 520,202 572,278 128,278"
+          points="180,222 520,222 572,298 128,298"
           :fill="hoveredLayer === 2 ? `${layers[2].color}18` : 'url(#gmh-layer-2)'"
           class="gmh-shape"
         />
         <polygon
-          points="180,202 520,202 572,278 128,278"
+          points="180,222 520,222 572,298 128,298"
           fill="none"
           :stroke="layers[2].color"
           :stroke-width="hoveredLayer === 2 ? 1.5 : 1"
           :stroke-opacity="hoveredLayer === 2 ? 0.6 : 0.3"
           class="gmh-shape"
         />
-        <text x="350" y="232" text-anchor="middle" fill="white" font-family="Inter, sans-serif" font-size="13" font-weight="600">
+        <text x="350" y="252" text-anchor="middle" fill="white" font-family="Inter, sans-serif" font-size="13" font-weight="600">
           L2 Cache
         </text>
-        <text x="350" y="250" text-anchor="middle" :fill="layers[2].color" font-family="Inter, sans-serif" font-size="10" opacity="0.8">
+        <text x="350" y="270" text-anchor="middle" :fill="layers[2].color" font-family="Inter, sans-serif" font-size="10" opacity="0.8">
           ~40-50 MB | ~4 TB/s
         </text>
         <text
           v-if="hoveredLayer === 2"
-          x="350" y="268"
+          x="350" y="288"
           text-anchor="middle" fill="rgba(255,255,255,0.5)" font-family="Inter, sans-serif" font-size="9" font-style="italic"
         >
           Shared across all SMs (~200 cycle latency)
@@ -216,32 +216,32 @@ const layers: MemoryLayer[] = [
       >
         <polygon
           v-if="hoveredLayer === 3"
-          points="112,280 588,280 632,370 68,370"
+          points="112,300 588,300 632,390 68,390"
           :fill="`${layers[3].color}08`"
           class="gmh-glow"
         />
         <polygon
-          points="118,285 582,285 626,365 74,365"
+          points="118,305 582,305 626,385 74,385"
           :fill="hoveredLayer === 3 ? `${layers[3].color}18` : 'url(#gmh-layer-3)'"
           class="gmh-shape"
         />
         <polygon
-          points="118,285 582,285 626,365 74,365"
+          points="118,305 582,305 626,385 74,385"
           fill="none"
           :stroke="layers[3].color"
           :stroke-width="hoveredLayer === 3 ? 1.5 : 1"
           :stroke-opacity="hoveredLayer === 3 ? 0.6 : 0.3"
           class="gmh-shape"
         />
-        <text x="350" y="316" text-anchor="middle" fill="white" font-family="Inter, sans-serif" font-size="13" font-weight="600">
+        <text x="350" y="336" text-anchor="middle" fill="white" font-family="Inter, sans-serif" font-size="13" font-weight="600">
           HBM / Global Memory
         </text>
-        <text x="350" y="334" text-anchor="middle" :fill="layers[3].color" font-family="Inter, sans-serif" font-size="10" opacity="0.8">
+        <text x="350" y="354" text-anchor="middle" :fill="layers[3].color" font-family="Inter, sans-serif" font-size="10" opacity="0.8">
           80 GB (H100) | ~3.35 TB/s
         </text>
         <text
           v-if="hoveredLayer === 3"
-          x="350" y="354"
+          x="350" y="374"
           text-anchor="middle" fill="rgba(255,255,255,0.5)" font-family="Inter, sans-serif" font-size="9" font-style="italic"
         >
           Off-chip HBM3, highest capacity (~400 cycle latency)
@@ -249,12 +249,12 @@ const layers: MemoryLayer[] = [
       </g>
 
       <!-- Bottom label -->
-      <text x="350" y="400" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-family="Inter, sans-serif" font-size="11" font-weight="600" letter-spacing="0.06em">
+      <text x="350" y="420" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-family="Inter, sans-serif" font-size="11" font-weight="600" letter-spacing="0.06em">
         SLOWER &amp; LARGER
       </text>
 
       <!-- Legend -->
-      <g transform="translate(170, 425)">
+      <g transform="translate(170, 445)">
         <rect x="0" y="0" width="8" height="8" rx="2" fill="#ef4444" opacity="0.7" />
         <text x="14" y="8" fill="rgba(255,255,255,0.45)" font-family="Inter, sans-serif" font-size="9">Fastest</text>
 
@@ -269,7 +269,7 @@ const layers: MemoryLayer[] = [
       </g>
 
       <!-- Hover instruction -->
-      <text x="350" y="452" text-anchor="middle" fill="rgba(255,255,255,0.15)" font-family="Inter, sans-serif" font-size="8" font-style="italic">
+      <text x="350" y="472" text-anchor="middle" fill="rgba(255,255,255,0.15)" font-family="Inter, sans-serif" font-size="8" font-style="italic">
         Hover each layer for details (NVIDIA H100 reference)
       </text>
     </svg>

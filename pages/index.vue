@@ -107,6 +107,9 @@ const partDescriptions: Record<string, string> = {
         <MLSystemHero />
       </ClientOnly>
 
+      <!-- Morphing gradient blobs -->
+      <MorphingBlobs />
+
       <!-- Animated gradient orbs -->
       <div class="absolute inset-0 pointer-events-none overflow-hidden">
         <div
@@ -305,9 +308,15 @@ const partDescriptions: Record<string, string> = {
             v-for="chapter in getPartChapters(part.id)"
             :key="chapter.id"
             :to="`/chapter/${chapter.slug}`"
-            class="group glass-panel rounded-xl px-5 py-4 flex items-center gap-4 transition-all duration-300 relative overflow-hidden hover:border-white/10 hover:bg-white/[0.04] hover:shadow-lg"
-            :style="{ '--hover-shadow': `0 4px 24px ${part.color}10` }"
+            class="group glass-panel rounded-xl px-5 py-4 flex items-center gap-4 transition-all duration-300 relative overflow-hidden hover:border-white/10 hover:bg-white/[0.04] hover:shadow-lg hover:-translate-y-[2px]"
+            :style="{ '--hover-shadow': `0 4px 24px ${part.color}10`, '--part-color': part.color }"
           >
+            <!-- Top edge glow on hover -->
+            <div
+              class="absolute top-0 left-0 right-0 h-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              :style="{ background: `linear-gradient(90deg, transparent, ${part.color}40, transparent)` }"
+            />
+
             <!-- Left accent bar -->
             <div
               class="absolute left-0 top-0 bottom-0 w-[2px] transition-all duration-300 opacity-20 group-hover:opacity-70"
@@ -315,7 +324,10 @@ const partDescriptions: Record<string, string> = {
             />
 
             <!-- Chapter number -->
-            <span class="text-xs font-mono text-white/20 w-6 text-right tabular-nums shrink-0">
+            <span
+              class="chapter-number text-xs font-mono text-white/20 w-6 text-right tabular-nums shrink-0 transition-all duration-300 group-hover:text-white/40"
+              :style="{ '--part-glow': `${part.color}60` }"
+            >
               {{ String(chapter.number).padStart(2, '0') }}
             </span>
 
@@ -407,5 +419,10 @@ const partDescriptions: Record<string, string> = {
 @keyframes shimmer {
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
+}
+
+/* Chapter number glow on card hover */
+.group:hover .chapter-number {
+  text-shadow: 0 0 8px var(--part-glow, rgba(20, 184, 166, 0.4));
 }
 </style>

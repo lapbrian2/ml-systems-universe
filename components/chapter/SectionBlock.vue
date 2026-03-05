@@ -109,11 +109,14 @@ const hasRichBlocks = computed(() => props.blocks && props.blocks.length > 0)
       <div
         v-for="concept in keyConcepts"
         :key="concept.term"
-        class="glass-panel concept-glow rounded-lg p-4 border-l-2 transition-all duration-300"
-        :style="{ borderLeftColor: partColor ?? 'var(--color-primary)' }"
+        class="glass-panel concept-card rounded-lg p-4 border-l-2 transition-all duration-300 cursor-default"
+        :style="{
+          borderLeftColor: partColor ?? 'var(--color-primary)',
+          '--concept-color': partColor ?? 'var(--color-primary)',
+        }"
       >
         <h4
-          class="text-xs font-semibold uppercase tracking-wider mb-1.5"
+          class="concept-term text-xs font-semibold uppercase tracking-wider mb-1.5 transition-all duration-300"
           :style="{ color: partColor ?? 'var(--color-primary)' }"
         >
           {{ concept.term }}
@@ -125,3 +128,20 @@ const hasRichBlocks = computed(() => props.blocks && props.blocks.length > 0)
     </div>
   </section>
 </template>
+
+<style scoped>
+.concept-card {
+  box-shadow: inset 2px 0 4px -2px transparent;
+}
+
+.concept-card:hover {
+  transform: translateY(-1px);
+  border-left-color: var(--concept-color) !important;
+  box-shadow: inset 3px 0 8px -2px color-mix(in srgb, var(--concept-color) 30%, transparent),
+              0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+.concept-card:hover .concept-term {
+  text-shadow: 0 0 12px color-mix(in srgb, var(--concept-color) 40%, transparent);
+}
+</style>

@@ -32,6 +32,9 @@ nuxtApp.hook('page:finish', () => { isLoading.value = false })
       </div>
     </Transition>
 
+    <ClientOnly>
+      <ScrollProgressBar />
+    </ClientOnly>
     <NuxtPage />
     <CommandPalette />
     <ClientOnly>
