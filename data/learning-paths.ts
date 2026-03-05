@@ -69,7 +69,7 @@ export const LEARNING_PATHS: LearningPath[] = [
     name: 'Full Course',
     shortName: 'All',
     description:
-      'The complete Harvard CS249r curriculum. All 21 chapters in recommended order.',
+      'The complete CS249r textbook curriculum. All 21 chapters in recommended order.',
     icon: 'GraduationCap',
     color: '#f0a500',
     chapters: [

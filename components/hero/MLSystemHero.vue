@@ -6,7 +6,7 @@
  * Shows the core ML pipeline: Data → Feature Store → Training → Model Registry → Serving → Monitoring
  * with animated data packets flowing along the edges and a feedback loop.
  *
- * This communicates "ML is a system, not just a model" — the thesis of Harvard CS249r.
+ * This communicates "ML is a system, not just a model" — a core thesis of the CS249r textbook.
  */
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 

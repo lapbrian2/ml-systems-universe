@@ -54,7 +54,7 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Interactive companion for Harvard CS249r — Machine Learning Systems. 21 chapters with visualizations, quizzes, and progress tracking.' },
+        { name: 'description', content: 'Unofficial interactive companion based on the open-source CS249r textbook. 21 chapters with visualizations, quizzes, and progress tracking.' },
         { property: 'og:type', content: 'website' },
         { property: 'og:site_name', content: 'ML Systems Universe' },
         { property: 'og:url', content: 'https://mlsystemsuniverse.com' },

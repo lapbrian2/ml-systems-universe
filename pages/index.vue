@@ -144,9 +144,9 @@ const partDescriptions: Record<string, string> = {
         <div class="flex items-center gap-2 mb-6">
           <div class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/5">
             <GraduationCap class="w-3.5 h-3.5 text-primary" />
-            <span class="text-[11px] font-semibold text-primary uppercase tracking-widest">Harvard CS249r</span>
+            <span class="text-[11px] font-semibold text-primary uppercase tracking-widest">Based on CS249r</span>
           </div>
-          <span class="text-[11px] text-white/20 font-medium">Interactive Companion</span>
+          <span class="text-[11px] text-white/20 font-medium">Unofficial Interactive Companion</span>
         </div>
 
         <!-- Title -->
@@ -381,17 +381,20 @@ const partDescriptions: Record<string, string> = {
               <p class="text-[11px] text-white/50">Understanding ML systems from data collection to production deployment</p>
             </div>
           </div>
-          <div class="flex items-center gap-6">
+          <div class="flex flex-col items-end gap-1.5">
             <a
               href="https://mlsysbook.ai"
               target="_blank"
               rel="noopener noreferrer"
               class="text-xs text-white/50 hover:text-primary transition-colors"
             >
-              mlsysbook.ai
+              Based on the open-source CS249r textbook
             </a>
-            <span class="text-xs text-white/15">
-              Built with Nuxt 3 + TresJS + GSAP
+            <span class="text-[10px] text-white/30 max-w-xs text-right leading-snug">
+              Not affiliated with or endorsed by Harvard University. Content derived from the CC BY-NC-SA 4.0 textbook by Prof. Vijay Janapa Reddi et al.
+            </span>
+            <span class="text-[10px] text-white/15">
+              Built with Nuxt 3 + TresJS + GSAP &middot; CC BY-NC-SA 4.0
             </span>
           </div>
         </div>

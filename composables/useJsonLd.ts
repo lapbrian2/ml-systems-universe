@@ -18,12 +18,18 @@ export function useChapterJsonLd(chapter: ChapterMeta) {
             '@type': 'Course',
             name: 'ML Systems Universe',
             description:
-              'Interactive companion for Harvard CS249r — Machine Learning Systems',
+              'Unofficial interactive companion based on the open-source CS249r textbook',
             provider: {
               '@type': 'Organization',
-              name: 'Harvard University',
+              name: 'ML Systems Universe',
             },
             url: 'https://mlsystemsuniverse.com',
+            isBasedOn: {
+              '@type': 'Course',
+              name: 'CS249r: Machine Learning Systems',
+              provider: { '@type': 'Organization', name: 'Harvard University' },
+              url: 'https://mlsysbook.ai/',
+            },
           },
           teaches: chapter.topics.join(', '),
           timeRequired: `PT${chapter.estimatedMinutes}M`,
@@ -47,12 +53,18 @@ export function useCourseJsonLd() {
           '@type': 'Course',
           name: 'ML Systems Universe',
           description:
-            'Interactive companion for Harvard CS249r — Machine Learning Systems. 21 chapters with visualizations, quizzes, and progress tracking.',
+            'Unofficial interactive companion based on the open-source CS249r textbook by Prof. Vijay Janapa Reddi et al. 21 chapters with visualizations, quizzes, and progress tracking.',
           provider: {
             '@type': 'Organization',
-            name: 'Harvard University',
+            name: 'ML Systems Universe',
           },
           url: 'https://mlsystemsuniverse.com',
+          isBasedOn: {
+            '@type': 'Course',
+            name: 'CS249r: Machine Learning Systems',
+            provider: { '@type': 'Organization', name: 'Harvard University' },
+            url: 'https://mlsysbook.ai/',
+          },
           numberOfCredits: 0,
           educationalLevel: 'Graduate',
           inLanguage: 'en',
