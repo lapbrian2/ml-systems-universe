@@ -34,10 +34,12 @@ const phases = computed(() => [
 
 const allComplete = computed(() => phases.value.every(p => p.done))
 
-// Fire confetti when all phases complete
-watch(allComplete, async (isComplete) => {
-  if (!isComplete) return
+// Fire confetti once when all phases complete (not on re-mount)
+let confettiFired = false
+watch(allComplete, async (isComplete, wasComplete) => {
+  if (!isComplete || wasComplete || confettiFired) return
   if (import.meta.server) return
+  confettiFired = true
 
   try {
     const confetti = (await import('canvas-confetti')).default

@@ -25,7 +25,9 @@ interface SearchResult {
 // ── State ──────────────────────────────────────────────────────────────────
 const isOpen = ref(false)
 const query = ref('')
+const debouncedQuery = ref('')
 const selectedIndex = ref(0)
+let debounceTimer: ReturnType<typeof setTimeout> | null = null
 const inputRef = ref<HTMLInputElement | null>(null)
 const resultsRef = ref<HTMLDivElement | null>(null)
 
@@ -80,11 +82,19 @@ const searchIndex = computed<SearchResult[]>(() => {
   return items
 })
 
+// Debounce query input by 150ms
+watch(query, (val) => {
+  if (debounceTimer) clearTimeout(debounceTimer)
+  debounceTimer = setTimeout(() => {
+    debouncedQuery.value = val
+  }, 150)
+})
+
 // ── Filtered results ───────────────────────────────────────────────────────
 const MAX_RESULTS = 10
 
 const results = computed<SearchResult[]>(() => {
-  const q = query.value.toLowerCase().trim()
+  const q = debouncedQuery.value.toLowerCase().trim()
   if (!q) return []
 
   const tokens = q.split(/\s+/).filter(Boolean)

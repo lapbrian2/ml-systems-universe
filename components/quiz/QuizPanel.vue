@@ -57,9 +57,10 @@ function getDifficultyConfig(diff?: string) {
 // SVG progress ring
 const ringRadius = 18
 const ringCircumference = 2 * Math.PI * ringRadius
-const ringOffset = computed(() =>
-  ringCircumference - ((currentIndex.value + 1) / totalQuestions.value) * ringCircumference
-)
+const ringOffset = computed(() => {
+  if (totalQuestions.value === 0) return ringCircumference
+  return ringCircumference - ((currentIndex.value + 1) / totalQuestions.value) * ringCircumference
+})
 
 // Initialize quiz
 function startQuiz() {

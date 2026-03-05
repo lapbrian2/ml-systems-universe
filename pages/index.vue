@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { CHAPTERS } from '~/data/chapters'
 import { PARTS } from '~/data/chapters/parts'
 import { useProgressStore } from '~/stores/progress'
@@ -25,6 +25,20 @@ function getPartProgress(partId: string) {
 const heroVisible = ref(false)
 onMounted(() => {
   setTimeout(() => { heroVisible.value = true }, 100)
+})
+
+// Resume where you left off
+const lastVisitedChapter = computed(() => {
+  let latest: { chapter: typeof CHAPTERS[0]; time: string } | null = null
+  for (const ch of CHAPTERS) {
+    const p = store.chapters[ch.id]
+    if (p?.lastVisitedAt) {
+      if (!latest || p.lastVisitedAt > latest.time) {
+        latest = { chapter: ch, time: p.lastVisitedAt }
+      }
+    }
+  }
+  return latest?.chapter ?? null
 })
 
 // Feature highlights
@@ -172,6 +186,15 @@ const partDescriptions: Record<string, string> = {
               }"
             />
           </div>
+          <!-- Resume link -->
+          <NuxtLink
+            v-if="lastVisitedChapter"
+            :to="`/chapter/${lastVisitedChapter.slug}`"
+            class="mt-3 inline-flex items-center gap-2 text-xs text-primary/70 hover:text-primary transition-colors"
+          >
+            <ArrowRight class="w-3 h-3" />
+            <span>Resume: Ch {{ lastVisitedChapter.number }} — {{ lastVisitedChapter.title }}</span>
+          </NuxtLink>
         </div>
       </div>
       </div>
