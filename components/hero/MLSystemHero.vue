@@ -267,13 +267,13 @@ function getNode(id: string) {
 }
 
 .ml-system-hero__svg {
-  width: 85%;
-  max-width: 1100px;
+  width: 60%;
+  max-width: 800px;
   height: auto;
-  opacity: 0.55;
+  opacity: 0.45;
   transition: transform 0.3s ease-out;
-  mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,1) 40%);
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,1) 40%);
+  mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 20%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,1) 75%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 20%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,1) 75%);
 }
 
 /* Node breathing animation */
@@ -322,26 +322,26 @@ function getNode(id: string) {
 .packet--e5, .packet--e5-b { fill: rgba(34, 197, 94, 0.5); }
 .packet--e6, .packet--e6-b { fill: rgba(236, 72, 153, 0.4); }
 
-/* Tablet: shift further right */
+/* Tablet: smaller and more faded */
 @media (max-width: 1024px) {
   .ml-system-hero__svg {
-    width: 90%;
-    opacity: 0.4;
-    mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.2) 20%, rgba(0,0,0,1) 50%);
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.2) 20%, rgba(0,0,0,1) 50%);
+    width: 55%;
+    opacity: 0.3;
+    mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.2) 25%, rgba(0,0,0,1) 60%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.2) 25%, rgba(0,0,0,1) 60%);
   }
 }
 
-/* Mobile: center but very faded */
+/* Mobile: behind content, very subtle */
 @media (max-width: 768px) {
   .ml-system-hero {
     justify-content: center;
   }
   .ml-system-hero__svg {
-    width: 110%;
-    opacity: 0.25;
-    mask-image: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
+    width: 100%;
+    opacity: 0.15;
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
   }
 }
 </style>

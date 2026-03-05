@@ -107,6 +107,7 @@ const partDescriptions: Record<string, string> = {
         class="max-w-5xl mx-auto px-6 py-20 lg:py-32 relative z-10 transition-all duration-1000"
         :class="heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'"
       >
+      <div class="lg:max-w-[55%]">
         <!-- Course badge -->
         <div class="flex items-center gap-2 mb-6">
           <div class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/5">
@@ -172,6 +173,7 @@ const partDescriptions: Record<string, string> = {
             />
           </div>
         </div>
+      </div>
       </div>
 
       <!-- Bottom fade -->
