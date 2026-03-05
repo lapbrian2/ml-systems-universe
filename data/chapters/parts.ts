@@ -1,4 +1,4 @@
-import { Part } from '~/types/chapter';
+import type { Part } from '~/types/chapter';
 
 export const PARTS: Part[] = [
   {

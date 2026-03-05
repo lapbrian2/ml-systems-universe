@@ -54,9 +54,16 @@ function reset() {
 }
 
 // Stop timer when challenge is complete
-import { watch } from 'vue'
+import { watch, onUnmounted } from 'vue'
 watch(() => props.isComplete, (done) => {
   if (done && timer) {
+    clearInterval(timer)
+    timer = null
+  }
+})
+
+onUnmounted(() => {
+  if (timer) {
     clearInterval(timer)
     timer = null
   }

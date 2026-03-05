@@ -11,6 +11,7 @@ const props = defineProps<{
   body: string
   blocks?: ContentBlock[]
   index: number
+  totalSections?: number
   keyConcepts?: KeyConcept[]
   isActive?: boolean
   partColor?: string
@@ -55,7 +56,7 @@ const hasRichBlocks = computed(() => props.blocks && props.blocks.length > 0)
     <SectionDivider
       v-if="index > 0"
       :part-color="partColor ?? '#14b8a6'"
-      :progress="(index + 1) / 10"
+      :progress="(index + 1) / (totalSections || 10)"
     />
 
     <!-- Numbered heading with active indicator -->

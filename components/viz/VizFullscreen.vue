@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onUnmounted } from 'vue'
 import { Maximize2, Minimize2 } from 'lucide-vue-next'
 
 defineProps<{
@@ -21,6 +21,12 @@ function close() {
   isFullscreen.value = false
   document.body.style.overflow = ''
 }
+
+onUnmounted(() => {
+  if (isFullscreen.value) {
+    document.body.style.overflow = ''
+  }
+})
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, onUnmounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 
 /* ── Props & Emits ── */
 const props = withDefaults(defineProps<{
@@ -193,7 +193,7 @@ function startFlow() {
   }, 60)
 }
 
-startFlow()
+onMounted(() => startFlow())
 
 onUnmounted(() => {
   if (flowTimer.value) clearInterval(flowTimer.value)

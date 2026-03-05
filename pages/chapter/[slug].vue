@@ -29,7 +29,7 @@ const content = computed<ChapterContent | null>(() =>
 )
 const partColor = computed(() => part.value?.color ?? '#14b8a6')
 const nextChapter = computed(() => chapter.value ? getNextChapter(slug.value) : undefined)
-const nextChapterPart = computed(() => nextChapter.value ? getPartForChapter(nextChapter.value.id) : undefined)
+
 const chapterCompleteRef = ref<HTMLElement | null>(null)
 
 // Load content for current chapter
@@ -274,11 +274,6 @@ watch(
   }
 )
 
-// ── Quiz complete handler ─────────────────────────────────────────────
-function onQuizComplete(_score: number) {
-  // Score is already persisted by QuizPanel; nothing else needed here
-}
-
 // ── Exercise complete handler (from viz component interaction) ────────
 function scrollToViz() {
   if (import.meta.client) {
@@ -443,24 +438,15 @@ const vizComponent = computed(() => {
 
         <!-- Viz component -->
         <div class="relative z-10 w-full h-full overflow-hidden">
-          <VizFullscreen :part-color="partColor">
+          <VizFullscreen v-if="vizComponent" :part-color="partColor">
             <component
               :is="vizComponent"
-              v-if="vizComponent"
               :active-section="activeSection"
               :scroll-progress="vizScrollProgress"
               :section-progress="vizSectionProgress"
               @exercise-complete="onExerciseComplete"
             />
           </VizFullscreen>
-          <component
-            :is="vizComponent"
-            v-if="vizComponent"
-            :active-section="activeSection"
-            :scroll-progress="vizScrollProgress"
-            :section-progress="vizSectionProgress"
-            @exercise-complete="onExerciseComplete"
-          />
           <!-- Placeholder for chapters without viz -->
           <div
             v-else
@@ -539,6 +525,7 @@ const vizComponent = computed(() => {
               :body="section.body"
               :blocks="section.blocks"
               :index="idx"
+              :total-sections="content.sections.length"
               :key-concepts="section.keyConcepts"
               :is-active="activeSection === idx"
               :part-color="partColor"
@@ -629,7 +616,6 @@ const vizComponent = computed(() => {
             v-if="chapter"
             :chapter-id="chapter.id"
             :part-color="partColor"
-            @complete="onQuizComplete"
           />
 
           <!-- Chapter navigation -->

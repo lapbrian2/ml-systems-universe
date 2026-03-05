@@ -131,11 +131,6 @@ body {
   100% { transform: scale(1) translate(1%, -1%); }
 }
 
-/* ── Concept card hover ── */
-.concept-glow:hover {
-  box-shadow: 0 0 24px rgba(20, 184, 166, 0.08);
-}
-
 /* ── Film grain overlay (subtle) ── */
 .grain-overlay::after {
   content: '';

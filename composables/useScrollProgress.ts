@@ -22,16 +22,12 @@ export function useScrollProgress(
   const sectionProgress = ref(0)
   const activeSection = ref(0)
 
-  // Respect prefers-reduced-motion
-  const prefersReduced =
-    typeof window !== 'undefined'
-      ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      : false
-
   let ctx: gsap.Context | null = null
 
   onMounted(() => {
-    if (!containerRef.value || typeof window === 'undefined') return
+    if (!containerRef.value) return
+
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
     ctx = gsap.context(() => {
       ScrollTrigger.create({

@@ -363,10 +363,13 @@ onMounted(() => {
   gridHelperObj.value = buildGrid()
 
   // Delay path animation slightly so the scene renders first
-  setTimeout(animatePaths, 800)
+  pathAnimTimeout = setTimeout(animatePaths, 800)
 })
 
+let pathAnimTimeout: ReturnType<typeof setTimeout> | null = null
+
 onUnmounted(() => {
+  if (pathAnimTimeout) clearTimeout(pathAnimTimeout)
   if (pathTimeline) pathTimeline.kill()
   if (autoRotateTimer) clearTimeout(autoRotateTimer)
 

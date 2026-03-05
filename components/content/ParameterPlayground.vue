@@ -4,6 +4,8 @@ import { SlidersHorizontal, RotateCcw } from 'lucide-vue-next'
 import { computeRegistry } from '~/lib/playground-compute'
 import type { LineChartData, BarChartData, GaugeData } from '~/lib/playground-compute'
 
+const uid = Math.random().toString(36).slice(2, 8)
+
 const props = defineProps<{
   title: string
   description: string
@@ -253,7 +255,7 @@ const transitionClass = computed(() =>
             <!-- Area fill -->
             <path
               :d="lineChartAreaPath"
-              fill="url(#playground-area-grad)"
+              :fill="`url(#playground-area-grad-${uid})`"
               :class="transitionClass"
             />
 
@@ -307,7 +309,7 @@ const transitionClass = computed(() =>
 
             <!-- Gradient definition -->
             <defs>
-              <linearGradient id="playground-area-grad" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient :id="`playground-area-grad-${uid}`" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stop-color="#14b8a6" stop-opacity="0.15" />
                 <stop offset="100%" stop-color="#14b8a6" stop-opacity="0.01" />
               </linearGradient>
@@ -330,7 +332,7 @@ const transitionClass = computed(() =>
                 :width="bar.width"
                 :height="bar.height"
                 rx="3"
-                fill="url(#playground-bar-grad)"
+                :fill="`url(#playground-bar-grad-${uid})`"
                 :class="transitionClass"
               />
               <!-- Value label -->
@@ -353,7 +355,7 @@ const transitionClass = computed(() =>
 
             <!-- Gradient definition -->
             <defs>
-              <linearGradient id="playground-bar-grad" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient :id="`playground-bar-grad-${uid}`" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stop-color="#14b8a6" stop-opacity="0.7" />
                 <stop offset="100%" stop-color="#14b8a6" stop-opacity="0.25" />
               </linearGradient>

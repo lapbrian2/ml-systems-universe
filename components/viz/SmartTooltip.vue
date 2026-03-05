@@ -46,14 +46,32 @@ function lerpTick() {
   lerpRaf = requestAnimationFrame(lerpTick)
 }
 
-onMounted(() => {
-  if (import.meta.client) {
+function startLerp() {
+  if (lerpRaf === null && import.meta.client) {
     lerpRaf = requestAnimationFrame(lerpTick)
   }
-})
+}
+
+function stopLerp() {
+  if (lerpRaf !== null) {
+    cancelAnimationFrame(lerpRaf)
+    lerpRaf = null
+  }
+}
+
+// Only run RAF loop when tooltip is visible
+watch(() => props.visible, (vis) => {
+  if (vis) {
+    smoothX.value = targetX
+    smoothY.value = targetY
+    startLerp()
+  } else {
+    stopLerp()
+  }
+}, { immediate: true })
 
 onUnmounted(() => {
-  if (lerpRaf !== null) cancelAnimationFrame(lerpRaf)
+  stopLerp()
 })
 
 /* ── Update target position when props change ── */

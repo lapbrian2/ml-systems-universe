@@ -37,11 +37,11 @@ const phases = computed(() => [
 const allComplete = computed(() => phases.value.every(p => p.done))
 
 // Fire confetti once when all phases complete (not on re-mount)
-let confettiFired = false
+const confettiFired = ref(false)
 watch(allComplete, (isComplete, wasComplete) => {
-  if (!isComplete || wasComplete || confettiFired) return
+  if (!isComplete || wasComplete || confettiFired.value) return
   if (import.meta.server) return
-  confettiFired = true
+  confettiFired.value = true
   celebrateChapterComplete()
 })
 </script>
