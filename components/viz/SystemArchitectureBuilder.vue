@@ -50,7 +50,7 @@ const layers: ArchLayer[] = [
     id: 'processing',
     label: 'Processing Layer',
     description: 'ETL pipelines, feature engineering, and data validation.',
-    color: '#6c5ce7',
+    color: '#a855f7',
     icon: 'gear',
     subComponents: [
       { label: 'ETL Pipelines', description: 'Extract, transform, and load data workflows' },

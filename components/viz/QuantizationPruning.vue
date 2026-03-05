@@ -138,7 +138,7 @@ function neuronColor(node: NeuronNode): string {
   if (pruned) return 'rgba(255,255,255,0.05)'
   switch (quantBits.value) {
     case 32: return '#14b8a6'
-    case 16: return '#6c5ce7'
+    case 16: return '#a855f7'
     case 8: return '#f0a500'
     case 4: return '#ec4899'
     default: return '#14b8a6'

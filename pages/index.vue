@@ -11,14 +11,29 @@ import {
 
 const store = useProgressStore()
 
+// Pre-compute chapters-by-part and progress (avoids re-filtering on every render)
+const partChaptersMap = computed(() => {
+  const map: Record<string, typeof CHAPTERS> = {}
+  for (const part of PARTS) {
+    map[part.id] = CHAPTERS.filter(c => c.partId === part.id)
+  }
+  return map
+})
+const partProgressMap = computed(() => {
+  const map: Record<string, number> = {}
+  for (const part of PARTS) {
+    const chapters = partChaptersMap.value[part.id] ?? []
+    if (chapters.length === 0) { map[part.id] = 0; continue }
+    const completed = chapters.filter(c => store.getChapterState(c.id) === 'completed').length
+    map[part.id] = Math.round((completed / chapters.length) * 100)
+  }
+  return map
+})
 function getPartChapters(partId: string) {
-  return CHAPTERS.filter(c => c.partId === partId)
+  return partChaptersMap.value[partId] ?? []
 }
 function getPartProgress(partId: string) {
-  const chapters = getPartChapters(partId)
-  if (chapters.length === 0) return 0
-  const completed = chapters.filter(c => store.getChapterState(c.id) === 'completed').length
-  return Math.round((completed / chapters.length) * 100)
+  return partProgressMap.value[partId] ?? 0
 }
 
 // Animate hero on mount

@@ -43,7 +43,7 @@ const stages: PipelineStage[] = [
     shortLabel: 'Clean',
     description: 'Clean, normalize, and transform raw data. Handle missing values, outliers, and format inconsistencies.',
     icon: 'filter',
-    color: '#6c5ce7',
+    color: '#a855f7',
   },
   {
     id: 'feature-engineering',
@@ -83,7 +83,7 @@ const stages: PipelineStage[] = [
     shortLabel: 'Monitor',
     description: 'Track drift, performance, and reliability in production. Close the feedback loop.',
     icon: 'pulse',
-    color: '#3b82f6',
+    color: '#5b78ff',
   },
 ]
 

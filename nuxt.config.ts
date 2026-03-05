@@ -56,5 +56,10 @@ export default defineNuxtConfig({
 
   nitro: {
     preset: 'vercel',
+    routeRules: {
+      '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
+      '/favicon.svg': { headers: { 'cache-control': 'public, max-age=86400' } },
+      '/og-default.png': { headers: { 'cache-control': 'public, max-age=86400' } },
+    },
   },
 })

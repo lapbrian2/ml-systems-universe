@@ -45,7 +45,7 @@ const stages: WorkflowStage[] = [
     shortLabel: 'Collect',
     description: 'Gather, label, and catalog training data.',
     details: ['Data sourcing', 'Labeling pipelines', 'Data catalogs', 'Privacy compliance'],
-    color: '#6c5ce7',
+    color: '#a855f7',
     icon: 'database',
   },
   {
@@ -90,7 +90,7 @@ const stages: WorkflowStage[] = [
     shortLabel: 'Monitor',
     description: 'Track performance and detect drift.',
     details: ['Latency tracking', 'Drift detection', 'Error logging', 'SLA monitoring'],
-    color: '#3b82f6',
+    color: '#5b78ff',
     icon: 'pulse',
   },
   {

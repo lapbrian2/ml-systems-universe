@@ -2,7 +2,7 @@
 import { ref, computed, watch, onMounted, onUnmounted, nextTick, defineAsyncComponent, defineComponent, h } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { ArrowLeft } from 'lucide-vue-next'
+import { ArrowLeft, Eye } from 'lucide-vue-next'
 import { getChapterBySlug, getPartForChapter, getNextChapter, getPrevChapter } from '~/lib/chapter-utils'
 import { getChapterContent } from '~/data/content'
 import { useProgressStore } from '~/stores/progress'
@@ -462,5 +462,28 @@ const vizComponent = computed(() => {
 
     <!-- Scroll to top -->
     <ScrollToTop :part-color="partColor" />
+
+    <!-- Mobile: "Show Viz" button to scroll back to visualization -->
+    <Transition
+      enter-active-class="transition-all duration-300 ease-out"
+      enter-from-class="opacity-0 scale-75"
+      leave-active-class="transition-all duration-200 ease-in"
+      leave-to-class="opacity-0 scale-75"
+    >
+      <button
+        v-if="progressWidth > 5"
+        class="lg:hidden fixed bottom-20 left-4 z-40 flex items-center gap-1.5 px-3 py-2 rounded-full text-[10px] font-medium transition-colors"
+        :style="{
+          backgroundColor: `${partColor}15`,
+          color: partColor,
+          border: `1px solid ${partColor}30`,
+        }"
+        aria-label="Scroll to visualization"
+        @click="window.scrollTo({ top: 0, behavior: 'smooth' })"
+      >
+        <Eye class="w-3 h-3" />
+        Viz
+      </button>
+    </Transition>
   </div>
 </template>

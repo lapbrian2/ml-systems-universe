@@ -30,8 +30,8 @@ interface TooltipState {
 /* ── Pipeline Nodes ── */
 const sources: PipelineNode[] = [
   { id: 'db', label: 'Database', description: 'Relational and NoSQL databases (PostgreSQL, MongoDB, etc.).', color: '#14b8a6', icon: 'db', group: 'source' },
-  { id: 'api', label: 'REST APIs', description: 'External service endpoints providing structured JSON/XML data.', color: '#6c5ce7', icon: 'api', group: 'source' },
-  { id: 'files', label: 'File Storage', description: 'CSV, Parquet, JSON files from S3, GCS, or local filesystems.', color: '#3b82f6', icon: 'file', group: 'source' },
+  { id: 'api', label: 'REST APIs', description: 'External service endpoints providing structured JSON/XML data.', color: '#a855f7', icon: 'api', group: 'source' },
+  { id: 'files', label: 'File Storage', description: 'CSV, Parquet, JSON files from S3, GCS, or local filesystems.', color: '#5b78ff', icon: 'file', group: 'source' },
 ]
 
 const etlStages: PipelineNode[] = [
@@ -42,7 +42,7 @@ const etlStages: PipelineNode[] = [
 
 const storageNodes: PipelineNode[] = [
   { id: 'warehouse', label: 'Data Warehouse', description: 'Columnar analytics store (BigQuery, Snowflake, Redshift).', color: '#22c55e', icon: 'warehouse', group: 'storage' },
-  { id: 'feature-store', label: 'Feature Store', description: 'Low-latency serving of pre-computed ML features (Feast, Tecton).', color: '#3b82f6', icon: 'features', group: 'serve' },
+  { id: 'feature-store', label: 'Feature Store', description: 'Low-latency serving of pre-computed ML features (Feast, Tecton).', color: '#5b78ff', icon: 'features', group: 'serve' },
 ]
 
 const allNodes = computed(() => [...sources, ...etlStages, ...storageNodes])
