@@ -85,47 +85,83 @@ async function runCode() {
     const pyodide = await getPyodide() as Record<string, unknown>
     isLoading.value = false
 
-    // Capture stdout/stderr
-    const runPython = pyodide.runPythonAsync as (code: string) => Promise<unknown>
-    const runSync = pyodide.runPython as (code: string) => unknown
+    // Collect stdout/stderr via Pyodide's built-in capture
+    const outputLines: string[] = []
+    const errorLines: string[] = []
 
-    // Set up stdout/stderr capture
-    runSync(`
-import sys
-import io
-sys.stdout = io.StringIO()
-sys.stderr = io.StringIO()
-`)
+    // Use Pyodide's setStdout/setStderr for reliable capture
+    const setStdout = pyodide.setStdout as ((opts: { batched: (text: string) => void }) => void) | undefined
+    const setStderr = pyodide.setStderr as ((opts: { batched: (text: string) => void }) => void) | undefined
 
-    // Run with timeout
+    if (setStdout) {
+      setStdout({ batched: (text: string) => outputLines.push(text) })
+    }
+    if (setStderr) {
+      setStderr({ batched: (text: string) => errorLines.push(text) })
+    }
+
+    // Wrap user code to handle missing modules gracefully
     const codeToRun = editableCode.value
+    const wrappedCode = `
+import sys as _sys
+
+# Provide mock modules for libraries not available in Pyodide
+class _MockModule:
+    def __init__(self, name):
+        self._name = name
+    def __getattr__(self, attr):
+        if attr.startswith('_'):
+            raise AttributeError(attr)
+        return _MockModule(f"{self._name}.{attr}")
+    def __call__(self, *args, **kwargs):
+        print(f"[mock] {self._name}() called — library not available in browser")
+        return self
+    def __iter__(self):
+        return iter([])
+    def __repr__(self):
+        return f"<mock {self._name}>"
+
+_missing = []
+_original_import = __builtins__.__import__
+def _safe_import(name, *args, **kwargs):
+    try:
+        return _original_import(name, *args, **kwargs)
+    except ModuleNotFoundError:
+        _missing.append(name.split('.')[0])
+        return _MockModule(name)
+
+__builtins__.__import__ = _safe_import
+
+try:
+${codeToRun.split('\n').map(line => '    ' + line).join('\n')}
+except Exception as _e:
+    print(f"Error: {type(_e).__name__}: {_e}")
+finally:
+    __builtins__.__import__ = _original_import
+    if _missing:
+        _unique = sorted(set(_missing))
+        print(f"\\n⚠ Libraries not available in browser: {', '.join(_unique)}")
+        print("Output above uses mock objects. Install these locally for full results.")
+`
+
     const timeoutMs = 10000
+    const runPython = pyodide.runPythonAsync as (code: string) => Promise<unknown>
 
     const result = await Promise.race([
-      runPython(codeToRun),
+      runPython(wrappedCode),
       new Promise((_, reject) =>
         setTimeout(() => reject(new Error('Execution timed out after 10 seconds')), timeoutMs)
       ),
     ])
 
-    // Collect output
-    const stdout = runSync('sys.stdout.getvalue()') as string
-    const stderr = runSync('sys.stderr.getvalue()') as string
-
-    // Reset streams
-    runSync(`
-sys.stdout = io.StringIO()
-sys.stderr = io.StringIO()
-`)
-
     let finalOutput = ''
-    if (stdout) finalOutput += stdout
-    if (stderr) finalOutput += (finalOutput ? '\n' : '') + stderr
-    if (result !== undefined && result !== null && !stdout) {
+    if (outputLines.length > 0) finalOutput += outputLines.join('\n')
+    if (errorLines.length > 0) finalOutput += (finalOutput ? '\n' : '') + errorLines.join('\n')
+    if (result !== undefined && result !== null && outputLines.length === 0) {
       finalOutput += (finalOutput ? '\n' : '') + String(result)
     }
 
-    output.value = finalOutput || '(No output)'
+    output.value = finalOutput || '(No output — add print() statements to see results)'
   } catch (err: unknown) {
     isLoading.value = false
     const message = err instanceof Error ? err.message : String(err)
