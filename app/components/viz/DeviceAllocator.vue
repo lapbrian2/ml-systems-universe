@@ -406,7 +406,8 @@ watch(() => props.activeSection, () => {
               :key="key"
               :transform="`translate(0, ${ci * 68})`"
             >
-              <text x="0" y="0" class="allocator__constraint-label"
+              <text
+x="0" y="0" class="allocator__constraint-label"
                 :class="{ 'allocator__constraint-label--highlight': highlightConstraint === key }"
               >
                 {{ key.charAt(0).toUpperCase() + key.slice(1) }}

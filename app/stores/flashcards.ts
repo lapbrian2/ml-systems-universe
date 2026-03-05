@@ -137,6 +137,7 @@ export const useFlashcardStore = defineStore('flashcards', {
     removeChapterCards(chapterId: string) {
       for (const key of Object.keys(this.cards)) {
         if (key.startsWith(`${chapterId}::`)) {
+          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
           delete this.cards[key]
         }
       }

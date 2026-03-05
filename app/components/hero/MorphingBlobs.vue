@@ -19,6 +19,8 @@
   border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
+  will-change: filter, border-radius;
+  transform: translateZ(0);
 }
 
 /* ── Teal blob ── */

@@ -292,7 +292,7 @@ const tourSteps = computed<TourStep[]>(() =>
           class="quant-prune__slider"
           aria-label="Quantization bit width"
           @input="trackInteraction"
-        />
+        >
         <div class="quant-prune__slider-labels">
           <span>INT4</span><span>INT8</span><span>FP16</span><span>FP32</span>
         </div>
@@ -317,7 +317,7 @@ const tourSteps = computed<TourStep[]>(() =>
           class="quant-prune__slider"
           aria-label="Pruning sparsity percentage"
           @input="trackInteraction"
-        />
+        >
         <div class="quant-prune__slider-labels">
           <span>0%</span><span>45%</span><span>90%</span>
         </div>

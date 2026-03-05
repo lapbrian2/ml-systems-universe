@@ -83,8 +83,8 @@ useScrollReveal(() => containerRef.value)
 
       <!-- List -->
       <component
-        v-else-if="block.type === 'list'"
         :is="block.ordered ? 'ol' : 'ul'"
+        v-else-if="block.type === 'list'"
         :class="[
           'pl-5 space-y-1.5 text-sm leading-[1.8] text-white/65',
           block.ordered ? 'list-decimal' : 'list-disc',

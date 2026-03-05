@@ -55,17 +55,19 @@ function gradient(x: number, z: number): { dx: number; dz: number } {
 }
 
 /* ── Loss-to-color mapping (deep blue -> teal -> yellow -> red) ── */
+// Hoisted palette colors to avoid ~19K allocations per build
+const _c0 = new THREE.Color('#0a1628')
+const _c1 = new THREE.Color('#14b8a6')
+const _c2 = new THREE.Color('#eab308')
+const _c3 = new THREE.Color('#ef4444')
+const _c4 = new THREE.Color('#7f1d1d')
+const _cResult = new THREE.Color()
+
 function lossToColor(t: number): THREE.Color {
-  if (t < 0.25) {
-    return new THREE.Color().lerpColors(new THREE.Color('#0a1628'), new THREE.Color('#14b8a6'), t / 0.25)
-  }
-  if (t < 0.5) {
-    return new THREE.Color().lerpColors(new THREE.Color('#14b8a6'), new THREE.Color('#eab308'), (t - 0.25) / 0.25)
-  }
-  if (t < 0.75) {
-    return new THREE.Color().lerpColors(new THREE.Color('#eab308'), new THREE.Color('#ef4444'), (t - 0.5) / 0.25)
-  }
-  return new THREE.Color().lerpColors(new THREE.Color('#ef4444'), new THREE.Color('#7f1d1d'), (t - 0.75) / 0.25)
+  if (t < 0.25) return _cResult.lerpColors(_c0, _c1, t / 0.25)
+  if (t < 0.5) return _cResult.lerpColors(_c1, _c2, (t - 0.25) / 0.25)
+  if (t < 0.75) return _cResult.lerpColors(_c2, _c3, (t - 0.5) / 0.25)
+  return _cResult.lerpColors(_c3, _c4, (t - 0.75) / 0.25)
 }
 
 /* ── Seeded PRNG for deterministic SGD noise ── */
@@ -329,18 +331,6 @@ function onControlsStart() {
   }
 }
 
-/* ── Double-tap to reset view ── */
-let lastTapTime = 0
-const lossCanvasRef = ref<HTMLElement | null>(null)
-
-function onDoubleTap(e: TouchEvent) {
-  const now = Date.now()
-  if (now - lastTapTime < 300 && e.touches.length === 0) {
-    // Reset: re-animate paths
-    animatePaths()
-  }
-  lastTapTime = now
-}
 
 /* ── Progress display ── */
 const explorationProgress = computed(() => Math.min(interactionCount.value, 3))

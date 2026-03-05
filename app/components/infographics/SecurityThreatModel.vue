@@ -8,55 +8,7 @@ import { ref } from 'vue'
 
 const hoveredThreat = ref<string | null>(null)
 
-interface Threat {
-  id: string
-  label: string
-  description: string
-  severity: 'high' | 'medium' | 'low'
-  color: string
-  mitigations: string[]
-}
 
-const threats: Threat[] = [
-  {
-    id: 'poisoning',
-    label: 'Data Poisoning',
-    description: 'Inject malicious training data to corrupt model behavior',
-    severity: 'high',
-    color: '#ef4444',
-    mitigations: ['Data provenance tracking', 'Anomaly detection on inputs', 'Robust training methods'],
-  },
-  {
-    id: 'extraction',
-    label: 'Model Extraction',
-    description: 'Steal model weights or architecture via API queries',
-    severity: 'medium',
-    color: '#f59e0b',
-    mitigations: ['Rate limiting API calls', 'Query watermarking', 'Differential privacy'],
-  },
-  {
-    id: 'adversarial',
-    label: 'Adversarial Inputs',
-    description: 'Craft inputs that fool model at inference time',
-    severity: 'high',
-    color: '#ef4444',
-    mitigations: ['Adversarial training', 'Input validation', 'Ensemble defenses'],
-  },
-  {
-    id: 'privacy',
-    label: 'Privacy Attacks',
-    description: 'Extract sensitive training data from model outputs',
-    severity: 'medium',
-    color: '#f59e0b',
-    mitigations: ['Differential privacy', 'Federated learning', 'Output perturbation'],
-  },
-]
-
-const severityLabel: Record<string, string> = {
-  high: 'HIGH',
-  medium: 'MEDIUM',
-  low: 'LOW',
-}
 </script>
 
 <template>

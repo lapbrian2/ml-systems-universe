@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { SlidersHorizontal, RotateCcw } from 'lucide-vue-next'
 import { computeRegistry } from '~/lib/playground-compute'
 import type { LineChartData, BarChartData, GaugeData } from '~/lib/playground-compute'
@@ -219,7 +219,7 @@ const transitionClass = computed(() =>
             :value="values[param.name] ?? param.default"
             class="playground-slider flex-1 h-1.5 appearance-none rounded-full bg-white/[0.08] cursor-pointer"
             @input="updateParam(param.name, $event)"
-          />
+          >
           <div class="w-24 shrink-0 text-right">
             <span class="text-xs font-mono font-semibold text-teal-400 tabular-nums">
               {{ formatValue(param, values[param.name] ?? param.default) }}
@@ -422,10 +422,12 @@ const transitionClass = computed(() =>
                 class="fill-white/30 text-[10px]"
               >{{ gaugeData.unit }}</text>
               <!-- Min / Max labels -->
-              <text x="-95" y="12" text-anchor="middle" class="fill-white/20 text-[9px]"
+              <text
+x="-95" y="12" text-anchor="middle" class="fill-white/20 text-[9px]"
                 style="font-family: ui-monospace, monospace"
               >{{ gaugeData.min }}</text>
-              <text x="95" y="12" text-anchor="middle" class="fill-white/20 text-[9px]"
+              <text
+x="95" y="12" text-anchor="middle" class="fill-white/20 text-[9px]"
                 style="font-family: ui-monospace, monospace"
               >{{ gaugeData.max }}</text>
               <!-- Label -->

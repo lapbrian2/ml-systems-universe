@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
-import { MousePointerClick, Scroll, Eye, X } from 'lucide-vue-next'
+import { MousePointerClick, Scroll, X } from 'lucide-vue-next'
 
 const props = defineProps<{
   chapterId: string

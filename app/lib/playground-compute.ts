@@ -111,7 +111,6 @@ export function batchSizeTradeoff(params: Record<string, number>): BarChartData 
  * Shows how aggressively pruning weights affects model accuracy and inference speedup.
  */
 export function pruningEffect(params: Record<string, number>): LineChartData {
-  const pruningPct = params.pruningPercent ?? 50
   const structured = params.structured ?? 0 // 0 = unstructured, 1 = structured
 
   const x: number[] = []

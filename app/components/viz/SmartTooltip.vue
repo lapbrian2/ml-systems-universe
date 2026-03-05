@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed, onMounted, onUnmounted } from 'vue'
+import { ref, watch, computed, onUnmounted } from 'vue'
 import { gsap } from 'gsap'
 
 const props = defineProps<{
@@ -18,7 +18,6 @@ const smoothX = ref(props.x)
 const smoothY = ref(props.y)
 const opacity = ref(0)
 const scale = ref(0.9)
-const arrowSide = ref<'top' | 'bottom'>('top')
 
 let lerpRaf: number | null = null
 let targetX = props.x
@@ -27,7 +26,6 @@ let targetY = props.y
 const TOOLTIP_W = 240
 const TOOLTIP_H = 120
 const OFFSET = 14
-const ARROW_SIZE = 6
 
 const prefersReducedMotion =
   import.meta.client && typeof window !== 'undefined'
@@ -109,6 +107,13 @@ watch(() => props.visible, (vis) => {
   }
 })
 
+/* ── Arrow side computed (no side-effects) ── */
+const arrowSide = computed<'top' | 'bottom'>(() => {
+  const ch = props.containerHeight || 500
+  const ty = smoothY.value + OFFSET
+  return (ty + TOOLTIP_H > ch - 10) ? 'bottom' : 'top'
+})
+
 /* ── Position with edge-flip logic ── */
 const tooltipStyle = computed(() => {
   const cw = props.containerWidth || 800
@@ -125,9 +130,6 @@ const tooltipStyle = computed(() => {
   // Flip vertical if near bottom edge
   if (ty + TOOLTIP_H > ch - 10) {
     ty = smoothY.value - TOOLTIP_H - OFFSET
-    arrowSide.value = 'bottom'
-  } else {
-    arrowSide.value = 'top'
   }
 
   // Clamp to container

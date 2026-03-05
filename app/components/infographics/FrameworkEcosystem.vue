@@ -143,14 +143,16 @@ function fwY(pct: number): number {
       />
 
       <!-- Grid lines -->
-      <line v-for="i in 4" :key="`hgrid-${i}`"
+      <line
+v-for="i in 4" :key="`hgrid-${i}`"
         :x1="chartLeft"
         :y1="chartTop + (i * chartHeight / 5)"
         :x2="chartLeft + chartWidth"
         :y2="chartTop + (i * chartHeight / 5)"
         stroke="rgba(255,255,255,0.04)" stroke-width="0.5"
       />
-      <line v-for="i in 4" :key="`vgrid-${i}`"
+      <line
+v-for="i in 4" :key="`vgrid-${i}`"
         :x1="chartLeft + (i * chartWidth / 5)"
         :y1="chartTop"
         :x2="chartLeft + (i * chartWidth / 5)"
@@ -189,7 +191,8 @@ function fwY(pct: number): number {
       </text>
 
       <!-- Framework bubbles -->
-      <g v-for="fw in frameworks" :key="fw.id"
+      <g
+v-for="fw in frameworks" :key="fw.id"
         class="fe-bubble"
         @mouseenter="hoveredFramework = fw.id"
         @mouseleave="hoveredFramework = null"

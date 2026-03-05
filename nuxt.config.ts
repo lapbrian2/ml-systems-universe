@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
     '@nuxtjs/sitemap',
+    '@nuxt/eslint',
   ],
 
   sitemap: {
@@ -102,6 +103,8 @@ export default defineNuxtConfig({
     routeRules: {
       '/**': {
         headers: {
+          'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://cdn.jsdelivr.net; frame-ancestors 'none'",
+          'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
           'X-Frame-Options': 'DENY',
           'X-Content-Type-Options': 'nosniff',
           'Referrer-Policy': 'strict-origin-when-cross-origin',

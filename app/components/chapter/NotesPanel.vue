@@ -169,7 +169,7 @@ function exportNotes() {
               class="flex-1 bg-white/[0.03] border border-white/[0.06] rounded-lg px-2.5 py-1.5 text-xs text-white/70 placeholder-white/20 outline-none focus:border-primary/30"
               placeholder="Add a note..."
               @keydown.enter="addNote"
-            />
+            >
             <button
               class="px-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
               :disabled="!newNoteText.trim()"

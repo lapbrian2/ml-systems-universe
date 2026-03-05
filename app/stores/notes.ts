@@ -62,6 +62,7 @@ export const useNotesStore = defineStore('notes', {
     },
 
     deleteNote(id: string) {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete this.notes[id]
     },
 

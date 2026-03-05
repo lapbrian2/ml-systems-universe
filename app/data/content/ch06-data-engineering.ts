@@ -188,7 +188,7 @@ export const sections: ChapterSection[] = [
       {
         type: 'code',
         language: 'python',
-        code: '# Example labeling functions in Snorkel\nfrom snorkel.labeling import labeling_function\n\n@labeling_function()\ndef lf_keyword_spam(x):\n    \"\"\"Flag emails containing common spam keywords.\"\"\"\n    spam_words = [\'free\', \'winner\', \'click here\', \'act now\']\n    return SPAM if any(w in x.text.lower() for w in spam_words) else ABSTAIN\n\n@labeling_function()\ndef lf_short_email(x):\n    \"\"\"Very short emails with links are often spam.\"\"\"\n    return SPAM if len(x.text) < 50 and \'http\' in x.text else ABSTAIN\n\n# Snorkel combines these noisy functions statistically\n# to produce probabilistic training labels',
+        code: '# Example labeling functions in Snorkel\nfrom snorkel.labeling import labeling_function\n\n@labeling_function()\ndef lf_keyword_spam(x):\n    """Flag emails containing common spam keywords."""\n    spam_words = [\'free\', \'winner\', \'click here\', \'act now\']\n    return SPAM if any(w in x.text.lower() for w in spam_words) else ABSTAIN\n\n@labeling_function()\ndef lf_short_email(x):\n    """Very short emails with links are often spam."""\n    return SPAM if len(x.text) < 50 and \'http\' in x.text else ABSTAIN\n\n# Snorkel combines these noisy functions statistically\n# to produce probabilistic training labels',
         caption: 'Example: Programmatic labeling functions with Snorkel.',
       },
       {
@@ -453,7 +453,7 @@ export const sections: ChapterSection[] = [
       {
         type: 'code',
         language: 'python',
-        code: '# Data validation with Great Expectations\nimport great_expectations as gx\n\ncontext = gx.get_context()\nvalidator = context.sources.pandas_default.read_csv(\"training_data.csv\")\n\n# Define expectations\nvalidator.expect_column_values_to_not_be_null(\"user_id\")\nvalidator.expect_column_values_to_be_between(\"age\", min_value=0, max_value=150)\nvalidator.expect_column_mean_to_be_between(\"purchase_amount\", min_value=10, max_value=500)\nvalidator.expect_column_proportion_of_unique_values_to_be_between(\"email\", 0.95, 1.0)\n\nresults = validator.validate()\nif not results.success:\n    raise ValueError(\"Data quality checks failed!\")',
+        code: '# Data validation with Great Expectations\nimport great_expectations as gx\n\ncontext = gx.get_context()\nvalidator = context.sources.pandas_default.read_csv("training_data.csv")\n\n# Define expectations\nvalidator.expect_column_values_to_not_be_null("user_id")\nvalidator.expect_column_values_to_be_between("age", min_value=0, max_value=150)\nvalidator.expect_column_mean_to_be_between("purchase_amount", min_value=10, max_value=500)\nvalidator.expect_column_proportion_of_unique_values_to_be_between("email", 0.95, 1.0)\n\nresults = validator.validate()\nif not results.success:\n    raise ValueError("Data quality checks failed!")',
         caption: 'Example: Defining data quality expectations with Great Expectations.',
       },
       {

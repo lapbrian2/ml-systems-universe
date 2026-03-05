@@ -291,8 +291,8 @@ watch(() => props.activeSection, () => {
           </filter>
           <linearGradient
             v-for="hw in hardwareList"
-            :key="`grad-${hw.id}`"
             :id="`mp-bar-${hw.id}`"
+            :key="`grad-${hw.id}`"
             x1="0%" y1="0%" x2="0%" y2="100%"
           >
             <stop offset="0%" :stop-color="hw.color" stop-opacity="0.9" />

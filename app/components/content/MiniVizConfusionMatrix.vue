@@ -113,19 +113,19 @@ function cellOpacity(val: number): number {
       <div class="grid grid-cols-2 gap-x-4 gap-y-2 mt-3">
         <div class="flex items-center gap-2">
           <span class="text-[8px] text-green-400 w-5 shrink-0 font-mono">TP</span>
-          <input v-model.number="tp" type="range" min="0" max="100" step="1" class="mini-slider flex-1" />
+          <input v-model.number="tp" type="range" min="0" max="100" step="1" class="mini-slider flex-1" >
         </div>
         <div class="flex items-center gap-2">
           <span class="text-[8px] text-red-400 w-5 shrink-0 font-mono">FP</span>
-          <input v-model.number="fp" type="range" min="0" max="100" step="1" class="mini-slider flex-1" />
+          <input v-model.number="fp" type="range" min="0" max="100" step="1" class="mini-slider flex-1" >
         </div>
         <div class="flex items-center gap-2">
           <span class="text-[8px] text-red-400 w-5 shrink-0 font-mono">FN</span>
-          <input v-model.number="fn_" type="range" min="0" max="100" step="1" class="mini-slider flex-1" />
+          <input v-model.number="fn_" type="range" min="0" max="100" step="1" class="mini-slider flex-1" >
         </div>
         <div class="flex items-center gap-2">
           <span class="text-[8px] text-green-400 w-5 shrink-0 font-mono">TN</span>
-          <input v-model.number="tn" type="range" min="0" max="100" step="1" class="mini-slider flex-1" />
+          <input v-model.number="tn" type="range" min="0" max="100" step="1" class="mini-slider flex-1" >
         </div>
       </div>
     </div>

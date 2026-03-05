@@ -134,7 +134,7 @@ const iconMap: Record<string, string> = {
       aria-label="Honeycomb diagram showing six course parts: Foundations, Design, Performance, Deployment, Trustworthy, and Frontiers, with interconnecting lines showing relationships between parts."
     >
       <defs>
-        <linearGradient v-for="part in parts" :key="'grad-' + part.id" :id="`ct-${part.id}-fill`" x1="0" y1="0" x2="1" y2="1">
+        <linearGradient v-for="part in parts" :id="`ct-${part.id}-fill`" :key="'grad-' + part.id" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" :stop-color="part.color" stop-opacity="0.15" />
           <stop offset="100%" :stop-color="part.color" stop-opacity="0.04" />
         </linearGradient>

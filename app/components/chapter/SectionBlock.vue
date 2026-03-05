@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Eye } from 'lucide-vue-next'
 import type { KeyConcept, ContentBlock, GlossaryTerm } from '~/types/chapter'
 

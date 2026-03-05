@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { Brain, CheckCircle2, XCircle, ArrowRight, RotateCcw, Trophy, Sparkles, Target, Zap } from 'lucide-vue-next'
 import { getQuizForChapter } from '~/data/quizzes'
 import { selectQuizQuestions } from '~/lib/quiz-scorer'

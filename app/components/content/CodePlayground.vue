@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onBeforeUnmount } from 'vue'
+import { ref, computed, onBeforeUnmount, nextTick } from 'vue'
 import { Play, RotateCcw, Copy, Check, Terminal, Loader2, Square, ChevronDown, ChevronUp } from 'lucide-vue-next'
 
 const props = defineProps<{
@@ -36,6 +36,7 @@ function getPyodide(): Promise<unknown> {
 
     const script = document.createElement('script')
     script.src = 'https://cdn.jsdelivr.net/pyodide/v0.27.1/full/pyodide.js'
+    script.integrity = 'sha256-6wvt8h4MiiNneB+ZGz3GvXRP6IBZmfM4s2j1okjMgRc='
     script.crossOrigin = 'anonymous'
     script.onload = () => {
       ;(win.loadPyodide as () => Promise<unknown>)()
@@ -60,6 +61,8 @@ function escapeHtml(str: string): string {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
 }
 
 function highlightPython(code: string): string {
@@ -107,7 +110,6 @@ async function runCode() {
 
     // First: try running the code directly
     let result: unknown
-    let ranSuccessfully = false
     try {
       result = await Promise.race([
         runPython(codeToRun),
@@ -115,7 +117,6 @@ async function runCode() {
           setTimeout(() => reject(new Error('Execution timed out after 10 seconds')), timeoutMs)
         ),
       ])
-      ranSuccessfully = true
     } catch (runErr: unknown) {
       const msg = runErr instanceof Error ? runErr.message : String(runErr)
 
@@ -162,12 +163,10 @@ async function runCode() {
           actions.slice(0, 6).forEach(a => outputLines.push(`   → ${a}`))
         }
 
-        ranSuccessfully = true // Don't show raw traceback
         result = undefined
       } else {
         // Other errors: show them
         outputLines.push(msg)
-        ranSuccessfully = true
         result = undefined
       }
     }
@@ -224,9 +223,6 @@ function handleKeydown(e: KeyboardEvent) {
     runCode()
   }
 }
-
-// Import nextTick
-import { nextTick } from 'vue'
 
 // Line count for gutter
 const lineCount = computed(() => editableCode.value.split('\n').length)
@@ -312,7 +308,7 @@ onBeforeUnmount(() => {
           />
 
           <!-- Highlighted display (behind textarea) -->
-          <pre class="playground__display"><code v-html="highlighted"></code></pre>
+          <pre class="playground__display"><code v-html="highlighted"/></pre>
         </div>
 
         <div class="playground__hint">
@@ -352,7 +348,7 @@ onBeforeUnmount(() => {
             </div>
           </div>
           <div class="overflow-x-auto">
-            <pre class="code-block__pre"><code v-html="highlighted"></code></pre>
+            <pre class="code-block__pre"><code v-html="highlighted"/></pre>
           </div>
         </div>
       </div>

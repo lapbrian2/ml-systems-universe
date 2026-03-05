@@ -123,21 +123,6 @@ const scrollDashOffset = computed(() => {
   return -(props.scrollProgress * 200)
 })
 
-// Per-stage glow intensity driven by scroll position
-function scrollStageGlow(index: number): number {
-  const lit = scrollLitCount.value
-  if (index < lit - 1) return 0.15 // fully passed
-  if (index > lit) return 0 // not reached
-  // Transitioning stage: fraction of glow
-  const frac = lit - index
-  return Math.max(0, Math.min(0.15, frac * 0.15))
-}
-
-// Data flow particle position along the pipeline (0 to ~total width)
-const particleProgress = computed(() => {
-  return props.scrollProgress * 100 // percentage
-})
-
 /* ── Interaction State ── */
 const clickedStages = ref<Set<string>>(new Set())
 const selectedStage = ref<string | null>(null)

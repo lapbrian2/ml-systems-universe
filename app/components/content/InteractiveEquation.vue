@@ -233,7 +233,7 @@ function formatResult(val: number): string {
             :value="values[variable.name] ?? variable.default"
             class="interactive-slider flex-1 h-1.5 appearance-none rounded-full bg-white/[0.08] cursor-pointer"
             @input="(e: Event) => values[variable.name] = parseFloat((e.target as HTMLInputElement).value)"
-          />
+          >
           <div class="w-20 shrink-0 text-right">
             <span class="text-xs font-mono font-semibold text-primary tabular-nums">
               {{ (values[variable.name] ?? variable.default).toFixed(

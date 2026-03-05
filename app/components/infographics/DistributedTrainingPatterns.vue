@@ -10,11 +10,6 @@ import { ref } from 'vue'
 
 const hoveredPattern = ref<string | null>(null)
 
-const patterns = {
-  data: { color: '#14b8a6', label: 'Data Parallelism' },
-  model: { color: '#a855f7', label: 'Model Parallelism' },
-  pipeline: { color: '#f97316', label: 'Pipeline Parallelism' },
-}
 </script>
 
 <template>

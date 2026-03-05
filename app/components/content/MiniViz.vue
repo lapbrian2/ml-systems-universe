@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-
-const props = defineProps<{
+defineProps<{
   vizType: 'activation' | 'gradient' | 'distribution' | 'confusion-matrix'
   config: Record<string, unknown>
 }>()

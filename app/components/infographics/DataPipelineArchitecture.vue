@@ -33,16 +33,6 @@ const components: PipelineComponent[] = [
   { id: 'serving', name: 'Serving Layer', description: 'Merges batch and real-time views to answer queries', x: 600, y: 185, width: 130, color: '#a855f7', path: 'shared' },
 ]
 
-function getComp(id: string): PipelineComponent {
-  return components.find(c => c.id === id)!
-}
-
-function fillGrad(path: string): string {
-  if (path === 'batch') return 'url(#dpa-blue-fill)'
-  if (path === 'speed') return 'url(#dpa-green-fill)'
-  if (path === 'shared' || path === 'output') return 'url(#dpa-neutral-fill)'
-  return 'url(#dpa-neutral-fill)'
-}
 </script>
 
 <template>

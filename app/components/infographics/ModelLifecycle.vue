@@ -61,7 +61,7 @@ function arrowPath(fromIdx: number, toIdx: number): string {
   return `M ${x1} ${y1} Q ${mx} ${my} ${x2} ${y2}`
 }
 
-function substepX(stageIdx: number, subIdx: number): number {
+function substepX(stageIdx: number, _subIdx: number): number {
   const angle = (2 * Math.PI * stageIdx) / totalStages - Math.PI / 2
   const dir = angle
   const base = cx + (radius + 70) * Math.cos(dir)

@@ -45,9 +45,25 @@ async function ensureContent() {
 }
 // SSR: load eagerly during setup; client: also on navigation
 await ensureContent()
-watch(() => chapter.value?.id, async () => {
+watch(() => chapter.value?.id, async (newId, oldId) => {
+  // Flush time tracking to the OLD chapter before switching
+  if (oldId && newId !== oldId) {
+    const elapsed = Math.floor((Date.now() - visitStart) / 1000)
+    if (elapsed > 0) store.addTimeSpent(oldId, elapsed)
+    visitStart = Date.now()
+  }
+
+  // Tear down stale GSAP ScrollTriggers from previous chapter
+  gsapCtx?.revert()
+  activeSection.value = 0
+  progressWidth.value = 0
+
   contentReady.value = false
   await ensureContent()
+
+  // Re-register ScrollTriggers for the new chapter
+  await nextTick()
+  setupScrollTriggers()
 })
 
 // Head meta
@@ -134,9 +150,7 @@ const {
 // ── GSAP context ──────────────────────────────────────────────────────
 let gsapCtx: gsap.Context | null = null
 
-onMounted(async () => {
-  await nextTick()
-
+function setupScrollTriggers() {
   gsapCtx = gsap.context(() => {
     // Scroll progress bar driven by the content column scroll
     if (contentColumn.value) {
@@ -215,6 +229,11 @@ onMounted(async () => {
       })
     }
   })
+}
+
+onMounted(async () => {
+  await nextTick()
+  setupScrollTriggers()
 })
 
 onUnmounted(() => {
@@ -519,8 +538,8 @@ const vizComponent = computed(() => {
           <div v-if="content">
             <SectionBlock
               v-for="(section, idx) in content.sections"
-              :key="section.id"
               :id="section.id"
+              :key="section.id"
               :heading="section.heading"
               :body="section.body"
               :blocks="section.blocks"

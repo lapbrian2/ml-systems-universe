@@ -67,13 +67,6 @@ const scrollFilledGroups = computed<Set<string>>(() => {
   return filled
 })
 
-// Fill level within the current group (0 to 1) — for progress bar effect
-const scrollGroupFill = computed(() => {
-  if (!props.scrollProgress) return 0
-  const scaled = props.scrollProgress * groupOrder.length
-  return scaled - Math.floor(scaled)
-})
-
 // Validation checkpoints: each group gets a "check" when fully scrolled past
 function isScrollChecked(group: string): boolean {
   const idx = groupOrder.indexOf(group)

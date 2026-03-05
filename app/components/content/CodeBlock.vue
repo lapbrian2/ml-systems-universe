@@ -38,6 +38,8 @@ function escapeHtml(str: string): string {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
 }
 
 function highlightPython(code: string): string {
@@ -115,7 +117,7 @@ function highlightYaml(code: string): string {
 
       <!-- Code area with line numbers -->
       <div class="overflow-x-auto">
-        <pre class="code-block__pre"><code v-html="highlighted"></code></pre>
+        <pre class="code-block__pre"><code v-html="highlighted"/></pre>
       </div>
     </div>
 

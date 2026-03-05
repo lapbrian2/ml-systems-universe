@@ -81,7 +81,7 @@ export function useCelebration() {
     })
   }
 
-  async function celebratePartComplete(partName: string) {
+  async function celebratePartComplete(_partName: string) {
     const confetti = await getConfetti()
     if (!confetti) return
 

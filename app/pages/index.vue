@@ -6,7 +6,7 @@ import { useProgressStore } from '~/stores/progress'
 import {
   BookOpen, Clock, CheckCircle2, ArrowRight,
   GraduationCap, Layers, FlaskConical, Cpu, Brain,
-  BarChart3, Zap, Shield, Globe, BookMarked,
+  BarChart3, Zap, Globe, BookMarked,
 } from 'lucide-vue-next'
 import { useCourseJsonLd } from '~/composables/useJsonLd'
 
@@ -191,7 +191,7 @@ const partDescriptions: Record<string, string> = {
         </div>
 
         <!-- Overall progress -->
-        <div class="mt-8 max-w-md" v-if="store.getOverallCompletion > 0">
+        <div v-if="store.getOverallCompletion > 0" class="mt-8 max-w-md">
           <div class="flex items-center justify-between text-xs text-white/50 mb-2">
             <span class="font-medium">Your Progress</span>
             <span class="font-mono tabular-nums">{{ store.getOverallCompletion }}%</span>

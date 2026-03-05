@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, nextTick } from 'vue'
+import { ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { gsap } from 'gsap'
 
 const { isTransitioning, transitionData, completeTransition } = useChapterTransition()
@@ -18,6 +18,10 @@ onMounted(() => {
 
 // Active timeline so we can kill it on unmount
 let tl: gsap.core.Timeline | null = null
+
+onUnmounted(() => {
+  tl?.kill()
+})
 
 watch(isTransitioning, async (active) => {
   if (!active) return

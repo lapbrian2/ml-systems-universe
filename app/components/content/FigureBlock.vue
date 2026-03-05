@@ -41,7 +41,7 @@ const captionText = computed(() => {
         :alt="alt"
         class="w-full h-auto object-contain"
         loading="lazy"
-      />
+      >
     </div>
 
     <!-- Placeholder when no src or component -->

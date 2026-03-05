@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onUnmounted, computed } from 'vue'
 import { Volume2, VolumeX } from 'lucide-vue-next'
 import { useAmbientAudio } from '~/composables/useAmbientAudio'
 
@@ -91,7 +91,7 @@ onUnmounted(() => {
             class="ambient-volume-slider w-full"
             aria-label="Ambient audio volume"
             @input="onVolumeInput"
-          />
+          >
         </div>
       </Transition>
 

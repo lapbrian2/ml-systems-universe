@@ -84,7 +84,7 @@ function getBarColor(magnitude: number): string {
           max="10"
           step="1"
           class="interactive-slider flex-1 h-1 appearance-none rounded-full bg-white/[0.08] cursor-pointer"
-        />
+        >
         <span class="text-[10px] font-mono text-white/50 w-6 text-right tabular-nums">{{ depth }}</span>
       </div>
     </div>

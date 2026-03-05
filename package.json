@@ -29,8 +29,10 @@
     "vue-router": "^4.6.4"
   },
   "devDependencies": {
+    "@nuxt/eslint": "^1.15.2",
     "@types/canvas-confetti": "^1.9.0",
     "@types/three": "^0.183.1",
+    "eslint": "^9.39.3",
     "typescript": "^5.9.3"
   }
 }

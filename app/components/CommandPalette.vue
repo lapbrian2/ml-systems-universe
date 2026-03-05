@@ -349,7 +349,7 @@ onMounted(() => {
                 @keydown.down.prevent="onArrowDown"
                 @keydown.up.prevent="onArrowUp"
                 @keydown.enter.prevent="onEnter"
-              />
+              >
               <div class="cp-input-hint">
                 <kbd class="cp-kbd">esc</kbd>
               </div>

@@ -66,23 +66,23 @@ function getNode(id: string) {
 <template>
   <div class="ml-system-hero">
     <svg
+      ref="svgRef"
       viewBox="0 0 1040 420"
       preserveAspectRatio="xMidYMid meet"
-      ref="svgRef"
       class="ml-system-hero__svg"
       aria-hidden="true"
     >
       <defs>
         <!-- Node glow filters -->
-        <filter v-for="node in nodes" :key="`glow-${node.id}`" :id="`glow-${node.id}`" x="-50%" y="-50%" width="200%" height="200%">
+        <filter v-for="node in nodes" :id="`glow-${node.id}`" :key="`glow-${node.id}`" x="-50%" y="-50%" width="200%" height="200%">
           <feGaussianBlur in="SourceGraphic" :stdDeviation="8" />
         </filter>
 
         <!-- Edge paths for animateMotion -->
         <path
           v-for="edge in edges"
-          :key="`path-${edge.id}`"
           :id="`edge-path-${edge.id}`"
+          :key="`path-${edge.id}`"
           :d="`M ${getNode(edge.from).x},${getNode(edge.from).y} L ${getNode(edge.to).x},${getNode(edge.to).y}`"
           fill="none"
           stroke="none"
@@ -280,7 +280,7 @@ function getNode(id: string) {
   max-width: 800px;
   height: auto;
   opacity: 0.45;
-  transition: transform 0.3s ease-out;
+  will-change: transform;
   mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 20%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,1) 75%);
   -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 20%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,1) 75%);
 }

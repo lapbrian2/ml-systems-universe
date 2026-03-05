@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch, onUnmounted } from 'vue'
 import { Target, Trophy, Clock, ChevronRight, RotateCcw } from 'lucide-vue-next'
 
 const props = defineProps<{
@@ -34,10 +34,12 @@ function start() {
   elapsed.value = 0
   if (timer) clearInterval(timer)
   timer = setInterval(() => {
-    elapsed.value++
-    if (timeUp.value && timer) {
-      clearInterval(timer)
+    if (props.timeLimit && elapsed.value + 1 >= props.timeLimit) {
+      elapsed.value = props.timeLimit
+      clearInterval(timer!)
       timer = null
+    } else {
+      elapsed.value++
     }
   }, 1000)
   emit('start')
@@ -52,9 +54,6 @@ function reset() {
   }
   emit('reset')
 }
-
-// Stop timer when challenge is complete
-import { watch, onUnmounted } from 'vue'
 watch(() => props.isComplete, (done) => {
   if (done && timer) {
     clearInterval(timer)

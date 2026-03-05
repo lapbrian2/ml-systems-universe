@@ -2,7 +2,7 @@ import Lenis from 'lenis'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-export default defineNuxtPlugin(() => {
+export default defineNuxtPlugin((nuxtApp) => {
   if (import.meta.server) return
 
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -18,15 +18,22 @@ export default defineNuxtPlugin(() => {
   lenis.on('scroll', ScrollTrigger.update)
 
   // Bridge: GSAP ticker -> Lenis RAF loop
-  gsap.ticker.add((time: number) => {
+  const tick = (time: number) => {
     lenis.raf(time * 1000)
-  })
+  }
+  gsap.ticker.add(tick)
 
   // Disable GSAP lag compensation (Lenis handles smoothing)
   gsap.ticker.lagSmoothing(0)
 
   // Recalculate after Lenis is ready
   ScrollTrigger.refresh()
+
+  // Cleanup on app unmount (prevents leaks during HMR)
+  nuxtApp.hook('app:unmount' as never, () => {
+    gsap.ticker.remove(tick)
+    lenis.destroy()
+  })
 
   return {
     provide: {

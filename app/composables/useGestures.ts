@@ -14,8 +14,6 @@ export function useGestures(elementRef: Ref<HTMLElement | null>) {
 
   let initialPinchDistance = 0
   let initialScale = 1
-  let lastPanX = 0
-  let lastPanY = 0
   let startPanX = 0
   let startPanY = 0
   let lastTapTime = 0

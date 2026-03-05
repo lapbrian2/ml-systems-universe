@@ -5,7 +5,7 @@ import { carbonCalculatorTour } from '~/data/tours'
 import type { TourStep } from '~/components/viz/GuidedTour.vue'
 
 /* ── Props & Emits ── */
-const props = defineProps<{
+defineProps<{
   activeSection: number
 }>()
 
@@ -428,7 +428,7 @@ const tourSteps = computed<TourStep[]>(() =>
           :value="trainingHours"
           class="carbon__slider"
           @input="handleSlider(v => trainingHours = v)($event)"
-        />
+        >
       </div>
 
       <div class="carbon__control-group">
@@ -444,7 +444,7 @@ const tourSteps = computed<TourStep[]>(() =>
           :value="numGpus"
           class="carbon__slider"
           @input="handleSlider(v => numGpus = Math.round(v))($event)"
-        />
+        >
       </div>
     </div>
 

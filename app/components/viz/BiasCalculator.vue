@@ -310,7 +310,7 @@ const tourSteps = computed<TourStep[]>(() =>
                 class="bias__cell-input"
                 :aria-label="`Group A ${cell.label} count`"
                 @input="handleCellChange('A', cell.key, $event)"
-              />
+              >
             </foreignObject>
           </g>
         </g>
@@ -363,7 +363,7 @@ const tourSteps = computed<TourStep[]>(() =>
                 class="bias__cell-input"
                 :aria-label="`Group B ${cell.label} count`"
                 @input="handleCellChange('B', cell.key, $event)"
-              />
+              >
             </foreignObject>
           </g>
         </g>

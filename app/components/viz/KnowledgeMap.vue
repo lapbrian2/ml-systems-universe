@@ -84,7 +84,7 @@ const exerciseEmitted = ref(false)
 /* ── Mouse tracker + gesture support ── */
 const kmCanvasRef = ref<HTMLElement | null>(null)
 const { mouseX, mouseY, isInside } = useMouseTracker(kmCanvasRef)
-const { pinchScale, panX, panY, reset: resetGestures } = useGestures(kmCanvasRef)
+const { pinchScale, panX, panY } = useGestures(kmCanvasRef)
 const hoveredNode = ref<ChapterNode | null>(null)
 
 function handleNodeHover(node: ChapterNode) {
@@ -192,7 +192,8 @@ watch(() => props.activeSection, () => { selectedNode.value = null })
         :container-width="kmCanvasRef?.clientWidth || 800"
         :container-height="kmCanvasRef?.clientHeight || 470"
       />
-      <svg viewBox="0 0 800 470" class="km__svg" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Concept graph of 21 chapters"
+      <svg
+viewBox="0 0 800 470" class="km__svg" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Concept graph of 21 chapters"
         :style="{ transform: `scale(${pinchScale}) translate(${panX / pinchScale}px, ${panY / pinchScale}px)`, transformOrigin: 'center center' }"
         @click.self="closeNode">
         <defs>
@@ -203,7 +204,8 @@ watch(() => props.activeSection, () => { selectedNode.value = null })
         </defs>
 
         <g class="km__conns">
-          <line v-for="(c, i) in visibleConnections" :key="i" :x1="c.from.x" :y1="c.from.y" :x2="c.to.x" :y2="c.to.y"
+          <line
+v-for="(c, i) in visibleConnections" :key="i" :x1="c.from.x" :y1="c.from.y" :x2="c.to.x" :y2="c.to.y"
             class="km__conn" :class="{ 'km__conn--hl': c.highlighted }" :marker-end="c.highlighted ? 'url(#km-arr-a)' : 'url(#km-arr)'" />
         </g>
 
@@ -215,7 +217,8 @@ watch(() => props.activeSection, () => { selectedNode.value = null })
         <text x="280" y="430" text-anchor="middle" class="km__cluster" :fill="partColors[5]">{{ partNames[5] }}</text>
         <text x="660" y="320" text-anchor="middle" class="km__cluster" :fill="partColors[6]">{{ partNames[6] }}</text>
 
-        <g v-for="n in chapters" :key="n.id" class="km__node"
+        <g
+v-for="n in chapters" :key="n.id" class="km__node"
           :class="{ 'km__node--sel': selectedNode === n.id, 'km__node--clicked': clickedNodes.has(n.id) }"
           :style="{ '--c': n.color, opacity: nodeOpacity(n) }" role="button" :tabindex="0"
           :aria-label="`Chapter ${n.id}: ${n.title}`"

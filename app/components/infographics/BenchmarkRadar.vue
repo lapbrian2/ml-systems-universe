@@ -7,7 +7,7 @@
  * Hover a vertex to show the metric value.
  * Legend at bottom with hardware labels.
  */
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 
 const hoveredVertex = ref<string | null>(null)
 const hoveredHardware = ref<string | null>(null)

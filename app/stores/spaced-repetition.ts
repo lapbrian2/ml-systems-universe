@@ -175,6 +175,7 @@ export const useSpacedRepetitionStore = defineStore('spaced-repetition', {
     },
 
     removeCard(cardId: string): void {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete this.cards[cardId]
     },
 

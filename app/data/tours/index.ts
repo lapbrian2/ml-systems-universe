@@ -1,4 +1,3 @@
-import type { Ref } from 'vue'
 
 /* ── Tour step type (mirrors the GuidedTour component's TourStep) ── */
 export interface TourStepDefinition {

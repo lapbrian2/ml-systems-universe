@@ -178,8 +178,6 @@ watch(
 const explorationProgress = computed(() => Math.min(interactionCount.value, 3))
 
 /* ── Section-based highlighting ── */
-const showAttackSuccess = computed(() => props.activeSection >= 2)
-
 /* ── Reset on section change ── */
 watch(
   () => props.activeSection,
@@ -330,7 +328,7 @@ const tourSteps = computed<TourStep[]>(() =>
           </text>
 
           <!-- Noise visualization dots -->
-          <g transform="translate(30, 65)" v-if="epsilon > 0">
+          <g v-if="epsilon > 0" transform="translate(30, 65)">
             <circle
               v-for="i in 20"
               :key="`noise-${i}`"
@@ -374,7 +372,7 @@ const tourSteps = computed<TourStep[]>(() =>
           </g>
 
           <!-- Difference overlay -->
-          <g transform="translate(0, 15)" v-if="epsilon > 0">
+          <g v-if="epsilon > 0" transform="translate(0, 15)">
             <template v-for="(row, y) in originalPixels" :key="`diff-row-${y}`">
               <rect
                 v-for="(pixel, x) in row"
@@ -486,7 +484,7 @@ const tourSteps = computed<TourStep[]>(() =>
           class="adversarial__slider"
           aria-label="FGSM epsilon perturbation strength"
           @input="handleEpsilonChange"
-        />
+        >
       </div>
 
       <!-- Noise Type Selector -->

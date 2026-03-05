@@ -470,7 +470,7 @@ watch(
           :value="gaussianAmplitude"
           class="noise__slider"
           @input="handleSlider(v => gaussianAmplitude = v)($event)"
-        />
+        >
       </div>
 
       <!-- Adversarial controls -->
@@ -487,7 +487,7 @@ watch(
           :value="adversarialStrength"
           class="noise__slider noise__slider--red"
           @input="handleSlider(v => adversarialStrength = v)($event)"
-        />
+        >
       </div>
 
       <!-- Shift controls -->
@@ -505,7 +505,7 @@ watch(
             :value="shiftMean"
             class="noise__slider noise__slider--amber"
             @input="handleSlider(v => shiftMean = v)($event)"
-          />
+          >
         </div>
         <div class="noise__control-group">
           <label class="noise__control-label" for="noise-shift-var">
@@ -520,7 +520,7 @@ watch(
             :value="shiftVariance"
             class="noise__slider noise__slider--amber"
             @input="handleSlider(v => shiftVariance = v)($event)"
-          />
+          >
         </div>
       </template>
     </div>

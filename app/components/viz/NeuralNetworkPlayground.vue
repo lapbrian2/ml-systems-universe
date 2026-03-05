@@ -132,7 +132,7 @@ function nodeColor(layerIdx: number): string {
 }
 
 /* ── Connection opacity based on section ── */
-function connectionOpacity(conn: Connection): number {
+function connectionOpacity(_conn: Connection): number {
   if (highlightZone.value === 'forward') {
     return 0.5
   }
