@@ -213,6 +213,13 @@ export const sections: ChapterSection[] = [
         text: 'The core mechanism is scaled dot-product attention: queries, keys, and values are computed from the input, and attention weights are determined by the compatibility between queries and keys. Multi-head attention extends this by running multiple attention operations in parallel, allowing the model to attend to information from different representation subspaces.',
       },
       {
+        type: 'figure',
+        src: '',
+        alt: 'Detailed diagram of the Transformer architecture showing the encoder-decoder structure, multi-head attention mechanism, positional encoding, feed-forward networks, and residual connections with layer normalization.',
+        caption: 'Figure 4.1: The Transformer Architecture',
+        component: 'TransformerArchitecture',
+      },
+      {
         type: 'callout',
         variant: 'note',
         title: 'Why Scale by sqrt(d_k)?',

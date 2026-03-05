@@ -21,6 +21,13 @@ export const sections: ChapterSection[] = [
         label: 'Equation 10.1: Uniform quantization maps real value x to integer q via scale s and zero-point z. Dequantization recovers approximate value x-hat.',
       },
       {
+        type: 'figure',
+        src: '',
+        alt: 'Chart comparing quantization levels (FP32, FP16, INT8, INT4, binary) across dimensions of model size, inference speed, accuracy retention, and hardware support, illustrating the trade-offs at each precision level.',
+        caption: 'Figure 10.1: Quantization Trade-offs',
+        component: 'QuantizationTradeoff',
+      },
+      {
         type: 'heading',
         level: 3,
         text: 'Post-Training Quantization (PTQ)',

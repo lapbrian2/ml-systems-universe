@@ -16,6 +16,13 @@ export const sections: ChapterSection[] = [
         definition: 'The intentional application of artificial intelligence techniques to address societal challenges such as healthcare access, climate change, education inequality, and humanitarian crises, with emphasis on equitable outcomes and deployment in resource-constrained environments.',
       },
       {
+        type: 'figure',
+        src: '',
+        alt: 'Overview diagram of ML application domains including healthcare, finance, autonomous vehicles, natural language processing, climate science, agriculture, and education, showing key use cases, model types, and deployment considerations for each domain.',
+        caption: 'Figure 19.1: ML Application Domains',
+        component: 'MLApplicationDomains',
+      },
+      {
         type: 'callout',
         variant: 'note',
         title: 'AlphaFold: A Landmark in Scientific AI',

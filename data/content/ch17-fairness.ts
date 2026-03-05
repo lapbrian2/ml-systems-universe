@@ -37,6 +37,13 @@ export const sections: ChapterSection[] = [
         text: 'Fairness is not a single, universally agreed-upon concept. Multiple mathematical definitions exist, and they often conflict with each other. Choosing which definition to optimize for is ultimately a value judgment that must be made in the context of each specific application.',
       },
       {
+        type: 'figure',
+        src: '',
+        alt: 'Comparative visualization of fairness metrics including demographic parity, equal opportunity, equalized odds, predictive parity, and calibration, showing how each metric evaluates model predictions differently across demographic groups and illustrating the impossibility theorem conflicts.',
+        caption: 'Figure 17.1: Fairness Metrics Comparison',
+        component: 'FairnessMetricsComparison',
+      },
+      {
         type: 'equation',
         latex: 'P(\\hat{Y}=1 \\mid G=a) = P(\\hat{Y}=1 \\mid G=b)',
         label: 'Equation 17.1: Demographic Parity. The probability of a positive prediction must be equal across groups G=a and G=b. This criterion ignores the true label Y entirely, requiring equal selection rates regardless of qualification differences.',

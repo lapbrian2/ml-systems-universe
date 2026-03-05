@@ -20,6 +20,13 @@ export const sections: ChapterSection[] = [
         text: 'The fundamental challenge of distributed training is maintaining the mathematical equivalence of optimization while dividing work across devices. Communication overhead between devices, synchronization strategies, and fault tolerance all add complexity that does not exist in single-device training.',
       },
       {
+        type: 'figure',
+        src: '',
+        alt: 'Diagram showing the three major distributed training patterns: data parallelism (replicated models with split data), model parallelism (split model across devices), and pipeline parallelism (sequential model stages across devices), with communication patterns illustrated for each.',
+        caption: 'Figure 8.1: Distributed Training Patterns',
+        component: 'DistributedTrainingPatterns',
+      },
+      {
         type: 'callout',
         variant: 'note',
         title: 'Why Distribution Is Necessary',

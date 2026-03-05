@@ -104,6 +104,13 @@ export const sections: ChapterSection[] = [
         definition: 'Running ML inference on devices close to the data source rather than in centralized cloud servers. Edge deployment reduces latency, preserves privacy by keeping data on-device, saves network bandwidth, and enables operation without connectivity.',
       },
       {
+        type: 'figure',
+        src: '',
+        alt: 'Diagram illustrating ML deployment patterns across cloud, edge, and on-device tiers, showing model serving architectures, latency profiles, and decision criteria for choosing each deployment strategy.',
+        caption: 'Figure 14.1: ML Deployment Patterns',
+        component: 'DeploymentPatterns',
+      },
+      {
         type: 'list',
         ordered: false,
         items: [

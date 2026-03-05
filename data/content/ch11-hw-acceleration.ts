@@ -40,6 +40,13 @@ export const sections: ChapterSection[] = [
         text: 'The GPU memory hierarchy is critical for ML performance. Global memory (HBM) provides large capacity but limited bandwidth. Shared memory and L1 cache provide much higher bandwidth but limited capacity. Efficient ML kernels must carefully manage data movement between these levels to avoid becoming memory-bandwidth-bound.',
       },
       {
+        type: 'figure',
+        src: '',
+        alt: 'Layered diagram of the GPU memory hierarchy showing registers, shared memory/L1 cache, L2 cache, and HBM global memory, with bandwidth and capacity annotations at each level and arrows indicating data flow between tiers.',
+        caption: 'Figure 11.1: GPU Memory Hierarchy',
+        component: 'GPUMemoryHierarchy',
+      },
+      {
         type: 'table',
         headers: ['Memory Level', 'Capacity (A100)', 'Bandwidth', 'Latency', 'Scope'],
         rows: [

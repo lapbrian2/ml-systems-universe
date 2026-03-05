@@ -25,6 +25,13 @@ export const sections: ChapterSection[] = [
         text: 'The framework landscape has consolidated around three major players: PyTorch, TensorFlow, and JAX. Each embodies different design philosophies with distinct trade-offs. PyTorch prioritizes developer experience and flexibility. TensorFlow emphasizes production deployment and ecosystem completeness. JAX focuses on functional programming, composability, and high-performance computing.',
       },
       {
+        type: 'figure',
+        src: '',
+        alt: 'Diagram of the ML framework ecosystem showing PyTorch, TensorFlow, and JAX at the center, with their associated libraries, runtimes, compilers, and deployment targets branching outward.',
+        caption: 'Figure 7.1: The ML Framework Ecosystem',
+        component: 'FrameworkEcosystem',
+      },
+      {
         type: 'table',
         headers: ['Dimension', 'PyTorch', 'TensorFlow', 'JAX'],
         rows: [

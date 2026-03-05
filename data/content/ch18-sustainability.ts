@@ -31,6 +31,13 @@ export const sections: ChapterSection[] = [
         text: 'The primary environmental costs of ML come from multiple sources that span the full hardware and software lifecycle. Understanding these costs is essential for prioritizing reduction efforts.',
       },
       {
+        type: 'figure',
+        src: '',
+        alt: 'Breakdown diagram of the carbon footprint of ML systems, showing proportional contributions from training compute, inference serving, hardware manufacturing (embodied carbon), cooling and data center overhead, and experimentation/hyperparameter search.',
+        caption: 'Figure 18.1: Carbon Footprint Breakdown of ML Systems',
+        component: 'CarbonFootprintBreakdown',
+      },
+      {
         type: 'list',
         ordered: false,
         items: [

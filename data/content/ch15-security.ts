@@ -16,6 +16,13 @@ export const sections: ChapterSection[] = [
         definition: 'An input deliberately crafted with small, often imperceptible perturbations designed to cause a machine learning model to produce an incorrect prediction. Adversarial examples expose the gap between human perception and model decision boundaries.',
       },
       {
+        type: 'figure',
+        src: '',
+        alt: 'Comprehensive threat model diagram for ML systems showing attack surfaces across the ML lifecycle: data poisoning at training time, evasion attacks at inference time, model extraction via API queries, and supply chain attacks on pre-trained models and dependencies.',
+        caption: 'Figure 15.1: ML Security Threat Model',
+        component: 'SecurityThreatModel',
+      },
+      {
         type: 'heading',
         level: 3,
         text: 'Evasion Attacks',
