@@ -119,5 +119,75 @@ export const ch01Quiz: ChapterQuiz = {
         'A highly accurate model that is too slow, too expensive, unreliable, or biased fails as a system. Production ML requires balancing accuracy with latency, throughput, cost, fairness, interpretability, and operational robustness.',
       difficulty: 'medium',
     },
+    {
+      id: 'ch01-q9',
+      question: 'What did Sculley et al. (2015) describe as "hidden technical debt" in ML systems?',
+      options: [
+        'The cost of GPU cloud instances',
+        'Maintenance burden from data dependencies, configuration complexity, and entanglement that makes ML systems harder to change over time',
+        'The salary cost of hiring ML engineers',
+        'Bugs in open-source ML frameworks',
+      ],
+      correctIndex: 1,
+      explanation:
+        'The seminal Google paper identified ML-specific forms of technical debt beyond traditional software: data dependency chains, feedback loops, configuration as a liability, undeclared consumers, and entanglement where changing one feature affects all others.',
+      difficulty: 'hard',
+    },
+    {
+      id: 'ch01-q10',
+      question: 'In an embedded ML (TinyML) scenario, which constraint most differentiates it from cloud-based ML?',
+      options: [
+        'The need for higher model accuracy',
+        'Severe limitations in memory, compute, and power that require ultra-efficient models',
+        'The inability to use neural networks at all',
+        'The requirement to always be connected to the internet',
+      ],
+      correctIndex: 1,
+      explanation:
+        'TinyML targets microcontrollers with kilobytes of RAM and milliwatt power budgets. Models must be quantized, pruned, and purpose-built to fit within these extreme constraints, often running entirely on-device without cloud connectivity.',
+      difficulty: 'medium',
+    },
+    {
+      id: 'ch01-q11',
+      question: 'A company deploys an ML model that works well initially but degrades over months. What is the most likely systems-level cause?',
+      options: [
+        'The GPU hardware is wearing out',
+        'Data drift or concept drift has caused the production data distribution to shift from the training distribution',
+        'The model weights have decayed due to bit rot in storage',
+        'The programming language was updated',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Data drift (input distribution changes) and concept drift (the relationship between inputs and outputs changes) are the most common causes of model degradation over time. This is why continuous monitoring and retraining pipelines are essential ML system components.',
+      difficulty: 'hard',
+    },
+    {
+      id: 'ch01-q12',
+      question: 'Why is ML systems engineering considered more challenging than traditional software engineering?',
+      options: [
+        'ML uses more programming languages',
+        'ML systems have additional complexity from data dependencies, model behavior that is learned rather than specified, and the difficulty of testing statistical outputs',
+        'Traditional software is always simpler to build',
+        'ML engineers have fewer tools available',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Unlike traditional software where behavior is explicitly coded, ML system behavior emerges from data. This creates unique challenges: data quality directly affects correctness, testing is statistical rather than deterministic, and debugging requires understanding both code and data.',
+      difficulty: 'medium',
+    },
+    {
+      id: 'ch01-q13',
+      question: 'What role does monitoring play in the ML lifecycle that distinguishes it from traditional software monitoring?',
+      options: [
+        'ML monitoring only tracks CPU utilization',
+        'ML monitoring must track data quality, prediction distributions, and model performance metrics in addition to system health',
+        'ML systems do not need monitoring once deployed',
+        'Monitoring is only important during the training phase',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Traditional monitoring tracks uptime and errors. ML monitoring must additionally track input data distributions, prediction distributions, feature drift, model accuracy on live data, and business metrics to detect silent model degradation.',
+      difficulty: 'easy',
+    },
   ],
 };

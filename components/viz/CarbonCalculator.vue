@@ -73,6 +73,7 @@ const selectedModelSize = ref(1)
 const numGpus = ref(8)
 const interactionCount = ref(0)
 const exerciseEmitted = ref(false)
+const challengeComplete = ref(false)
 
 /* ── Calculations ── */
 const currentGpu = computed(() => gpuOptions.find(g => g.id === selectedGpu.value) ?? gpuOptions[1])
@@ -105,6 +106,16 @@ const locationComparison = computed(() => {
 })
 
 const maxLocationCo2 = computed(() => Math.max(...locationComparison.value.map(l => l.co2), 1))
+
+/* ── Challenge completion: CO2 under 50kg ── */
+watch(
+  co2Kg,
+  (kg) => {
+    if (kg < 50) {
+      challengeComplete.value = true
+    }
+  }
+)
 
 /* ── Interaction tracking ── */
 function trackInteraction() {
@@ -167,6 +178,16 @@ function formatNumber(n: number): string {
         </span>
       </p>
     </div>
+
+    <!-- Challenge -->
+    <VizChallenge
+      title="Sustainability Challenge"
+      description="Find a training configuration under 50kg CO₂"
+      color="#22c55e"
+      :is-complete="challengeComplete"
+      :time-limit="60"
+      @reset="challengeComplete = false"
+    />
 
     <!-- Main Visualization -->
     <div class="carbon__canvas">

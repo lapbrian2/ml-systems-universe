@@ -147,5 +147,75 @@ export const ch07Quiz: ChapterQuiz = {
         'Automatic differentiation (autodiff) records each operation in a computational graph, then applies the chain rule backward to compute exact gradients. Unlike numerical differentiation, autodiff is both exact and efficient, scaling to millions of parameters.',
       difficulty: 'easy',
     },
+    {
+      id: 'ch07-q11',
+      question: 'What is the difference between a static graph and a dynamic graph in ML frameworks?',
+      options: [
+        'Static graphs use more memory',
+        'Static graphs are defined before execution and cannot change between runs; dynamic graphs are built on-the-fly during execution, allowing data-dependent control flow',
+        'Dynamic graphs cannot be optimized',
+        'Static graphs are only used in PyTorch',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Static graphs (TF1, JAX) allow aggressive optimization (fusion, memory planning) since the full computation is known ahead of time. Dynamic graphs (PyTorch) allow Python control flow, making debugging and dynamic architectures easier at the cost of some optimization opportunities.',
+      difficulty: 'medium',
+    },
+    {
+      id: 'ch07-q12',
+      question: 'A team trained a model in PyTorch but needs to deploy it on mobile devices. What framework tool would help?',
+      options: [
+        'PyTorch Lightning',
+        'Export via TorchScript or ONNX, then use an optimized runtime like ONNX Runtime Mobile, TFLite, or Core ML for efficient mobile inference',
+        'Rewrite the model in JavaScript',
+        'Use a larger GPU on the server and stream results to mobile',
+      ],
+      correctIndex: 1,
+      explanation:
+        'TorchScript serializes PyTorch models for deployment without Python. ONNX provides framework-agnostic portability. Both can be consumed by mobile-optimized runtimes that apply quantization, operator fusion, and hardware-specific optimizations for edge deployment.',
+      difficulty: 'hard',
+    },
+    {
+      id: 'ch07-q13',
+      question: 'What is JAX\'s vmap transformation and what problem does it solve?',
+      options: [
+        'It maps models to virtual machines for deployment',
+        'It automatically vectorizes a function across a batch dimension, eliminating the need to manually write batched versions of operations',
+        'It visualizes model architecture maps',
+        'It validates model parameters against a schema',
+      ],
+      correctIndex: 1,
+      explanation:
+        'vmap takes a function written for a single example and automatically transforms it to process a batch in parallel. This eliminates error-prone manual batching code and enables efficient GPU utilization without changing the underlying function logic.',
+      difficulty: 'hard',
+    },
+    {
+      id: 'ch07-q14',
+      question: 'Why might a team choose TensorFlow Lite over PyTorch Mobile for edge deployment?',
+      options: [
+        'TensorFlow Lite models are always more accurate',
+        'TFLite has a mature ecosystem with broad hardware delegate support (GPU, DSP, NPU), extensive quantization tools, and wide deployment history on Android and microcontrollers',
+        'PyTorch Mobile does not support any edge devices',
+        'TFLite does not require any model conversion',
+      ],
+      correctIndex: 1,
+      explanation:
+        'TFLite has a head start in the edge ecosystem with hardware delegates for diverse accelerators, a well-tested INT8 quantization pipeline, and broad deployment on Android, iOS, Raspberry Pi, and microcontrollers. PyTorch Mobile is newer but rapidly closing the gap.',
+      difficulty: 'medium',
+    },
+    {
+      id: 'ch07-q15',
+      question: 'What is the purpose of framework-level memory management features like gradient checkpointing?',
+      options: [
+        'To save model checkpoints to disk more frequently',
+        'To trade compute for memory by recomputing intermediate activations during backpropagation instead of storing them all, enabling training of larger models',
+        'To check memory for hardware errors',
+        'To compress model weights in memory',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Gradient checkpointing (also called activation checkpointing) discards intermediate activations during the forward pass and recomputes them during backpropagation. This reduces memory usage by O(sqrt(n)) layers at the cost of one additional forward pass, enabling much larger models or batch sizes.',
+      difficulty: 'hard',
+    },
   ],
 };

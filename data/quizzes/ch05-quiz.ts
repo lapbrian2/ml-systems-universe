@@ -133,5 +133,75 @@ export const ch05Quiz: ChapterQuiz = {
         'ML pipelines define each step (data loading, preprocessing, training, evaluation) as a modular component in a directed acyclic graph. This structure enables caching unchanged steps, automatic re-execution on input changes, and consistent end-to-end runs.',
       difficulty: 'hard',
     },
+    {
+      id: 'ch05-q10',
+      question: 'What is hyperparameter tuning and why should it be automated?',
+      options: [
+        'Hyperparameters are learned during training and do not need tuning',
+        'Hyperparameter tuning searches for optimal settings (learning rate, batch size, architecture choices) that cannot be learned by gradient descent, and automation ensures systematic and reproducible exploration',
+        'It is the same as feature engineering',
+        'Manual tuning always produces better results than automated methods',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Hyperparameters (learning rate, regularization strength, layer sizes) control the training process but are not optimized by backpropagation. Automated tuning (grid search, Bayesian optimization, Hyperband) systematically explores the space and produces reproducible results.',
+      difficulty: 'medium',
+    },
+    {
+      id: 'ch05-q11',
+      question: 'What is the difference between offline evaluation and online evaluation (A/B testing)?',
+      options: [
+        'They are the same thing performed at different times of day',
+        'Offline evaluation measures model quality on held-out data; online evaluation measures real-world impact on users through controlled experiments in production',
+        'Online evaluation is less reliable than offline evaluation',
+        'Offline evaluation can only be done once before deployment',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Offline evaluation on test sets can miss real-world factors like user interaction patterns and feedback loops. A/B testing in production provides ground truth about actual impact but is expensive and risky. Both are complementary stages of the evaluation workflow.',
+      difficulty: 'medium',
+    },
+    {
+      id: 'ch05-q12',
+      question: 'A team cannot reproduce a colleague\'s model results from last month. Which workflow component most likely failed?',
+      options: [
+        'The GPU was too slow',
+        'Insufficient versioning of data, code, environment, or random seeds, making it impossible to recreate the exact training conditions',
+        'The model architecture was too complex',
+        'The team used too many epochs',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Reproducibility requires versioning every input: code (git), data (DVC), environment (Docker/conda), configuration (hyperparameters), and random seeds. Missing any one of these makes exact reproduction impossible, which is a common workflow failure.',
+      difficulty: 'hard',
+    },
+    {
+      id: 'ch05-q13',
+      question: 'What is continuous training (CT) in the MLOps workflow?',
+      options: [
+        'Training a model 24 hours a day without stopping',
+        'Automatically retraining models when new data arrives or performance degradation is detected, keeping models fresh in production',
+        'Continuously increasing the model size during deployment',
+        'Running training on a continuous integration server',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Continuous training extends CI/CD to ML by automatically triggering retraining when data drift is detected, new labeled data arrives, or scheduled intervals pass. This keeps production models aligned with current data distributions.',
+      difficulty: 'medium',
+    },
+    {
+      id: 'ch05-q14',
+      question: 'What is a feature store and how does it fit into the AI workflow?',
+      options: [
+        'A marketplace for buying pre-trained features',
+        'A centralized system for computing, storing, and serving features consistently, bridging the gap between training and serving pipelines',
+        'A database that only stores raw data',
+        'A version control system for model weights',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Feature stores like Feast or Tecton provide a single source of truth for feature definitions and values. They ensure training and serving use identical feature computation logic, preventing training-serving skew and enabling feature reuse across teams and models.',
+      difficulty: 'hard',
+    },
   ],
 };

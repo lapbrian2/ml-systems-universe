@@ -23,6 +23,7 @@ const noiseType = ref<'fgsm' | 'pgd' | 'random'>('fgsm')
 const interactionCount = ref(0)
 const exerciseEmitted = ref(false)
 const selectedPixel = ref<{ x: number; y: number } | null>(null)
+const challengeComplete = ref(false)
 
 /* ── Noise type options ── */
 const noiseTypes = [
@@ -161,6 +162,16 @@ function handlePixelClick(x: number, y: number) {
   trackInteraction()
 }
 
+/* ── Challenge completion: fool classifier with epsilon < 0.1 ── */
+watch(
+  [isAdversarialSuccess, epsilon],
+  ([success, eps]) => {
+    if (success && eps / 100 < 0.1) {
+      challengeComplete.value = true
+    }
+  }
+)
+
 /* ── Progress ── */
 const explorationProgress = computed(() => Math.min(interactionCount.value, 3))
 
@@ -192,6 +203,16 @@ watch(
         </span>
       </p>
     </div>
+
+    <!-- Challenge -->
+    <VizChallenge
+      title="Attack Challenge"
+      description="Successfully fool the classifier with epsilon < 0.1"
+      color="#ef4444"
+      :is-complete="challengeComplete"
+      :time-limit="90"
+      @reset="challengeComplete = false"
+    />
 
     <!-- Main Visualization -->
     <div class="adversarial__canvas">

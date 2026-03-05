@@ -147,5 +147,75 @@ export const ch08Quiz: ChapterQuiz = {
         'The linear scaling rule (Goyal et al., 2017) suggests increasing the learning rate linearly with the batch size to maintain the same effective update magnitude. Combined with a warmup period, this enables scaling to very large batch sizes across many GPUs.',
       difficulty: 'hard',
     },
+    {
+      id: 'ch08-q11',
+      question: 'What is pipeline parallelism and when is it used?',
+      options: [
+        'Running data preprocessing and training at the same time',
+        'Splitting model layers across devices and overlapping computation of different micro-batches across stages to maximize device utilization',
+        'Using multiple data pipelines to feed a single model',
+        'Running multiple experiments in a pipeline',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Pipeline parallelism partitions the model into stages across devices. By splitting a batch into micro-batches and overlapping their computation across stages, it reduces the idle "bubble" time compared to naive model parallelism, improving GPU utilization.',
+      difficulty: 'hard',
+    },
+    {
+      id: 'ch08-q12',
+      question: 'What is the "warmup" phase in learning rate scheduling and why is it important?',
+      options: [
+        'Pre-heating the GPU before training begins',
+        'Starting with a very small learning rate and gradually increasing it, which stabilizes early training when parameter estimates and batch statistics are unreliable',
+        'Training on a small subset of data first',
+        'Running the model without computing gradients',
+      ],
+      correctIndex: 1,
+      explanation:
+        'In the initial training phase, gradients can be large and unstable because the model parameters are random. Warmup uses a small initial learning rate that ramps up over several hundred to several thousand steps, preventing early divergence, especially with large batch sizes.',
+      difficulty: 'medium',
+    },
+    {
+      id: 'ch08-q13',
+      question: 'You are training a large language model that does not fit in a single GPU. Which combination of parallelism strategies would you consider?',
+      options: [
+        'Only data parallelism with a very small batch size',
+        'A combination of tensor parallelism (splitting individual layers across GPUs), pipeline parallelism (splitting layers across stages), and data parallelism (replicating across groups)',
+        'Training on CPU instead',
+        'Reducing the model to fit on a single GPU is the only option',
+      ],
+      correctIndex: 1,
+      explanation:
+        '3D parallelism (tensor + pipeline + data) is the standard approach for training models too large for a single GPU. Tensor parallelism splits weight matrices within a layer, pipeline parallelism splits layers across stages, and data parallelism scales across replicas.',
+      difficulty: 'hard',
+    },
+    {
+      id: 'ch08-q14',
+      question: 'What is the AllReduce operation in distributed training?',
+      options: [
+        'Reducing the total number of workers in the cluster',
+        'A collective communication primitive that sums (or averages) gradients across all workers and distributes the result back to every worker',
+        'Removing all zero-valued gradients',
+        'A method for reducing training time by skipping epochs',
+      ],
+      correctIndex: 1,
+      explanation:
+        'AllReduce is the fundamental synchronization primitive in data-parallel training. It aggregates gradients from all workers and ensures every worker has the identical averaged gradient before parameter updates, maintaining model consistency across replicas.',
+      difficulty: 'medium',
+    },
+    {
+      id: 'ch08-q15',
+      question: 'What is the difference between synchronous and asynchronous distributed training?',
+      options: [
+        'Synchronous training is always faster',
+        'Synchronous training waits for all workers to finish before updating; asynchronous training allows workers to update independently, trading consistency for speed',
+        'Asynchronous training produces identical results to synchronous',
+        'Synchronous training does not require any communication between workers',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Synchronous training (via AllReduce) ensures all workers update with the same averaged gradient, maintaining mathematical equivalence to single-GPU training. Asynchronous training (parameter server) allows stale gradients, which can hurt convergence but eliminates synchronization delays.',
+      difficulty: 'medium',
+    },
   ],
 };

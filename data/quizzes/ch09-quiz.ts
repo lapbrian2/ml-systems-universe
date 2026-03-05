@@ -147,5 +147,75 @@ export const ch09Quiz: ChapterQuiz = {
         'Different hardware has different strengths: GPUs favor large parallel matrix operations, edge NPUs may prefer specific operation types. Hardware-aware NAS and optimization (like using operations that map well to the target hardware) can dramatically improve real-world performance.',
       difficulty: 'medium',
     },
+    {
+      id: 'ch09-q11',
+      question: 'What is the "teacher temperature" parameter in knowledge distillation?',
+      options: [
+        'The physical temperature of the GPU running the teacher model',
+        'A scaling factor applied to logits before softmax that controls how much the soft probability distribution reveals inter-class relationships',
+        'The number of training epochs for the teacher',
+        'The learning rate used to train the student model',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Higher temperature produces softer probability distributions, revealing more information about which classes the teacher considers similar. At temperature 1, the distribution is peaked; at higher temperatures, probabilities are smoother, transferring richer "dark knowledge" to the student.',
+      difficulty: 'hard',
+    },
+    {
+      id: 'ch09-q12',
+      question: 'You need to deploy a model on a device with only 256KB of RAM. Which efficiency technique is most critical?',
+      options: [
+        'Using a larger batch size',
+        'Aggressive quantization (e.g., INT4 or binary), tiny architecture design, and careful memory planning to fit within the extreme memory constraint',
+        'Using mixed precision FP16 training',
+        'Increasing the number of model parameters for better accuracy',
+      ],
+      correctIndex: 1,
+      explanation:
+        'At 256KB, standard INT8 quantization may not suffice. Extreme techniques like INT4/binary quantization, purpose-built tiny architectures (MCUNet, TinyML models), and careful memory scheduling (in-place operations, operator fusion) become essential.',
+      difficulty: 'hard',
+    },
+    {
+      id: 'ch09-q13',
+      question: 'What is the roofline model and how does it relate to efficient AI?',
+      options: [
+        'A model for predicting cloud computing costs',
+        'A visual tool that plots achievable performance against operational intensity, revealing whether computation is memory-bound or compute-bound on given hardware',
+        'A neural network architecture shaped like a roofline',
+        'A model of diminishing returns in model scaling',
+      ],
+      correctIndex: 1,
+      explanation:
+        'The roofline model helps determine if a model is bottlenecked by memory bandwidth or compute throughput. This guides optimization: memory-bound models benefit from quantization and fusion (reducing data movement), while compute-bound models benefit from algorithmic efficiency.',
+      difficulty: 'hard',
+    },
+    {
+      id: 'ch09-q14',
+      question: 'What is dynamic inference and how does it improve efficiency?',
+      options: [
+        'Running inference on dynamically allocated cloud instances',
+        'Adapting the amount of computation per input based on its difficulty, using techniques like early exit, adaptive depth, or mixture of experts',
+        'Dynamically changing the model architecture during training',
+        'Performing inference only when the system is idle',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Not all inputs require the same computational effort. Dynamic inference allocates more compute to harder inputs and less to easier ones, improving average efficiency while maintaining accuracy on difficult cases. This contrasts with static models that use fixed computation for all inputs.',
+      difficulty: 'medium',
+    },
+    {
+      id: 'ch09-q15',
+      question: 'What trade-off does weight sharing introduce in efficient architectures?',
+      options: [
+        'It makes models larger but faster',
+        'It reduces parameter count by reusing the same weights across multiple layers or operations, saving memory at the potential cost of representational capacity',
+        'It shares weights between different models',
+        'It always improves accuracy with no downsides',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Weight sharing (as used in ALBERT or Universal Transformers) can dramatically reduce model size by reusing parameters across layers. The trade-off is that shared weights must serve multiple purposes, potentially limiting the model\'s ability to learn distinct representations at each layer.',
+      difficulty: 'medium',
+    },
   ],
 };

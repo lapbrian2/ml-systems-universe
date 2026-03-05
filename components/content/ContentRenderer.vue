@@ -55,7 +55,11 @@ defineProps<{
         :component="block.component"
       />
 
-      <!-- Code -->
+      <!-- Code: Python gets interactive playground, others get static display -->
+      <CodePlayground
+        v-else-if="block.type === 'code' && (block.language === 'python' || block.language === 'py')"
+        :code="block.code"
+      />
       <CodeBlock
         v-else-if="block.type === 'code'"
         :language="block.language"

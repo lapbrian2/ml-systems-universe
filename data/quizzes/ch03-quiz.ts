@@ -147,5 +147,75 @@ export const ch03Quiz: ChapterQuiz = {
         'Full-batch gradient descent is computationally expensive and can overfit. Purely stochastic (single sample) gradient descent is noisy and cannot leverage GPU parallelism. Mini-batch balances both: efficient GPU utilization and beneficial noise that helps escape local minima.',
       difficulty: 'hard',
     },
+    {
+      id: 'ch03-q11',
+      question: 'What is the purpose of batch normalization in deep networks?',
+      options: [
+        'To increase the batch size during training',
+        'To normalize layer inputs to zero mean and unit variance, reducing internal covariate shift and enabling faster, more stable training',
+        'To normalize the output predictions to sum to 1',
+        'To batch multiple models into a single training run',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Batch normalization normalizes the inputs to each layer using batch statistics, which stabilizes and accelerates training. It reduces sensitivity to weight initialization and learning rate, and also provides a mild regularization effect.',
+      difficulty: 'medium',
+    },
+    {
+      id: 'ch03-q12',
+      question: 'What is the difference between L1 and L2 regularization in neural networks?',
+      options: [
+        'L1 and L2 regularization are identical in practice',
+        'L1 penalizes the sum of absolute weight values (encouraging sparsity), while L2 penalizes the sum of squared weight values (encouraging small but non-zero weights)',
+        'L1 is for classification; L2 is for regression',
+        'L2 always produces better accuracy than L1',
+      ],
+      correctIndex: 1,
+      explanation:
+        'L1 regularization (lasso) drives weights to exactly zero, producing sparse models useful for feature selection. L2 regularization (weight decay/ridge) shrinks all weights toward zero proportionally, distributing importance across features without eliminating them.',
+      difficulty: 'hard',
+    },
+    {
+      id: 'ch03-q13',
+      question: 'A deep learning model trains well on training data but performs poorly on the validation set. What is this phenomenon called?',
+      options: [
+        'Underfitting',
+        'Overfitting — the model has memorized training data patterns rather than learning generalizable features',
+        'Convergence',
+        'Gradient explosion',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Overfitting occurs when the model learns noise and specific patterns in the training data rather than general relationships. Remedies include regularization (dropout, weight decay), data augmentation, early stopping, and reducing model capacity.',
+      difficulty: 'easy',
+    },
+    {
+      id: 'ch03-q14',
+      question: 'What is dropout and how does it act as a regularizer?',
+      options: [
+        'Dropping out layers from the network permanently',
+        'Randomly setting a fraction of neuron activations to zero during each training step, which prevents co-adaptation and approximates model ensembling',
+        'Removing training samples that are too difficult',
+        'Reducing the learning rate when loss stops improving',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Dropout randomly disables neurons during training, forcing the network to learn redundant representations that do not rely on any single neuron. At test time, all neurons are active (with scaled weights), approximating an ensemble of many sub-networks.',
+      difficulty: 'medium',
+    },
+    {
+      id: 'ch03-q15',
+      question: 'Why is weight initialization important in deep learning?',
+      options: [
+        'It is not important; any random values work equally well',
+        'Proper initialization (e.g., Xavier/He) maintains signal variance across layers, preventing gradients from vanishing or exploding at the start of training',
+        'Initialization only affects the first epoch of training',
+        'All weights should be initialized to zero for symmetry',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Initializing all weights to zero causes symmetry (all neurons learn the same thing). Too-large initialization causes exploding gradients; too-small causes vanishing. Xavier and He initialization scale weights by layer size to maintain variance across layers.',
+      difficulty: 'hard',
+    },
   ],
 };

@@ -39,6 +39,7 @@ const exerciseEmitted = ref(false)
 const quantizationLevel = ref(32) // FP32 default
 const pruningPercent = ref(0)
 const distillationOn = ref(false)
+const challengeComplete = ref(false)
 
 function trackInteraction() {
   interactionCount.value++
@@ -132,6 +133,16 @@ const compressionRatio = computed(() => {
   return Math.round((baseModelSize / modelSizeMB.value) * 10) / 10
 })
 
+/* ── Challenge completion: <1MB size + >90% accuracy ── */
+watch(
+  [modelSizeMB, accuracy],
+  ([size, acc]) => {
+    if (size < 1 && acc > 90) {
+      challengeComplete.value = true
+    }
+  }
+)
+
 /* ── Quantization color per neuron ── */
 function neuronColor(node: NeuronNode): string {
   const pruned = seededWeight(node.layer, node.index, 0, 0) * 100 < pruningPercent.value * 0.3
@@ -214,6 +225,16 @@ watch(() => props.activeSection, () => {
         </span>
       </p>
     </div>
+
+    <!-- Challenge -->
+    <VizChallenge
+      title="Compression Challenge"
+      description="Achieve <1MB model size while keeping accuracy above 90%"
+      color="#f0a500"
+      :is-complete="challengeComplete"
+      :time-limit="90"
+      @reset="challengeComplete = false"
+    />
 
     <!-- Controls -->
     <div class="quant-prune__controls">

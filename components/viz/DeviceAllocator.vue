@@ -121,6 +121,7 @@ const interactionCount = ref(0)
 const exerciseEmitted = ref(false)
 const assignedDevices = ref<Set<string>>(new Set())
 const tooltip = ref<TooltipState>({ visible: false, x: 0, y: 0, device: null, result: null })
+const challengeComplete = ref(false)
 
 const selectedModel = computed(() => modelProfiles.find(m => m.id === selectedModelId.value)!)
 
@@ -177,6 +178,17 @@ function handleModelChange() {
 function closeTooltip() {
   tooltip.value.visible = false
 }
+
+/* ── Challenge completion: all devices assigned + model latency under 100ms ── */
+watch(
+  [assignedDevices, selectedModel],
+  ([assigned, model]) => {
+    if (assigned.size === devices.length && model.requirements.latency < 100) {
+      challengeComplete.value = true
+    }
+  },
+  { deep: true }
+)
 
 /* ── Layout positions ── */
 const DEVICE_Y = 100
@@ -248,6 +260,16 @@ watch(() => props.activeSection, () => {
         </span>
       </p>
     </div>
+
+    <!-- Challenge -->
+    <VizChallenge
+      title="Deployment Challenge"
+      description="Allocate all models with total latency under 100ms"
+      color="#ec4899"
+      :is-complete="challengeComplete"
+      :time-limit="120"
+      @reset="challengeComplete = false"
+    />
 
     <!-- Model selector -->
     <div class="allocator__model-select">

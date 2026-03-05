@@ -147,5 +147,75 @@ export const ch10Quiz: ChapterQuiz = {
         'Optimization toolkits take a trained model and apply a suite of optimizations — graph simplification, operator fusion, precision calibration, kernel auto-tuning — tailored to specific hardware. This can yield 2-10x inference speedups over naive execution.',
       difficulty: 'easy',
     },
+    {
+      id: 'ch10-q11',
+      question: 'What is the difference between per-tensor and per-channel quantization?',
+      options: [
+        'Per-tensor is always more accurate',
+        'Per-tensor uses one scale/zero-point for an entire tensor; per-channel uses separate values for each output channel, preserving more accuracy at slightly higher implementation complexity',
+        'Per-channel quantization is only for activation tensors',
+        'There is no practical difference between them',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Per-channel quantization computes separate scale factors for each output channel of a weight tensor, accommodating the fact that different channels may have very different value ranges. This typically improves accuracy over per-tensor, especially for depthwise convolutions.',
+      difficulty: 'hard',
+    },
+    {
+      id: 'ch10-q12',
+      question: 'A model has been pruned to 90% sparsity but inference speed has not improved. What is the most likely reason?',
+      options: [
+        'Pruning never improves speed',
+        'Unstructured sparsity produces irregular memory access patterns that standard hardware cannot exploit without specialized sparse computation libraries or hardware',
+        'The model was pruned too aggressively',
+        'The remaining 10% of weights are too large',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Unstructured pruning creates random zero patterns that GPUs cannot exploit efficiently because they are optimized for dense matrix operations. Structured pruning (removing entire channels/heads) or sparse hardware/kernels are needed to translate sparsity into actual speedups.',
+      difficulty: 'hard',
+    },
+    {
+      id: 'ch10-q13',
+      question: 'What is the "graph optimization" phase in model optimization toolkits?',
+      options: [
+        'Visualizing the model as a chart for presentations',
+        'Simplifying the computational graph by removing redundant operations, folding constants, eliminating dead code, and restructuring for hardware efficiency',
+        'Optimizing the training data graph structure',
+        'Searching for the best neural architecture',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Graph optimization transforms the model\'s computational graph to be more efficient: constant folding pre-computes static expressions, dead code elimination removes unreachable nodes, and algebraic simplification reduces unnecessary operations, all before hardware-specific lowering.',
+      difficulty: 'medium',
+    },
+    {
+      id: 'ch10-q14',
+      question: 'Why is mixed precision (FP16/INT8 for some layers, FP32 for others) commonly used in optimized inference?',
+      options: [
+        'It is only used to save disk space',
+        'Sensitive layers (often the first and last) maintain higher precision for accuracy, while the bulk of computation uses lower precision for speed, achieving the best accuracy-efficiency balance',
+        'All layers must use the same precision for correct results',
+        'Mixed precision is only possible during training, not inference',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Different layers have different sensitivity to quantization error. First layers (processing raw input) and last layers (producing final outputs) often need higher precision. Middle layers tolerate lower precision well. This selective approach maximizes speed while minimizing accuracy loss.',
+      difficulty: 'medium',
+    },
+    {
+      id: 'ch10-q15',
+      question: 'What is kernel auto-tuning in the context of model optimization?',
+      options: [
+        'Automatically choosing the operating system kernel version',
+        'Benchmarking multiple implementation variants of each operation on the target hardware and selecting the fastest one for the specific tensor shapes',
+        'Tuning the number of kernels in convolutional layers',
+        'Adjusting the kernel size of all convolution operations',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Different GPU implementations of the same operation (e.g., cuDNN convolution algorithms) perform differently depending on tensor shapes, data types, and hardware. Auto-tuning benchmarks all variants and selects the fastest per-operation configuration for the specific model and hardware.',
+      difficulty: 'medium',
+    },
   ],
 };

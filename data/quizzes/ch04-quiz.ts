@@ -147,5 +147,75 @@ export const ch04Quiz: ChapterQuiz = {
         'Standard convolutions jointly learn spatial and cross-channel patterns. Depthwise separable convolutions factorize this into a spatial convolution per channel followed by a 1x1 convolution across channels, reducing computation by roughly k^2x for kernel size k.',
       difficulty: 'hard',
     },
+    {
+      id: 'ch04-q11',
+      question: 'What is multi-head attention and why is it used instead of a single attention head?',
+      options: [
+        'Multi-head attention uses multiple GPUs for faster computation',
+        'It runs multiple attention operations in parallel with different learned projections, allowing the model to attend to information from different representation subspaces',
+        'It stacks multiple Transformer layers on top of each other',
+        'It is an older technique replaced by single-head attention in modern models',
+      ],
+      correctIndex: 1,
+      explanation:
+        'A single attention head can only focus on one type of relationship at a time. Multi-head attention splits the representation into h heads, each learning different attention patterns (e.g., syntactic vs. semantic relationships), then concatenates the results.',
+      difficulty: 'medium',
+    },
+    {
+      id: 'ch04-q12',
+      question: 'How does an LSTM address the vanishing gradient problem of standard RNNs?',
+      options: [
+        'By using larger learning rates',
+        'By introducing a cell state with gated mechanisms (forget, input, output gates) that allow gradients to flow unimpeded across many time steps',
+        'By processing sequences in reverse order',
+        'By removing the recurrent connection entirely',
+      ],
+      correctIndex: 1,
+      explanation:
+        'The LSTM cell state acts as a gradient highway, controlled by learned gates. The forget gate decides what to discard, the input gate what to store, and the output gate what to expose. This gating mechanism allows information to persist across hundreds of time steps.',
+      difficulty: 'hard',
+    },
+    {
+      id: 'ch04-q13',
+      question: 'You need to process a 10,000-token document. Why might a standard Transformer be problematic?',
+      options: [
+        'Transformers cannot handle text input',
+        'Self-attention has O(n^2) memory and compute complexity, making it prohibitively expensive for very long sequences',
+        'Transformers are limited to exactly 512 tokens',
+        'Long documents always have too much noise',
+      ],
+      correctIndex: 1,
+      explanation:
+        'For n=10,000 tokens, the attention matrix has 100 million entries per head per layer. This motivates efficient variants like Longformer (sparse attention), LinFormer (linear approximation), and Flash Attention (memory-efficient exact attention).',
+      difficulty: 'medium',
+    },
+    {
+      id: 'ch04-q14',
+      question: 'What is the difference between encoder-only, decoder-only, and encoder-decoder Transformer architectures?',
+      options: [
+        'They differ only in the number of parameters',
+        'Encoder-only (e.g., BERT) processes full context bidirectionally; decoder-only (e.g., GPT) generates autoregressively; encoder-decoder (e.g., T5) maps input sequences to output sequences',
+        'Decoder-only models cannot generate text',
+        'Encoder-decoder models are always the best choice',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Encoder-only models are suited for understanding tasks (classification, NER). Decoder-only models excel at generation with causal (left-to-right) attention. Encoder-decoder models handle sequence-to-sequence tasks like translation and summarization.',
+      difficulty: 'hard',
+    },
+    {
+      id: 'ch04-q15',
+      question: 'What is the role of 1x1 convolutions in CNN architectures like Inception?',
+      options: [
+        'They perform spatial filtering like larger kernels',
+        'They act as cross-channel feature mixers and dimensionality reducers, controlling computational cost before expensive operations',
+        'They are only used for padding adjustment',
+        'They replace all other convolution types',
+      ],
+      correctIndex: 1,
+      explanation:
+        'A 1x1 convolution operates across channels at each spatial position without spatial context. In Inception modules, 1x1 convolutions reduce channel dimensionality before 3x3 or 5x5 convolutions, dramatically cutting the computation while mixing channel information.',
+      difficulty: 'medium',
+    },
   ],
 };

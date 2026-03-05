@@ -147,5 +147,75 @@ export const ch06Quiz: ChapterQuiz = {
         'Real-world data suffers from missing values, inconsistent formats, selection bias, seasonal patterns, and concept drift. Data engineering for ML is an ongoing process, not a one-time setup, requiring continuous monitoring and pipeline maintenance.',
       difficulty: 'easy',
     },
+    {
+      id: 'ch06-q11',
+      question: 'What is weak supervision and when is it useful?',
+      options: [
+        'Training a model with a very small learning rate',
+        'Using heuristics, knowledge bases, or noisy labeling functions to programmatically generate approximate labels when manual labeling is too expensive',
+        'Supervision with low-quality GPUs',
+        'Training without any labels at all',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Weak supervision (e.g., Snorkel) uses labeling functions written by domain experts to generate noisy labels at scale. A noise-aware model then learns from these imperfect labels, trading some label accuracy for massive reductions in labeling cost and time.',
+      difficulty: 'hard',
+    },
+    {
+      id: 'ch06-q12',
+      question: 'You are building a fraud detection model and your dataset has 99.5% legitimate transactions. What strategy should you consider?',
+      options: [
+        'Use accuracy as the primary metric and train normally',
+        'Apply techniques like oversampling the minority class (SMOTE), adjusting class weights, using focal loss, or evaluating with precision-recall instead of accuracy',
+        'Remove all legitimate transactions to balance the classes',
+        'Only train on the minority class',
+      ],
+      correctIndex: 1,
+      explanation:
+        'With extreme class imbalance, accuracy is misleading (99.5% accuracy by always predicting legitimate). Oversampling, class weighting, and focal loss rebalance learning. Precision-recall and AUPRC are more informative metrics than accuracy for imbalanced tasks.',
+      difficulty: 'medium',
+    },
+    {
+      id: 'ch06-q13',
+      question: 'What is the difference between batch and streaming data pipelines for ML?',
+      options: [
+        'They are identical but use different names',
+        'Batch pipelines process data periodically in large chunks; streaming pipelines process data continuously in real-time as it arrives',
+        'Streaming pipelines are always more accurate',
+        'Batch pipelines cannot be used for ML training',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Batch pipelines (e.g., Spark, Airflow) process accumulated data at intervals, suited for training and offline feature computation. Streaming pipelines (e.g., Kafka, Flink) process events in real-time, essential for low-latency features and online serving.',
+      difficulty: 'medium',
+    },
+    {
+      id: 'ch06-q14',
+      question: 'What is inter-annotator agreement and why does it matter for ML data quality?',
+      options: [
+        'A legal contract between data labelers',
+        'A metric measuring how consistently multiple annotators label the same examples, indicating label quality and task clarity',
+        'The speed at which annotators complete labeling tasks',
+        'An agreement to use the same labeling tool',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Metrics like Cohen\'s Kappa or Fleiss\' Kappa quantify labeling consistency. Low agreement suggests ambiguous annotation guidelines or a fundamentally subjective task. High agreement indicates reliable labels, which is a prerequisite for training trustworthy models.',
+      difficulty: 'hard',
+    },
+    {
+      id: 'ch06-q15',
+      question: 'What is synthetic data generation and what are its trade-offs?',
+      options: [
+        'It is always better than real data',
+        'Creating artificial training data algorithmically or with generative models, which can expand datasets but risks introducing distributional biases not present in real data',
+        'It is only used for testing, never for training',
+        'Synthetic data eliminates the need for data preprocessing',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Synthetic data can address data scarcity, privacy concerns, and rare-event coverage. However, if the generation process does not faithfully capture real-world complexity, models may learn artifacts of the synthesis rather than true patterns.',
+      difficulty: 'medium',
+    },
   ],
 };

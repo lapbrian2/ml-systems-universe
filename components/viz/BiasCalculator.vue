@@ -35,6 +35,7 @@ const groupB = ref<ConfusionMatrix>({ tp: 60, fp: 25, fn: 30, tn: 85 })
 const interactionCount = ref(0)
 const exerciseEmitted = ref(false)
 const selectedMetric = ref<string | null>(null)
+const challengeComplete = ref(false)
 
 /* ── Confusion matrix cell info ── */
 const matrixCells = [
@@ -154,6 +155,17 @@ const highlightedMetricIndex = computed(() => {
   }
 })
 
+/* ── Challenge completion: demographic parity within 5% ── */
+watch(
+  fairnessMetrics,
+  (metrics) => {
+    const dp = metrics.find(m => m.shortName === 'DP')
+    if (dp && dp.difference < 0.05) {
+      challengeComplete.value = true
+    }
+  }
+)
+
 /* ── Reset on section change ── */
 watch(
   () => props.activeSection,
@@ -177,6 +189,16 @@ watch(
         </span>
       </p>
     </div>
+
+    <!-- Challenge -->
+    <VizChallenge
+      title="Fairness Challenge"
+      description="Find a threshold that achieves demographic parity within 5%"
+      color="#ef4444"
+      :is-complete="challengeComplete"
+      :time-limit="120"
+      @reset="challengeComplete = false"
+    />
 
     <!-- Main Visualization -->
     <div class="bias__canvas">

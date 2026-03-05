@@ -133,5 +133,75 @@ export const ch02Quiz: ChapterQuiz = {
         'Blue-green and canary deployments allow teams to roll out new model versions incrementally, comparing their performance against the current production model. This minimizes risk and enables quick rollback if the new model underperforms.',
       difficulty: 'hard',
     },
+    {
+      id: 'ch02-q10',
+      question: 'What is a shadow deployment (dark launch) for ML models?',
+      options: [
+        'Deploying the model only at night when traffic is low',
+        'Running a new model in parallel with the production model, logging its predictions without serving them to users, to evaluate real-world performance',
+        'Deploying the model to a test server that no one can access',
+        'Training the model on production data without telling the team',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Shadow deployments route live production traffic to both the existing model and a candidate model. The candidate predictions are logged but not served. This allows teams to compare real-world performance without risking user-facing quality.',
+      difficulty: 'hard',
+    },
+    {
+      id: 'ch02-q11',
+      question: 'In an ML system, what is the purpose of a data validation layer between ingestion and training?',
+      options: [
+        'To compress the data for faster processing',
+        'To catch schema violations, missing values, distribution anomalies, and corrupted records before they contaminate model training',
+        'To convert all data into image format',
+        'To randomly sample data for faster training',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Data validation acts as a gatekeeper. Tools like TensorFlow Data Validation or Great Expectations check incoming data against expected schemas, ranges, and distributions, preventing garbage-in-garbage-out scenarios that silently degrade model quality.',
+      difficulty: 'medium',
+    },
+    {
+      id: 'ch02-q12',
+      question: 'What is "concept drift" and how does it differ from "data drift"?',
+      options: [
+        'They are the same phenomenon with different names',
+        'Data drift is a change in input distributions; concept drift is a change in the underlying relationship between inputs and outputs',
+        'Concept drift only affects unsupervised models',
+        'Data drift only occurs in real-time systems',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Data drift means the input features change (e.g., user demographics shift). Concept drift means the mapping from inputs to correct outputs changes (e.g., customer preferences evolve). Both degrade model performance but require different detection and mitigation strategies.',
+      difficulty: 'hard',
+    },
+    {
+      id: 'ch02-q13',
+      question: 'When designing an ML system, why is it important to define offline metrics AND online metrics?',
+      options: [
+        'Offline metrics are always sufficient for production decisions',
+        'Offline metrics evaluate model quality on test data, while online metrics capture real-world impact including user behavior and business outcomes',
+        'Online metrics are only used for marketing purposes',
+        'Offline and online metrics always produce identical results',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Offline metrics (accuracy, AUC) measure model quality on held-out data. Online metrics (click-through rate, revenue, user engagement) capture real production impact. A model can improve offline metrics while hurting online ones, so both are essential.',
+      difficulty: 'medium',
+    },
+    {
+      id: 'ch02-q14',
+      question: 'What is batch inference and when is it preferred over real-time inference?',
+      options: [
+        'Batch inference is always slower and should be avoided',
+        'Batch inference pre-computes predictions for all inputs on a schedule, preferred when low latency is not required and predictions can be cached or precomputed',
+        'Batch inference only works with image data',
+        'Real-time inference is always the better choice',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Batch inference processes large volumes of data periodically (e.g., nightly recommendation updates). It is cost-effective and simpler to operate when predictions do not need to reflect real-time signals, and results can be stored for fast retrieval.',
+      difficulty: 'easy',
+    },
   ],
 };
