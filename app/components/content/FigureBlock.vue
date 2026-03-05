@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, resolveComponent } from 'vue'
+import { computed, defineAsyncComponent, type Component } from 'vue'
 
 const props = defineProps<{
   src?: string
@@ -9,10 +9,18 @@ const props = defineProps<{
   component?: string
 }>()
 
-// Use resolveComponent for Nuxt auto-imported components (works across all component dirs)
+// Build a map of all infographic components using Vite's import.meta.glob
+// resolveComponent() doesn't work with Nuxt auto-imports (tree-shaken at build time)
+const infographicModules = import.meta.glob('~/components/infographics/*.vue')
+const infographicMap: Record<string, Component> = {}
+for (const [path, loader] of Object.entries(infographicModules)) {
+  const name = path.split('/').pop()!.replace('.vue', '')
+  infographicMap[name] = defineAsyncComponent(loader as () => Promise<{ default: Component }>)
+}
+
 const resolvedComponent = computed(() => {
   if (!props.component) return null
-  return resolveComponent(props.component)
+  return infographicMap[props.component] ?? null
 })
 
 const captionText = computed(() => {
@@ -25,7 +33,7 @@ const captionText = computed(() => {
   <figure class="my-6 flex flex-col items-center">
     <!-- Dynamic component (SVG infographic) -->
     <div
-      v-if="resolvedComponent && typeof resolvedComponent !== 'string'"
+      v-if="resolvedComponent"
       class="w-full max-w-2xl rounded-lg border border-white/[0.06] overflow-hidden bg-cosmic-card"
     >
       <component :is="resolvedComponent" :alt="alt" />
