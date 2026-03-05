@@ -25,10 +25,36 @@ export const sections: ChapterSection[] = [
         text: 'The field of ML systems engineering recognizes that building a good model is only a small fraction of the overall challenge. Google famously illustrated this with the "hidden technical debt" paper, showing that ML code represents a tiny portion of a production ML system. The surrounding infrastructure for data collection, feature extraction, monitoring, and serving dwarfs the model itself.',
       },
       {
+        type: 'aha',
+        highlight: 'ML code represents only about 5% of a production ML system.',
+        explanation: 'This means that for every line of model code you write, there are roughly 19 lines of supporting infrastructure: data validation, feature stores, configuration management, monitoring dashboards, and serving pipelines. Teams that focus exclusively on model accuracy while neglecting this 95% are building on sand.',
+        analogy: 'An iceberg where the visible tip above water is your model, but the massive structure below the surface -- data pipelines, monitoring, serving infrastructure, and configuration -- is what keeps the whole thing afloat and stable.',
+      },
+      {
+        type: 'stat',
+        value: 5,
+        suffix: '%',
+        label: 'ML code in a production system',
+      },
+      {
+        type: 'stat',
+        value: 95,
+        suffix: '%',
+        label: 'Infrastructure, pipelines, and config',
+      },
+      {
         type: 'callout',
         variant: 'note',
         title: 'The 5% Rule',
         text: 'Google\'s landmark "Hidden Technical Debt in Machine Learning Systems" paper (Sculley et al., 2015) found that ML model code accounts for only about 5% of the total code in a production ML system. The remaining 95% consists of data pipelines, configuration, serving infrastructure, monitoring, and feature engineering.',
+      },
+      {
+        type: 'inline-check',
+        question: 'According to Google\'s "Hidden Technical Debt" paper, approximately what percentage of a production ML system\'s code is the ML model itself?',
+        options: ['About 50%', 'About 25%', 'About 5%', 'About 75%'],
+        correctIndex: 2,
+        explanation: 'The ML model code accounts for only about 5% of the total codebase. The remaining 95% consists of data pipelines, configuration, serving infrastructure, monitoring, and feature engineering.',
+        hint: 'Think about all the infrastructure surrounding the model: data pipelines, monitoring, serving, configuration.',
       },
       {
         type: 'figure',
@@ -101,6 +127,12 @@ export const sections: ChapterSection[] = [
         caption: 'Table 1.1: ML pipeline stages and their associated systems challenges.',
       },
       {
+        type: 'aha',
+        highlight: 'ML systems have a dual lifecycle: the software lifecycle and the model lifecycle.',
+        explanation: 'Traditional software only degrades when the code changes. ML systems degrade even when the code stays the same, because the world the model learned from keeps changing. This dual lifecycle means you need two separate versioning strategies, two deployment pipelines, and two monitoring systems -- one for code and one for the model.',
+        analogy: 'A navigation app where the software version controls the interface and routing algorithm, but the map data has its own update cycle. If the maps go stale, the app gives bad directions even though the code is perfect. ML models are the "map" -- they must be refreshed as reality shifts.',
+      },
+      {
         type: 'paragraph',
         text: 'Unlike traditional software, ML systems have a dual lifecycle: the software lifecycle and the model lifecycle. The software components follow conventional engineering practices, but the model must be continuously retrained and updated as data distributions shift over time. This creates unique challenges around versioning, reproducibility, and rollback strategies.',
       },
@@ -109,6 +141,17 @@ export const sections: ChapterSection[] = [
         variant: 'warning',
         title: 'Data Distribution Shift',
         text: 'A model trained on last year\'s data may silently degrade when user behavior changes. Unlike a software bug that produces an error, a stale model continues to produce outputs — they are simply wrong. Continuous monitoring is not optional; it is a core requirement of any production ML system.',
+      },
+      {
+        type: 'inline-check',
+        question: 'What makes data distribution shift particularly dangerous in ML systems?',
+        options: [
+          'It causes the system to crash immediately',
+          'The model continues producing outputs, but they are silently wrong',
+          'It only affects the training phase, not production',
+        ],
+        correctIndex: 1,
+        explanation: 'Unlike software bugs that raise errors, a stale ML model keeps generating predictions that look normal but are increasingly inaccurate. This silent degradation is why continuous monitoring is essential.',
       },
       {
         type: 'paragraph',
@@ -180,6 +223,12 @@ export const sections: ChapterSection[] = [
         type: 'definition',
         term: 'TinyML',
         definition: 'A subfield of embedded ML focused on running machine learning models on microcontrollers with extremely limited memory (often under 1 MB) and power budgets (milliwatts or less). TinyML enables always-on intelligent sensing at the extreme edge of the computing spectrum.',
+      },
+      {
+        type: 'stat',
+        value: 256,
+        suffix: ' KB',
+        label: 'Minimum TinyML memory budget',
       },
       {
         type: 'table',

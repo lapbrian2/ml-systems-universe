@@ -31,9 +31,28 @@ export const sections: ChapterSection[] = [
         text: 'Standard CUDA cores perform one floating-point operation per cycle per core. A tensor core performs a 4x4 matrix multiply-accumulate (128 operations) in a single cycle. For matrix-heavy ML workloads, tensor cores provide 8-16x the throughput of CUDA cores. This is why deep learning performance has grown much faster than general-purpose GPU performance.',
       },
       {
+        type: 'inline-check',
+        question: 'Why do tensor cores provide 8-16x higher throughput than standard CUDA cores for ML workloads?',
+        options: [
+          'Tensor cores run at a higher clock speed',
+          'Tensor cores perform a full 4x4 matrix multiply-accumulate in a single cycle, doing 128 operations at once',
+          'Tensor cores have dedicated memory that CUDA cores lack',
+          'Tensor cores use lower-precision arithmetic exclusively',
+        ],
+        correctIndex: 1,
+        explanation: 'A standard CUDA core performs one floating-point operation per cycle. A tensor core performs an entire 4x4 matrix multiply-accumulate (128 operations) in one cycle. This massive parallelism at the instruction level is what makes tensor cores so effective for the dense linear algebra in deep learning.',
+        hint: 'Think about how many operations each type of core completes in a single clock cycle.',
+      },
+      {
         type: 'heading',
         level: 3,
         text: 'The Memory Hierarchy',
+      },
+      {
+        type: 'aha',
+        highlight: 'The GPU memory hierarchy mirrors the CPU hierarchy but with radically different tradeoffs -- a 10,000x bandwidth gap between registers and global memory.',
+        explanation: 'Both CPUs and GPUs have a layered memory system from fast/small to slow/large. But on a GPU, the ratio is extreme: registers deliver ~20 TB/s while HBM global memory delivers ~2 TB/s. This 10,000x gap means that the single most important optimization for GPU code is keeping data in fast memory (shared memory and registers) and minimizing round-trips to HBM. Algorithms that seem mathematically equivalent can differ by 5-10x in speed based purely on how they navigate this hierarchy.',
+        analogy: 'Your desk (registers) vs. a warehouse across town (HBM). If you need a tool, grabbing it from your desk takes a second, but driving to the warehouse takes hours. Smart workers arrange their desk so they rarely need the warehouse trip. GPU programming is the same -- organize computation to reuse data already in fast memory before fetching more from the slow global store.',
       },
       {
         type: 'paragraph',
@@ -65,6 +84,14 @@ export const sections: ChapterSection[] = [
         text: 'The key to GPU kernel performance is maximizing data reuse in fast memory (registers and shared memory) to minimize slow HBM accesses. This is exactly what Flash Attention does: it tiles the attention computation into blocks that fit in SRAM, avoiding materializing the full N x N attention matrix in HBM. Similar tiling strategies apply to any memory-bound operation.',
       },
       {
+        type: 'inline-check',
+        question: 'On an NVIDIA A100 GPU, the bandwidth gap between registers and HBM (global memory) is approximately:',
+        options: ['10x', '100x', '1,000x', '10,000x'],
+        correctIndex: 3,
+        explanation: 'Registers provide ~20 TB/s while HBM provides ~2 TB/s, a 10,000x bandwidth difference. This is why techniques like Flash Attention, which tile computation to maximize data reuse in fast on-chip memory (registers and shared memory), yield such dramatic speedups for memory-bound operations.',
+        hint: 'Compare the bandwidth values in the memory hierarchy table for registers versus HBM2e.',
+      },
+      {
         type: 'heading',
         level: 3,
         text: 'Evolution of NVIDIA GPU Architectures',
@@ -84,6 +111,18 @@ export const sections: ChapterSection[] = [
           ['Blackwell Ultra (B300)', '2025', 'HBM3e, enhanced sparsity, NVLink 5.0+', '~4500'],
         ],
         caption: 'Table 11.2: NVIDIA GPU architecture evolution for ML workloads (through 2025-2026).',
+      },
+      {
+        type: 'stat',
+        value: 990,
+        suffix: ' TFLOPS',
+        label: 'H100 peak FP16 tensor performance',
+      },
+      {
+        type: 'stat',
+        value: 2,
+        suffix: ' TB/s',
+        label: 'A100 HBM2e memory bandwidth',
       },
       {
         type: 'callout',
@@ -125,6 +164,11 @@ export const sections: ChapterSection[] = [
         type: 'definition',
         term: 'Systolic Array',
         definition: 'A grid of processing elements (PEs) arranged in a regular pattern, where data flows rhythmically between neighbors (like a heartbeat — hence "systolic"). Each PE performs a multiply-accumulate operation and passes data to the next. For matrix multiplication, one matrix flows horizontally and the other flows vertically through the array, computing the entire result in a pipelined fashion.',
+      },
+      {
+        type: 'stat',
+        value: 4096,
+        label: 'TPU v4 chips per pod',
       },
       {
         type: 'callout',

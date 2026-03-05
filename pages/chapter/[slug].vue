@@ -8,12 +8,15 @@ import { getChapterContent, loadChapterContent } from '~/data/content'
 import { useProgressStore } from '~/stores/progress'
 import { useChapterJsonLd } from '~/composables/useJsonLd'
 import { useScrollProgress } from '~/composables/useScrollProgress'
+import { useChapterTransition } from '~/composables/useChapterTransition'
+import { playCompleteSound } from '~/composables/useAmbientAudio'
 import type { ChapterMeta, Part } from '~/types/chapter'
 import type { ChapterContent } from '~/data/content'
 
 // ── Route & data ──────────────────────────────────────────────────────
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
+const { triggerTransition } = useChapterTransition()
 
 const chapter = computed<ChapterMeta | undefined>(() => getChapterBySlug(slug.value))
 const part = computed<Part | undefined>(() =>
@@ -207,6 +210,7 @@ onMounted(async () => {
             duration: 0.8,
             ease: 'power2.out',
           })
+          playCompleteSound()
         },
       })
     }
@@ -220,6 +224,21 @@ onUnmounted(() => {
   }
 })
 
+// ── Cinematic navigation helper ─────────────────────────────────────
+function navigateToChapter(target: ReturnType<typeof getNextChapter>) {
+  if (!target) return
+  const targetPart = getPartForChapter(target.id)
+  triggerTransition({
+    number: target.number,
+    title: target.title,
+    color: targetPart?.color ?? '#14b8a6',
+  })
+  // Navigate after a short delay so the wipe covers the old content
+  setTimeout(() => {
+    navigateTo(`/chapter/${target.slug}`)
+  }, 350)
+}
+
 // ── Keyboard navigation ────────────────────────────────────────────
 function handleKeyboard(e: KeyboardEvent) {
   if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
@@ -228,11 +247,9 @@ function handleKeyboard(e: KeyboardEvent) {
   const vizPanel = document.querySelector('aside')
   if (vizPanel?.contains(e.target as Node)) return
   if (e.key === 'ArrowLeft') {
-    const prev = getPrevChapter(slug.value)
-    if (prev) navigateTo(`/chapter/${prev.slug}`)
+    navigateToChapter(getPrevChapter(slug.value))
   } else if (e.key === 'ArrowRight') {
-    const next = getNextChapter(slug.value)
-    if (next) navigateTo(`/chapter/${next.slug}`)
+    navigateToChapter(getNextChapter(slug.value))
   }
 }
 
@@ -397,6 +414,12 @@ const vizComponent = computed(() => {
           }"
         />
 
+        <!-- Parallax depth layers -->
+        <VizParallax
+          :scroll-progress="vizScrollProgress"
+          :part-color="partColor"
+        />
+
         <!-- Reading progress indicator (vertical line on right edge) -->
         <div
           class="absolute top-0 right-0 bottom-0 w-[2px] hidden lg:block overflow-hidden"
@@ -492,6 +515,13 @@ const vizComponent = computed(() => {
             :part="part"
           />
 
+          <!-- Review reminder for spaced repetition -->
+          <ReviewReminder
+            v-if="chapter"
+            :chapter-id="chapter.id"
+            :part-color="partColor"
+          />
+
           <!-- Learning objectives -->
           <LearningObjectives
             v-if="content?.learningObjectives?.length"
@@ -578,6 +608,7 @@ const vizComponent = computed(() => {
                   backgroundColor: `${partColor}08`,
                   border: `1px solid ${partColor}15`,
                 }"
+                @click.prevent="navigateToChapter(nextChapter)"
               >
                 <span class="text-white/40">Up next:</span>
                 <span>{{ nextChapter.title }}</span>

@@ -63,6 +63,18 @@ export const sections: ChapterSection[] = [
         caption: 'Table 3.1: How key network properties scale and their systems implications.',
       },
       {
+        type: 'stat',
+        value: 12,
+        suffix: ' GB',
+        label: 'Memory for 1B params with Adam',
+      },
+      {
+        type: 'stat',
+        value: 4,
+        suffix: ' bytes',
+        label: 'Per parameter (FP32)',
+      },
+      {
         type: 'callout',
         variant: 'tip',
         title: 'Estimating Memory Requirements',
@@ -96,6 +108,12 @@ export const sections: ChapterSection[] = [
     body: 'Backpropagation is the algorithm that makes deep learning possible. It efficiently computes the gradient of the loss function with respect to every parameter in the network by applying the chain rule of calculus from the output layer back through the network. This process enables gradient-based optimization of networks with millions or billions of parameters.\n\nThe forward pass computes the network output by propagating inputs through each layer sequentially. The backward pass then propagates error gradients in reverse, computing how each parameter contributed to the total loss. This symmetry between forward and backward passes has profound implications for system design: the backward pass requires approximately twice the computation and memory of the forward pass.\n\nMemory consumption during backpropagation is a critical systems concern. The standard implementation requires storing all intermediate activations from the forward pass to compute gradients during the backward pass. For deep networks, this can consume tens of gigabytes of GPU memory. Techniques like gradient checkpointing trade computation for memory by recomputing activations during the backward pass instead of storing them.\n\nAutomatic differentiation, the generalization of backpropagation, is a core feature of modern ML frameworks. PyTorch uses dynamic computational graphs (define-by-run), while TensorFlow historically used static graphs (define-and-run). This design choice has significant implications for debugging, performance optimization, and deployment flexibility.',
     blocks: [
       {
+        type: 'aha',
+        highlight: 'Backpropagation is just the chain rule of calculus applied recursively through the network.',
+        explanation: 'Despite its mystique, backpropagation is not a novel mathematical discovery. It is a systematic bookkeeping method for applying the chain rule at every layer. The brilliance lies in efficiency: rather than computing each gradient independently (which would be impossibly slow), backprop reuses intermediate results from deeper layers, turning an exponential problem into a linear one.',
+        analogy: 'A factory assembly line where each station gets a note saying "here is how much the final product was off -- your contribution to the error was this much." Each station passes the note backward to the previous station, adjusted for its own work. No station needs to understand the entire factory to know how to improve.',
+      },
+      {
         type: 'paragraph',
         text: 'Backpropagation is the algorithm that makes deep learning possible. It efficiently computes the gradient of the loss function with respect to every parameter in the network by applying the chain rule of calculus from the output layer back through the network. This process enables gradient-based optimization of networks with millions or billions of parameters.',
       },
@@ -119,10 +137,24 @@ export const sections: ChapterSection[] = [
         text: 'The forward pass computes the network output by propagating inputs through each layer sequentially. The backward pass then propagates error gradients in reverse, computing how each parameter contributed to the total loss. This symmetry between forward and backward passes has profound implications for system design.',
       },
       {
+        type: 'stat',
+        value: 2,
+        suffix: 'x',
+        label: 'Backward pass compute vs forward pass',
+      },
+      {
         type: 'callout',
         variant: 'note',
         title: 'The 2x Rule',
         text: 'The backward pass requires approximately twice the computation and memory of the forward pass. This means that during training, roughly two-thirds of the total compute is spent on gradient computation. This ratio has direct implications for GPU utilization and training cost estimation.',
+      },
+      {
+        type: 'inline-check',
+        question: 'During neural network training, approximately what fraction of total computation is spent on the backward pass (gradient computation)?',
+        options: ['About one-quarter (25%)', 'About one-third (33%)', 'About two-thirds (67%)', 'About half (50%)'],
+        correctIndex: 2,
+        explanation: 'The backward pass requires roughly 2x the computation of the forward pass. Since total compute = forward + backward, the backward pass accounts for about 2/3 of the total. This is why training is much more expensive than inference.',
+        hint: 'If the backward pass costs 2x the forward pass, what fraction of (1x + 2x) is 2x?',
       },
       {
         type: 'heading',
@@ -211,6 +243,18 @@ export const sections: ChapterSection[] = [
         variant: 'warning',
         title: 'The Dying ReLU Problem',
         text: 'When a ReLU neuron receives only negative inputs, its output is always zero and its gradient is always zero. This means the neuron stops learning entirely and is effectively "dead." In large networks, a significant fraction of neurons can die during training, reducing model capacity. Leaky ReLU and ELU mitigate this by allowing small gradients for negative inputs.',
+      },
+      {
+        type: 'inline-check',
+        question: 'Why has GELU become the standard activation function in Transformer models instead of ReLU?',
+        options: [
+          'GELU uses fewer FLOPs than ReLU',
+          'GELU provides smooth gradients that improve training stability',
+          'GELU eliminates the need for normalization layers',
+          'GELU was the first activation function to avoid vanishing gradients',
+        ],
+        correctIndex: 1,
+        explanation: 'GELU produces smooth, continuous gradients (unlike ReLU\'s sharp zero-point), which helps Transformer training converge more reliably. It does cost more compute than ReLU, but the stability gains outweigh this on modern hardware.',
       },
       {
         type: 'mini-viz',
@@ -363,6 +407,17 @@ export const sections: ChapterSection[] = [
         title: 'Learning Rate and Batch Size',
         text: 'When scaling to distributed training with larger effective batch sizes, the learning rate must be adjusted. The linear scaling rule suggests multiplying the learning rate by the batch size increase factor. However, this requires a warmup period to stabilize training. Without proper scaling, distributed training may diverge or converge to poor solutions.',
       },
+      {
+        type: 'playground',
+        title: 'Learning Rate Explorer',
+        description: 'Adjust the learning rate and training epochs to see how the loss curve changes. Too small and convergence is painfully slow; too large and training diverges.',
+        parameters: [
+          { name: 'learningRate', label: 'Learning Rate', min: 0.0001, max: 1.0, step: 0.0001, default: 0.01 },
+          { name: 'epochs', label: 'Epochs', min: 10, max: 200, step: 5, default: 50 },
+        ],
+        computeFn: 'learningRateLoss',
+        chartType: 'line',
+      },
     ],
     order: 3,
     keyConcepts: [
@@ -459,6 +514,12 @@ export const sections: ChapterSection[] = [
         type: 'mini-viz',
         vizType: 'confusion-matrix',
         config: {},
+      },
+      {
+        type: 'aha',
+        highlight: 'Batch normalization stabilizes training by normalizing layer inputs to zero mean and unit variance.',
+        explanation: 'Without batch normalization, each layer must constantly adapt to shifting input distributions caused by parameter updates in preceding layers (internal covariate shift). Batch norm eliminates this moving target, letting each layer learn independently. This is why adding batch norm often lets you use higher learning rates and train much faster -- each layer sees a stable input range.',
+        analogy: 'Trying to learn archery while someone keeps moving the target. Batch normalization pins the target in place for each layer, so every layer can focus on improving its own aim rather than constantly adjusting for the moving inputs from the layer before it.',
       },
       {
         type: 'callout',

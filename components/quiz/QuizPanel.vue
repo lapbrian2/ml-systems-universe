@@ -4,7 +4,9 @@ import { Brain, CheckCircle2, XCircle, ArrowRight, RotateCcw, Trophy, Sparkles, 
 import { getQuizForChapter } from '~/data/quizzes'
 import { selectQuizQuestions } from '~/lib/quiz-scorer'
 import { useProgressStore } from '~/stores/progress'
+import { useSpacedRepetitionStore } from '~/stores/spaced-repetition'
 import { useCelebration } from '~/composables/useCelebration'
+import { playCorrectSound, playWrongSound } from '~/composables/useAmbientAudio'
 import type { QuizQuestion } from '~/types/quiz'
 
 const props = defineProps<{
@@ -17,6 +19,7 @@ const emit = defineEmits<{
 }>()
 
 const store = useProgressStore()
+const spacedRepStore = useSpacedRepetitionStore()
 const { celebrateQuizPassed } = useCelebration()
 
 // Quiz state
@@ -88,6 +91,11 @@ function confirmAnswer() {
   answers.value[currentQuestion.value.id] = selectedAnswer.value
   if (selectedAnswer.value === currentQuestion.value.correctIndex) {
     correctCount.value++
+    playCorrectSound()
+  } else {
+    playWrongSound()
+    // Schedule wrong answer for spaced repetition review
+    spacedRepStore.addQuizCard(props.chapterId, currentQuestion.value.id)
   }
 }
 

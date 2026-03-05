@@ -56,6 +56,18 @@ export const sections: ChapterSection[] = [
         text: 'Many production systems use a hybrid lambda architecture that combines both batch and stream processing. While this provides both accuracy and low latency, it requires maintaining two code paths that must produce consistent results — a significant engineering burden. The Kappa architecture simplifies this by using stream processing for everything, replaying the stream for batch-style reprocessing.',
       },
       {
+        type: 'inline-check',
+        question: 'What is the main engineering drawback of the Lambda architecture for ML data pipelines?',
+        options: [
+          'It cannot handle real-time data at all',
+          'It requires maintaining two separate code paths that must produce consistent results',
+          'It only works with Apache Spark',
+          'It does not support data versioning',
+        ],
+        correctIndex: 1,
+        explanation: 'Lambda architecture runs both a batch layer and a speed layer in parallel. The engineering burden comes from maintaining two code paths (batch and stream) that must produce identical results. The Kappa architecture addresses this by using only stream processing.',
+      },
+      {
         type: 'heading',
         level: 3,
         text: 'Pipeline Reliability',
@@ -351,6 +363,18 @@ export const sections: ChapterSection[] = [
         variant: 'tip',
         title: 'Back-Translation for NLP',
         text: 'Back-translation is one of the most effective text augmentation techniques. Translate your training text to another language (e.g., English to French) and then back (French to English). The resulting paraphrase preserves meaning while introducing lexical and syntactic variation. Use multiple target languages for greater diversity.',
+      },
+      {
+        type: 'inline-check',
+        question: 'Why is on-the-fly data augmentation generally preferred over pre-computing augmented examples?',
+        options: [
+          'Pre-computed augmentation is slower during training',
+          'On-the-fly augmentation generates different variations each epoch, providing virtually infinite diversity from a fixed dataset',
+          'Pre-computed augmentation requires more GPU memory',
+        ],
+        correctIndex: 1,
+        explanation: 'On-the-fly augmentation applies random transformations each epoch, so the model sees different augmented versions every time. Pre-computing stores fixed augmented copies on disk, limiting diversity. The trade-off is that on-the-fly augmentation requires CPU cycles during training.',
+        hint: 'Consider what happens when the model sees the same training example across multiple epochs.',
       },
       {
         type: 'heading',

@@ -80,6 +80,19 @@ export const sections: ChapterSection[] = [
         title: 'Start Simple',
         text: 'Always start with data parallelism. It is the simplest approach and sufficient for most models. Only move to model parallelism or pipeline parallelism when the model genuinely does not fit in a single device\'s memory. Premature complexity in distribution strategy is a common source of bugs and wasted engineering effort.',
       },
+      {
+        type: 'inline-check',
+        question: 'When should you use model parallelism instead of data parallelism for distributed training?',
+        options: [
+          'When you have more than 4 GPUs available',
+          'When the model does not fit in a single device\'s memory',
+          'When you want faster convergence',
+          'When the training dataset is very large',
+        ],
+        correctIndex: 1,
+        explanation: 'Data parallelism replicates the entire model on each device, so it requires the model to fit in one device\'s memory. Model parallelism splits the model across devices, which is necessary only when the model is too large for a single GPU. For most use cases, data parallelism is simpler and sufficient.',
+        hint: 'Think about the fundamental constraint that forces you to split the model itself.',
+      },
     ],
     order: 0,
     keyConcepts: [
@@ -167,6 +180,17 @@ export const sections: ChapterSection[] = [
         variant: 'tip',
         title: 'Learning Rate Warmup',
         text: 'When scaling to many devices, always use a learning rate warmup period. Start with a small learning rate and linearly increase it over the first few hundred or thousand steps. This prevents the large initial gradients (from randomly initialized or not-yet-adapted weights) from destabilizing training when multiplied by a large scaled learning rate.',
+      },
+      {
+        type: 'playground',
+        title: 'Batch Size Tradeoff Explorer',
+        description: 'Adjust the batch size and GPU memory to see how throughput, memory usage, GPU utilization, and gradient noise change. Larger batches improve GPU efficiency but consume more memory and reduce gradient noise.',
+        parameters: [
+          { name: 'batchSize', label: 'Batch Size', min: 1, max: 512, step: 1, default: 32 },
+          { name: 'gpuMemory', label: 'GPU Memory', min: 8, max: 80, step: 8, default: 16, unit: 'GB' },
+        ],
+        computeFn: 'batchSizeTradeoff',
+        chartType: 'bar',
       },
     ],
     order: 1,
@@ -415,6 +439,19 @@ export const sections: ChapterSection[] = [
         variant: 'tip',
         title: 'Gradient Accumulation as a Budget Strategy',
         text: 'If you cannot afford many GPUs, gradient accumulation lets you simulate large-batch training on limited hardware. For example, 4 GPUs with 8 accumulation steps gives an effective batch size equivalent to 32 GPUs — at the cost of 8x longer wall-clock time per step but with the same convergence behavior.',
+      },
+      {
+        type: 'inline-check',
+        question: 'In the gradient accumulation code, why is the loss divided by accum_steps before calling backward()?',
+        options: [
+          'To reduce memory usage during accumulation',
+          'To ensure the accumulated gradient has the same magnitude as a single large-batch gradient',
+          'To speed up the backward pass computation',
+          'To prevent gradient overflow in FP16 training',
+        ],
+        correctIndex: 1,
+        explanation: 'Calling backward() adds to the existing gradient (it accumulates). Dividing the loss by accum_steps ensures that after N accumulation steps, the total gradient equals the average over all micro-batches, which is mathematically equivalent to one large batch.',
+        hint: 'What happens to the gradient magnitude if you call backward() 4 times without scaling?',
       },
       {
         type: 'heading',

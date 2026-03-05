@@ -1,19 +1,25 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import type { ContentBlock, GlossaryTerm } from '~/types/chapter'
+import { useScrollReveal } from '~/composables/useScrollReveal'
 
 defineProps<{
   blocks: ContentBlock[]
   glossary?: GlossaryTerm[]
 }>()
+
+const containerRef = ref<HTMLElement | null>(null)
+
+useScrollReveal(() => containerRef.value)
 </script>
 
 <template>
-  <div class="content-blocks space-y-5">
+  <div ref="containerRef" class="content-blocks space-y-5">
     <template v-for="(block, idx) in blocks" :key="idx">
       <!-- Paragraph -->
       <p
         v-if="block.type === 'paragraph'"
-        class="text-[15px] leading-[1.8] text-white/60 tracking-[0.005em]"
+        class="reveal-text text-[15px] leading-[1.8] text-white/60 tracking-[0.005em]"
       >
         <GlossaryText
           v-if="glossary && glossary.length > 0"
@@ -128,6 +134,47 @@ defineProps<{
         v-else-if="block.type === 'mini-viz'"
         :viz-type="block.vizType"
         :config="block.config"
+      />
+
+      <!-- Stat -->
+      <AnimatedStat
+        v-else-if="block.type === 'stat'"
+        :value="block.value"
+        :suffix="block.suffix"
+        :prefix="block.prefix"
+        :label="block.label"
+      />
+
+      <!-- Inline Check -->
+      <InlineCheck
+        v-else-if="block.type === 'inline-check'"
+        :question="block.question"
+        :options="block.options"
+        :correct-index="block.correctIndex"
+        :explanation="block.explanation"
+        :hint="block.hint"
+      />
+
+      <!-- Aha Annotation -->
+      <p
+        v-else-if="block.type === 'aha'"
+        class="reveal-text text-[15px] leading-[1.8] text-white/60 tracking-[0.005em]"
+      >
+        <AhaAnnotation
+          :highlight="block.highlight"
+          :explanation="block.explanation"
+          :analogy="block.analogy"
+        />
+      </p>
+
+      <!-- Parameter Playground -->
+      <ParameterPlayground
+        v-else-if="block.type === 'playground'"
+        :title="block.title"
+        :description="block.description"
+        :parameters="block.parameters"
+        :compute-fn="block.computeFn"
+        :chart-type="block.chartType"
       />
     </template>
   </div>

@@ -99,6 +99,17 @@ export const sections: ChapterSection[] = [
         title: 'Quantization Is Not Free',
         text: 'While INT8 quantization is nearly lossless for most models, aggressive quantization (INT4, INT2) can cause significant accuracy degradation, especially for small models and tasks requiring fine-grained numerical precision. Always evaluate quantized model accuracy on your specific task before deploying — aggregate metrics can hide task-specific failures.',
       },
+      {
+        type: 'playground',
+        title: 'Quantization Explorer',
+        description: 'Adjust the bit width and base model size to see how quantization affects model size, accuracy retention, inference speedup, and compression ratio. Lower bits mean smaller models but risk accuracy loss.',
+        parameters: [
+          { name: 'bits', label: 'Bit Width', min: 2, max: 32, step: 1, default: 8, unit: 'bits' },
+          { name: 'modelSize', label: 'Base Model Size (FP32)', min: 0.5, max: 140, step: 0.5, default: 7, unit: 'GB' },
+        ],
+        computeFn: 'quantizationEffect',
+        chartType: 'bar',
+      },
     ],
     order: 0,
     keyConcepts: [

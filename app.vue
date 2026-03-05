@@ -1,9 +1,27 @@
 <script setup lang="ts">
 const nuxtApp = useNuxtApp()
 const isLoading = ref(false)
+const route = useRoute()
+const { isTransitioning, completeTransition } = useChapterTransition()
 
-nuxtApp.hook('page:start', () => { isLoading.value = true })
-nuxtApp.hook('page:finish', () => { isLoading.value = false })
+// Track whether we're in a chapter-to-chapter navigation
+const wasChapterRoute = ref(false)
+
+nuxtApp.hook('page:start', () => {
+  isLoading.value = true
+  // Record that we started from a chapter page
+  wasChapterRoute.value = route.path.startsWith('/chapter/')
+})
+
+nuxtApp.hook('page:finish', () => {
+  isLoading.value = false
+  // If the cinematic transition was triggered, complete it now that
+  // the new page content has mounted
+  if (isTransitioning.value) {
+    // Small delay so the new page DOM is ready before we reveal it
+    setTimeout(() => completeTransition(), 50)
+  }
+})
 </script>
 
 <template>
@@ -36,7 +54,13 @@ nuxtApp.hook('page:finish', () => { isLoading.value = false })
       <ScrollProgressBar />
     </ClientOnly>
     <NuxtPage />
+    <ClientOnly>
+      <ChapterTransition />
+    </ClientOnly>
     <CommandPalette />
+    <ClientOnly>
+      <AmbientAudioToggle />
+    </ClientOnly>
     <ClientOnly>
       <GrainOverlay />
     </ClientOnly>

@@ -50,6 +50,16 @@ export const sections: ChapterSection[] = [
         text: 'A common mistake is equating fewer FLOPs with faster inference. A depthwise separable convolution has far fewer FLOPs than a standard convolution, but it has lower arithmetic intensity and may be memory-bandwidth-bound on GPUs. Always measure actual latency on target hardware rather than relying solely on FLOP counts.',
       },
       {
+        type: 'inline-check',
+        question: 'A model with fewer FLOPs will always have lower inference latency than a model with more FLOPs on the same hardware. True or false?',
+        options: [
+          'True -- fewer operations always means faster execution',
+          'False -- memory bandwidth, operation scheduling, and hardware utilization also affect real-world speed',
+        ],
+        correctIndex: 1,
+        explanation: 'FLOPs measure arithmetic operations but ignore memory access patterns, hardware utilization, and operation scheduling. A depthwise separable convolution has fewer FLOPs than a standard convolution but can actually be slower on GPUs due to lower arithmetic intensity. Always benchmark on real hardware.',
+      },
+      {
         type: 'heading',
         level: 3,
         text: 'The Pareto Frontier',
@@ -121,6 +131,18 @@ export const sections: ChapterSection[] = [
         resultLabel: 'Compression ratio',
       },
       {
+        type: 'stat',
+        value: 8.8,
+        suffix: 'x',
+        label: 'FLOP reduction with depthwise separable convolutions',
+      },
+      {
+        type: 'stat',
+        value: 300,
+        suffix: 'M',
+        label: 'MobileNetV2 FLOPs (vs 4,100M for ResNet-50)',
+      },
+      {
         type: 'callout',
         variant: 'example',
         title: 'MobileNet Cost Savings',
@@ -172,6 +194,23 @@ export const sections: ChapterSection[] = [
         variant: 'tip',
         title: 'Flash Attention Is Now Standard',
         text: 'Flash Attention does not change the mathematical output of attention — it produces the exact same result. It achieves its speedup by tiling the computation to minimize GPU HBM reads/writes, exploiting the much faster on-chip SRAM. Because it is mathematically equivalent and strictly better in both speed and memory, Flash Attention should be the default choice for all Transformer training and inference.',
+      },
+      {
+        type: 'aha',
+        highlight: 'Pruning can remove up to 90% of a neural network\'s weights with minimal accuracy loss.',
+        explanation: 'Most trained neural networks are vastly over-parameterized. The majority of weights contribute almost nothing to the final prediction. Pruning exploits this redundancy by zeroing out the smallest-magnitude weights, producing a sparse model that computes the same function with a fraction of the active connections. The "lottery ticket hypothesis" suggests the original dense network contains a small subnetwork that, if trained in isolation, would reach the same accuracy.',
+        analogy: 'A company with 1,000 employees where only 100 do critical work. Pruning is the organizational restructuring that identifies the essential staff. The company runs almost as effectively afterward, but at a tenth of the cost -- as long as you identify the right people to keep.',
+      },
+      {
+        type: 'playground',
+        title: 'Pruning Playground',
+        description: 'Explore how pruning percentage affects model accuracy. Toggle between structured pruning (removes entire channels/heads, hardware-friendly) and unstructured pruning (removes individual weights, higher compression but harder to accelerate).',
+        parameters: [
+          { name: 'pruningPercent', label: 'Pruning %', min: 0, max: 98, step: 1, default: 50, unit: '%' },
+          { name: 'structured', label: 'Structured (1) vs Unstructured (0)', min: 0, max: 1, step: 1, default: 0 },
+        ],
+        computeFn: 'pruningEffect',
+        chartType: 'line',
       },
     ],
     order: 1,
@@ -368,6 +407,13 @@ export const sections: ChapterSection[] = [
         definition: 'The practice of reusing a model\'s learned representations from one task (typically a large-scale pretraining task) as the starting point for a different target task. This dramatically reduces both the data and compute needed to achieve good performance on the target task, because the model starts with useful features rather than random weights.',
       },
       {
+        type: 'stat',
+        prefix: '<',
+        value: 1,
+        suffix: '%',
+        label: 'Training cost with LoRA adapters vs full training',
+      },
+      {
         type: 'callout',
         variant: 'note',
         title: 'The Foundation Model Paradigm',
@@ -384,6 +430,24 @@ export const sections: ChapterSection[] = [
           ['Prompt tuning', '<0.1%', 'Few examples', 'Very large models, minimal compute available'],
         ],
         caption: 'Table 9.5: Training efficiency strategies ordered by cost and data requirements.',
+      },
+      {
+        type: 'inline-check',
+        question: 'LoRA (Low-Rank Adaptation) achieves less than 1% of the training cost of full fine-tuning. How does it accomplish this?',
+        options: [
+          'It trains only the bias terms of the model',
+          'It trains small low-rank adapter matrices inserted alongside frozen pretrained weights',
+          'It uses a smaller dataset for training',
+          'It reduces the learning rate to near zero',
+        ],
+        correctIndex: 1,
+        explanation: 'LoRA inserts small trainable low-rank decomposition matrices alongside the frozen pretrained weights. Only these adapter matrices (a tiny fraction of total parameters) are updated during fine-tuning, dramatically reducing compute, memory, and storage requirements.',
+      },
+      {
+        type: 'aha',
+        highlight: 'Knowledge distillation transfers "dark knowledge" from a large teacher model to a small student model.',
+        explanation: 'When a large model predicts "cat: 0.7, lynx: 0.2, dog: 0.1," the relationships between wrong answers carry rich information -- the model learned that cats look more like lynxes than dogs. This soft probability distribution contains far more learning signal than the hard label "cat." A small student model trained to mimic these soft outputs learns these inter-class relationships and achieves accuracy far beyond what it could learn from hard labels alone.',
+        analogy: 'An expert chef mentoring an apprentice. Instead of just saying "this dish needs salt" (hard label), the chef explains "it needs a pinch of salt, it is close to right on acidity, and the sweetness is completely off" (soft targets). The apprentice learns much faster from this nuanced feedback than from simple pass/fail judgments.',
       },
       {
         type: 'heading',

@@ -163,6 +163,18 @@ export const sections: ChapterSection[] = [
         text: 'Split inference is most valuable when: (1) the device can handle early feature extraction but not the full model, (2) network bandwidth is limited but latency requirements are not extreme, and (3) intermediate representations are much smaller than raw inputs. It is less useful when strict privacy requires all data to stay on-device.',
       },
       {
+        type: 'inline-check',
+        question: 'What is the primary factor when choosing the split point in split inference between an edge device and the cloud?',
+        options: [
+          'The layer with the highest accuracy contribution',
+          'The layer that produces the smallest intermediate tensor to minimize transmitted data',
+          'Always split exactly at the midpoint of the model',
+          'The layer with the most parameters',
+        ],
+        correctIndex: 1,
+        explanation: 'The optimal split point minimizes the size of the intermediate representation sent from device to cloud. Early convolutional layers typically reduce spatial dimensions significantly, so splitting after these layers means transmitting far less data than sending raw inputs.',
+      },
+      {
         type: 'heading',
         level: 3,
         text: 'Operational Challenges at Fleet Scale',
@@ -364,6 +376,19 @@ export const sections: ChapterSection[] = [
         variant: 'warning',
         title: 'Preventing Forgetting on Device',
         text: 'Elastic Weight Consolidation (EWC) penalizes changes to weights that were important for previous tasks. Replay buffers store a small subset of past examples for periodic review. On devices with limited memory, distillation-based approaches — where the personalized model is regularized to stay close to the original model\'s predictions — are often the most practical.',
+      },
+      {
+        type: 'inline-check',
+        question: 'In federated learning, what information does each device share with the central server?',
+        options: [
+          'Raw training data from the device',
+          'The complete local model weights',
+          'Only the model update (gradient or parameter delta), never the raw data',
+          'A random sample of training examples',
+        ],
+        correctIndex: 2,
+        explanation: 'Federated learning preserves privacy by keeping raw data on each device. Only model updates (parameter deltas or gradients) are sent to the server for aggregation. Combined with secure aggregation and differential privacy, this approach enables collaborative training without exposing individual user data.',
+        hint: 'The core privacy guarantee of federated learning depends on what stays on the device.',
       },
     ],
     order: 3,

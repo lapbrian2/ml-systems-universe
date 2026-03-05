@@ -11,6 +11,18 @@ export const sections: ChapterSection[] = [
         text: 'The environmental impact of machine learning has grown dramatically as models have scaled in size and training compute. Training a single large language model can emit as much carbon as five cars over their entire lifetimes. As ML becomes pervasive, its collective environmental footprint has become a significant concern for the research community and society at large.',
       },
       {
+        type: 'stat',
+        value: 284,
+        suffix: ' tonnes',
+        label: 'CO2 from training one large Transformer with NAS',
+      },
+      {
+        type: 'stat',
+        value: 300000,
+        suffix: 'x',
+        label: 'NLP compute increase (2012 to 2019)',
+      },
+      {
         type: 'callout',
         variant: 'warning',
         title: 'Strubell et al. (2019): A Wake-Up Call',
@@ -94,6 +106,12 @@ export const sections: ChapterSection[] = [
         variant: 'example',
         title: 'Inference Dominates at Scale',
         text: 'For a model serving millions of users daily, inference energy can exceed training energy within days of deployment. Google reported that inference accounts for roughly 60% of their total ML energy consumption. By early 2025, ChatGPT alone was estimated to consume 564 MWh of electricity per day for inference -- equivalent to powering roughly 18,000 average US homes. Optimizing inference efficiency is therefore critical for deployed systems.',
+      },
+      {
+        type: 'stat',
+        value: 564,
+        suffix: ' MWh/day',
+        label: 'ChatGPT daily inference electricity (est. 2025)',
       },
       {
         type: 'paragraph',

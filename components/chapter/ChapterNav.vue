@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { ArrowLeft, ArrowRight } from 'lucide-vue-next'
 import { getNextChapter, getPrevChapter, getPartForChapter } from '~/lib/chapter-utils'
+import { useChapterTransition } from '~/composables/useChapterTransition'
 
 const props = defineProps<{
   currentSlug: string
@@ -11,6 +12,22 @@ const prev = computed(() => getPrevChapter(props.currentSlug))
 const next = computed(() => getNextChapter(props.currentSlug))
 const prevPart = computed(() => prev.value ? getPartForChapter(prev.value.id) : null)
 const nextPart = computed(() => next.value ? getPartForChapter(next.value.id) : null)
+
+const { triggerTransition } = useChapterTransition()
+
+function handleNav(target: ReturnType<typeof getNextChapter>, e: MouseEvent) {
+  if (!target) return
+  e.preventDefault()
+  const targetPart = getPartForChapter(target.id)
+  triggerTransition({
+    number: target.number,
+    title: target.title,
+    color: targetPart?.color ?? '#14b8a6',
+  })
+  setTimeout(() => {
+    navigateTo(`/chapter/${target.slug}`)
+  }, 350)
+}
 </script>
 
 <template>
@@ -24,6 +41,7 @@ const nextPart = computed(() => next.value ? getPartForChapter(next.value.id) : 
         :to="`/chapter/${prev.slug}`"
         class="flex-1 glass-panel rounded-xl px-5 py-5 flex items-center gap-3 transition-all duration-300 hover:bg-white/[0.04] hover:border-white/10 group relative overflow-hidden"
         :aria-label="`Previous: ${prev.title}`"
+        @click.prevent="handleNav(prev, $event)"
       >
         <!-- Accent bar -->
         <div
@@ -55,6 +73,7 @@ const nextPart = computed(() => next.value ? getPartForChapter(next.value.id) : 
         :to="`/chapter/${next.slug}`"
         class="flex-1 glass-panel rounded-xl px-5 py-5 flex items-center justify-end gap-3 text-right transition-all duration-300 hover:bg-white/[0.04] hover:border-white/10 group relative overflow-hidden"
         :aria-label="`Next: ${next.title}`"
+        @click.prevent="handleNav(next, $event)"
       >
         <!-- Accent bar -->
         <div

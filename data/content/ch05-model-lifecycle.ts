@@ -86,6 +86,12 @@ export const sections: ChapterSection[] = [
         text: 'The deployment phase marks the transition from experimentation to production. This involves packaging the model, setting up serving infrastructure, implementing monitoring, and establishing feedback loops for continuous improvement. The lifecycle does not end at deployment; production models require ongoing monitoring, maintenance, and periodic retraining.',
       },
       {
+        type: 'aha',
+        highlight: 'Models degrade over time as the data they encounter drifts away from the data they learned from.',
+        explanation: 'Unlike traditional software that works the same way forever unless the code changes, ML models silently rot. The world changes -- user behavior shifts, new products launch, seasons change, language evolves -- but the model remains frozen in the snapshot of reality it was trained on. This silent degradation is more dangerous than a software crash because the model keeps producing outputs that look valid but are increasingly wrong.',
+        analogy: 'A guidebook written five years ago for a rapidly changing city. The restaurants have closed, the subway map is wrong, and new neighborhoods have appeared. The book still looks authoritative and gives confident recommendations -- they are just increasingly inaccurate. Without someone checking the guidebook against the current city, you would never know it had gone stale.',
+      },
+      {
         type: 'callout',
         variant: 'note',
         title: 'The Lifecycle Never Ends',

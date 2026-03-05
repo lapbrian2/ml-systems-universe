@@ -37,10 +37,29 @@ export const sections: ChapterSection[] = [
         label: 'Equation 15.1: Fast Gradient Sign Method (FGSM). The adversarial input is created by adding a perturbation of magnitude epsilon in the direction of the loss gradient with respect to the input.',
       },
       {
+        type: 'aha',
+        highlight: 'Adversarial examples exploit the linearity of neural networks, not their nonlinearity.',
+        explanation: 'Intuitively, you might expect that complex nonlinear models would be harder to fool. In reality, modern neural networks behave mostly linearly in high-dimensional space (ReLU is piecewise linear). A tiny perturbation applied to each of the thousands of input dimensions accumulates linearly, producing a massive shift in the output. FGSM works precisely because it exploits this linearity: each pixel gets a small nudge, but across 150,000+ pixels the cumulative effect overwhelms the model.',
+        analogy: 'Pushing a shopping cart. One person pushing with one finger barely moves it. But if 1,000 people each push with one finger in the same direction, the cart flies across the parking lot. Each push is negligible, but the linear accumulation across many dimensions creates a force the cart cannot resist. Neural networks are the cart.',
+      },
+      {
         type: 'callout',
         variant: 'note',
         title: 'Imperceptible Perturbations',
         text: 'FGSM with epsilon = 8/255 on a 0-255 pixel scale changes each pixel by at most 3%. This is imperceptible to humans but can flip a classifier\'s prediction with high probability. PGD (Projected Gradient Descent) iteratively refines the perturbation within this epsilon-ball, producing even stronger attacks that defeat simple defenses.',
+      },
+      {
+        type: 'inline-check',
+        question: 'FGSM (Fast Gradient Sign Method) creates adversarial examples by:',
+        options: [
+          'Randomly adding noise to the input',
+          'Adding a perturbation in the direction of the loss gradient with respect to the input',
+          'Removing key features from the input image',
+          'Training a separate adversarial network to generate attacks',
+        ],
+        correctIndex: 1,
+        explanation: 'FGSM computes the gradient of the loss with respect to the input (not the weights), then adds a small perturbation in the sign direction of that gradient. This pushes the input toward higher loss, causing misclassification. The perturbation magnitude epsilon controls the trade-off between imperceptibility and attack success.',
+        hint: 'Look at Equation 15.1 -- what role does the gradient play?',
       },
       {
         type: 'table',
@@ -300,6 +319,12 @@ export const sections: ChapterSection[] = [
     body: 'Differential privacy provides a mathematical framework for quantifying and limiting the privacy leakage of computations on sensitive data. Applied to ML, it ensures that the trained model does not reveal too much information about any individual training example, protecting against membership inference and data extraction attacks.\n\nThe core mechanism is adding calibrated noise to gradients during training (DP-SGD). Each per-example gradient is clipped to a maximum norm, the clipped gradients are averaged, and Gaussian noise proportional to the sensitivity and privacy budget is added. The resulting noisy gradient update provides formal privacy guarantees characterized by the epsilon and delta parameters.\n\nThe privacy-utility trade-off is the fundamental challenge of differential privacy. Stronger privacy (lower epsilon) requires more noise, which degrades model quality. Research on improving this trade-off focuses on better gradient clipping strategies, noise reduction through subsampling amplification, and architecture choices that are more amenable to private training.\n\nPrivacy budgeting and composition are practical concerns for deploying differential privacy. Each training step consumes a portion of the total privacy budget. The moments accountant and Renyi differential privacy provide tight composition bounds that track cumulative privacy loss. Organizations must decide on an acceptable total privacy budget and manage it across model development and deployment.',
     blocks: [
       {
+        type: 'aha',
+        highlight: 'Model inversion attacks can reconstruct training data from a trained model, turning your model into a privacy liability.',
+        explanation: 'A trained model memorizes more about its training data than its predictions reveal on the surface. Model inversion attacks systematically query a model and use gradient-based optimization to reconstruct inputs that maximize the model\'s confidence for a target class. Researchers have reconstructed recognizable faces from facial recognition models and extracted private text from language models. This means that deploying a model is, in a real sense, publishing a lossy copy of the training data.',
+        analogy: 'A sculptor who creates a bust from memory. Even though the original person is not present, studying the sculpture reveals details about the subject -- bone structure, facial features, unique characteristics. A trained neural network is the sculpture, and model inversion is the forensic technique that extracts details about the training data "subjects" the model memorized.',
+      },
+      {
         type: 'paragraph',
         text: 'Differential privacy provides a mathematical framework for quantifying and limiting the privacy leakage of computations on sensitive data. Applied to ML, it ensures that the trained model does not reveal too much information about any individual training example.',
       },
@@ -333,6 +358,19 @@ export const sections: ChapterSection[] = [
         variant: 'note',
         title: 'Interpreting Epsilon',
         text: 'Epsilon is the privacy budget. Lower epsilon means stronger privacy. In practice: epsilon < 1 provides strong privacy guarantees, epsilon between 1 and 10 provides moderate privacy, and epsilon > 10 provides weak formal guarantees. Apple uses epsilon = 2 for local DP in iOS. Google uses epsilon = 1 for some Chrome data collection. Most ML research reports epsilon between 3 and 8.',
+      },
+      {
+        type: 'inline-check',
+        question: 'In differential privacy, a lower epsilon value means:',
+        options: [
+          'Weaker privacy guarantees but better model accuracy',
+          'Stronger privacy guarantees but more noise added to the computation',
+          'Faster training because less computation is needed',
+          'The model requires more training data',
+        ],
+        correctIndex: 1,
+        explanation: 'Epsilon is the privacy budget: lower epsilon means the output of the computation reveals less about any individual record. Achieving this stronger guarantee requires adding more noise to gradients (in DP-SGD), which can degrade model quality. This trade-off is fundamental to differential privacy.',
+        hint: 'Think of epsilon as a "leakage dial" -- turning it down means less information leaks out.',
       },
       {
         type: 'heading',

@@ -35,6 +35,10 @@ export type ContentBlock =
   | { type: 'equation'; latex: string; label?: string }
   | { type: 'interactive-equation'; latex: string; variables: Array<{ name: string; label: string; min: number; max: number; step: number; default: number; unit?: string }>; computeResult?: string; resultLabel?: string }
   | { type: 'mini-viz'; vizType: 'activation' | 'gradient' | 'distribution' | 'confusion-matrix'; config: Record<string, unknown> }
+  | { type: 'stat'; value: number; suffix?: string; prefix?: string; label: string }
+  | { type: 'inline-check'; question: string; options: string[]; correctIndex: number; explanation: string; hint?: string }
+  | { type: 'aha'; highlight: string; explanation: string; analogy?: string }
+  | { type: 'playground'; title: string; description: string; parameters: Array<{ name: string; label: string; min: number; max: number; step: number; default: number; unit?: string }>; computeFn: string; chartType: 'line' | 'bar' | 'gauge' }
 
 export interface ChapterSection {
   id: string;
