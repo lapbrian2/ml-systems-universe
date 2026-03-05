@@ -345,6 +345,14 @@ function getNode(id: string) {
   }
 }
 
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .node-glow,
+  .node-inner-ring {
+    animation: none !important;
+  }
+}
+
 /* Mobile: behind content, very subtle */
 @media (max-width: 768px) {
   .ml-system-hero {

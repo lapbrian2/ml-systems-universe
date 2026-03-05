@@ -57,7 +57,7 @@ watch(() => props.latex, () => {
 </template>
 
 <style>
-@import 'katex/dist/katex.min.css';
+/* katex.min.css is loaded globally in nuxt.config.ts */
 
 .katex-display-wrapper .katex {
   color: rgba(255, 255, 255, 0.75);

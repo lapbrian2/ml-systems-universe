@@ -3,6 +3,7 @@ import { ref, onMounted, onUnmounted, type Ref } from 'vue'
 /**
  * Track mouse position relative to a container element.
  * Uses requestAnimationFrame for smooth updates.
+ * Only updates Vue refs when values actually change (dirty flag).
  * SSR-safe: no listeners are attached on the server.
  */
 export function useMouseTracker(containerRef: Ref<HTMLElement | null>) {
@@ -14,6 +15,7 @@ export function useMouseTracker(containerRef: Ref<HTMLElement | null>) {
   let rawX = 0
   let rawY = 0
   let inside = false
+  let dirty = false
 
   function onMouseMove(e: MouseEvent) {
     const el = containerRef.value
@@ -22,16 +24,21 @@ export function useMouseTracker(containerRef: Ref<HTMLElement | null>) {
     rawX = e.clientX - rect.left
     rawY = e.clientY - rect.top
     inside = true
+    dirty = true
   }
 
   function onMouseLeave() {
     inside = false
+    dirty = true
   }
 
   function tick() {
-    mouseX.value = rawX
-    mouseY.value = rawY
-    isInside.value = inside
+    if (dirty) {
+      mouseX.value = rawX
+      mouseY.value = rawY
+      isInside.value = inside
+      dirty = false
+    }
     rafId = requestAnimationFrame(tick)
   }
 

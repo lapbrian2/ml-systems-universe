@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     '@tresjs/nuxt',
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
+    'pinia-plugin-persistedstate/nuxt',
     '@nuxtjs/sitemap',
   ],
 

@@ -55,10 +55,3 @@ export interface GlossaryTerm {
   definition: string;
   relatedTerms?: string[];
 }
-
-export interface ChapterData extends ChapterMeta {
-  sections: ChapterSection[];
-  glossary: GlossaryTerm[];
-  keyTakeaways: string[];
-  vizConfig: Record<string, unknown>;
-}

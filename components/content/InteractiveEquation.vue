@@ -185,7 +185,7 @@ function formatResult(val: number): string {
 </template>
 
 <style>
-@import 'katex/dist/katex.min.css';
+/* katex.min.css is loaded globally in nuxt.config.ts */
 
 .interactive-slider::-webkit-slider-thumb {
   -webkit-appearance: none;

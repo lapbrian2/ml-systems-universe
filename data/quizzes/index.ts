@@ -46,7 +46,7 @@ const QUIZ_REGISTRY: Record<string, ChapterQuiz> = {
   ch21: ch21Quiz,
 };
 
-export function getQuizForChapter(chapterId: string): ChapterQuiz {
+export function getQuizForChapter(chapterId: string): ChapterQuiz | undefined {
   return QUIZ_REGISTRY[chapterId];
 }
 

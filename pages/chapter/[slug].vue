@@ -96,14 +96,17 @@ function flushTime() {
 }
 
 if (import.meta.client) {
+  const handleVisibility = () => {
+    if (document.hidden) flushTime()
+    else visitStart = Date.now()
+  }
+
   onMounted(() => {
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) flushTime()
-      else visitStart = Date.now()
-    })
+    document.addEventListener('visibilitychange', handleVisibility)
   })
 
   onUnmounted(() => {
+    document.removeEventListener('visibilitychange', handleVisibility)
     flushTime()
   })
 }

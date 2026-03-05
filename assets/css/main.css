@@ -466,8 +466,6 @@ a:focus-visible {
 /* ── Reduced motion support (WCAG 2.3.3) ── */
 @media (prefers-reduced-motion: reduce) {
   .viz-mesh-bg,
-  .node-glow,
-  .node-inner-ring,
   .loss-surface__loading-spinner {
     animation: none !important;
   }

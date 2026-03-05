@@ -8,28 +8,37 @@ export interface ChapterContent {
 }
 
 // Dynamic import map — each chapter is only loaded when requested
+function extractContent(m: Record<string, unknown>): ChapterContent {
+  return {
+    sections: m.sections as ChapterContent['sections'],
+    glossary: m.glossary as ChapterContent['glossary'],
+    keyTakeaways: m.keyTakeaways as ChapterContent['keyTakeaways'],
+    learningObjectives: m.learningObjectives as ChapterContent['learningObjectives'],
+  };
+}
+
 const contentLoaders: Record<string, () => Promise<ChapterContent>> = {
-  ch01: () => import('./ch01-introduction').then(m => m as unknown as ChapterContent),
-  ch02: () => import('./ch02-ml-systems').then(m => m as unknown as ChapterContent),
-  ch03: () => import('./ch03-dl-primer').then(m => m as unknown as ChapterContent),
-  ch04: () => import('./ch04-dnn-architectures').then(m => m as unknown as ChapterContent),
-  ch05: () => import('./ch05-model-lifecycle').then(m => m as unknown as ChapterContent),
-  ch06: () => import('./ch06-data-engineering').then(m => m as unknown as ChapterContent),
-  ch07: () => import('./ch07-frameworks').then(m => m as unknown as ChapterContent),
-  ch08: () => import('./ch08-ai-training').then(m => m as unknown as ChapterContent),
-  ch09: () => import('./ch09-efficient-ai').then(m => m as unknown as ChapterContent),
-  ch10: () => import('./ch10-model-optimizations').then(m => m as unknown as ChapterContent),
-  ch11: () => import('./ch11-hw-acceleration').then(m => m as unknown as ChapterContent),
-  ch12: () => import('./ch12-benchmarking').then(m => m as unknown as ChapterContent),
-  ch13: () => import('./ch13-training-infra').then(m => m as unknown as ChapterContent),
-  ch14: () => import('./ch14-deployment').then(m => m as unknown as ChapterContent),
-  ch15: () => import('./ch15-security').then(m => m as unknown as ChapterContent),
-  ch16: () => import('./ch16-robustness').then(m => m as unknown as ChapterContent),
-  ch17: () => import('./ch17-fairness').then(m => m as unknown as ChapterContent),
-  ch18: () => import('./ch18-sustainability').then(m => m as unknown as ChapterContent),
-  ch19: () => import('./ch19-applications').then(m => m as unknown as ChapterContent),
-  ch20: () => import('./ch20-responsible-ai').then(m => m as unknown as ChapterContent),
-  ch21: () => import('./ch21-conclusion').then(m => m as unknown as ChapterContent),
+  ch01: () => import('./ch01-introduction').then(extractContent),
+  ch02: () => import('./ch02-ml-systems').then(extractContent),
+  ch03: () => import('./ch03-dl-primer').then(extractContent),
+  ch04: () => import('./ch04-dnn-architectures').then(extractContent),
+  ch05: () => import('./ch05-model-lifecycle').then(extractContent),
+  ch06: () => import('./ch06-data-engineering').then(extractContent),
+  ch07: () => import('./ch07-frameworks').then(extractContent),
+  ch08: () => import('./ch08-ai-training').then(extractContent),
+  ch09: () => import('./ch09-efficient-ai').then(extractContent),
+  ch10: () => import('./ch10-model-optimizations').then(extractContent),
+  ch11: () => import('./ch11-hw-acceleration').then(extractContent),
+  ch12: () => import('./ch12-benchmarking').then(extractContent),
+  ch13: () => import('./ch13-training-infra').then(extractContent),
+  ch14: () => import('./ch14-deployment').then(extractContent),
+  ch15: () => import('./ch15-security').then(extractContent),
+  ch16: () => import('./ch16-robustness').then(extractContent),
+  ch17: () => import('./ch17-fairness').then(extractContent),
+  ch18: () => import('./ch18-sustainability').then(extractContent),
+  ch19: () => import('./ch19-applications').then(extractContent),
+  ch20: () => import('./ch20-responsible-ai').then(extractContent),
+  ch21: () => import('./ch21-conclusion').then(extractContent),
 };
 
 // In-memory cache to avoid re-importing
