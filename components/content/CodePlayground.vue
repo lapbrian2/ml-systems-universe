@@ -100,59 +100,76 @@ async function runCode() {
       setStderr({ batched: (text: string) => errorLines.push(text) })
     }
 
-    // Wrap user code to handle missing modules gracefully
     const codeToRun = editableCode.value
-    const wrappedCode = `
-import sys as _sys
-
-# Provide mock modules for libraries not available in Pyodide
-class _MockModule:
-    def __init__(self, name):
-        self._name = name
-    def __getattr__(self, attr):
-        if attr.startswith('_'):
-            raise AttributeError(attr)
-        return _MockModule(f"{self._name}.{attr}")
-    def __call__(self, *args, **kwargs):
-        print(f"[mock] {self._name}() called — library not available in browser")
-        return self
-    def __iter__(self):
-        return iter([])
-    def __repr__(self):
-        return f"<mock {self._name}>"
-
-_missing = []
-_original_import = __builtins__.__import__
-def _safe_import(name, *args, **kwargs):
-    try:
-        return _original_import(name, *args, **kwargs)
-    except ModuleNotFoundError:
-        _missing.append(name.split('.')[0])
-        return _MockModule(name)
-
-__builtins__.__import__ = _safe_import
-
-try:
-${codeToRun.split('\n').map(line => '    ' + line).join('\n')}
-except Exception as _e:
-    print(f"Error: {type(_e).__name__}: {_e}")
-finally:
-    __builtins__.__import__ = _original_import
-    if _missing:
-        _unique = sorted(set(_missing))
-        print(f"\\n⚠ Libraries not available in browser: {', '.join(_unique)}")
-        print("Output above uses mock objects. Install these locally for full results.")
-`
-
     const timeoutMs = 10000
     const runPython = pyodide.runPythonAsync as (code: string) => Promise<unknown>
 
-    const result = await Promise.race([
-      runPython(wrappedCode),
-      new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Execution timed out after 10 seconds')), timeoutMs)
-      ),
-    ])
+    // First: try running the code directly
+    let result: unknown
+    let ranSuccessfully = false
+    try {
+      result = await Promise.race([
+        runPython(codeToRun),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Execution timed out after 10 seconds')), timeoutMs)
+        ),
+      ])
+      ranSuccessfully = true
+    } catch (runErr: unknown) {
+      const msg = runErr instanceof Error ? runErr.message : String(runErr)
+
+      // If it failed due to missing modules, produce a helpful walkthrough
+      if (msg.includes('ModuleNotFoundError') || msg.includes('No module named')) {
+        const missingMatch = msg.match(/No module named '([^']+)'/)
+        const missingLib = missingMatch ? missingMatch[1] : 'unknown'
+
+        // Parse the code to explain what it does
+        const lines = codeToRun.split('\n')
+        const imports: string[] = []
+        const actions: string[] = []
+
+        for (const line of lines) {
+          const trimmed = line.trim()
+          if (!trimmed || trimmed.startsWith('#')) continue
+          if (trimmed.startsWith('import ') || trimmed.startsWith('from ')) {
+            imports.push(trimmed)
+          } else if (trimmed.includes('=') || trimmed.includes('(')) {
+            // Summarize key actions
+            const clean = trimmed.replace(/\s*#.*$/, '').trim()
+            if (clean.length > 0 && clean.length < 100) {
+              actions.push(clean)
+            }
+          }
+        }
+
+        outputLines.push(`⚠ This code requires "${missingLib}" which is not available in the browser.`)
+        outputLines.push('')
+        outputLines.push('📦 To run locally, install:')
+        outputLines.push(`   pip install ${imports.map(i => {
+          const m = i.match(/(?:import|from)\s+(\w+)/)
+          return m ? m[1] : ''
+        }).filter(Boolean).filter((v, i, a) => a.indexOf(v) === i).join(' ')}`)
+        outputLines.push('')
+        outputLines.push('📋 What this code does:')
+        const comments = lines
+          .filter(l => l.trim().startsWith('#') && !l.trim().startsWith('#!'))
+          .map(l => l.trim().replace(/^#+\s*/, ''))
+          .filter(c => c.length > 5)
+        if (comments.length > 0) {
+          comments.slice(0, 8).forEach(c => outputLines.push(`   • ${c}`))
+        } else if (actions.length > 0) {
+          actions.slice(0, 6).forEach(a => outputLines.push(`   → ${a}`))
+        }
+
+        ranSuccessfully = true // Don't show raw traceback
+        result = undefined
+      } else {
+        // Other errors: show them
+        outputLines.push(msg)
+        ranSuccessfully = true
+        result = undefined
+      }
+    }
 
     let finalOutput = ''
     if (outputLines.length > 0) finalOutput += outputLines.join('\n')
@@ -317,7 +334,7 @@ onBeforeUnmount(() => {
 
           <div v-if="showOutput" class="playground__output">
             <Loader2 v-if="isRunning && !output" class="w-4 h-4 animate-spin text-white/30 mx-auto" />
-            <pre v-else class="playground__output-text" :class="{ 'playground__output-text--error': output.includes('Error') || output.includes('Traceback') }">{{ output }}</pre>
+            <pre v-else class="playground__output-text" :class="{ 'playground__output-text--error': output.includes('Traceback') || (output.startsWith('Error:') && !output.includes('📋')) }">{{ output }}</pre>
           </div>
         </div>
       </div>
