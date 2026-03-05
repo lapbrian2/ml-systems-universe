@@ -87,15 +87,34 @@ onUnmounted(() => {
 })
 
 const accentColor = props.color || 'rgba(20, 184, 166, 1)'
-const glowColor = props.color
-  ? props.color.replace(/[\d.]+\)$/, '0.25)')
-  : 'rgba(20, 184, 166, 0.25)'
+
+function toGlowColor(color: string | undefined): string {
+  if (!color) return 'rgba(20, 184, 166, 0.25)'
+  // Handle rgba/rgb format
+  if (color.includes('(')) {
+    return color.replace(/[\d.]+\)$/, '0.25)')
+  }
+  // Handle hex format — convert to rgba with low opacity
+  if (color.startsWith('#')) {
+    const hex = color.slice(1)
+    const fullHex = hex.length === 3 ? hex.split('').map(c => c + c).join('') : hex
+    const r = parseInt(fullHex.slice(0, 2), 16)
+    const g = parseInt(fullHex.slice(2, 4), 16)
+    const b = parseInt(fullHex.slice(4, 6), 16)
+    return `rgba(${r}, ${g}, ${b}, 0.25)`
+  }
+  return 'rgba(20, 184, 166, 0.25)'
+}
+
+const glowColor = toGlowColor(props.color)
 </script>
 
 <template>
   <div
     ref="statEl"
     class="animated-stat"
+    role="figure"
+    :aria-label="`${prefix || ''}${formatValue(props.value)}${suffix || ''} — ${label}`"
     :style="{
       '--stat-accent': accentColor,
       '--stat-glow': glowColor,

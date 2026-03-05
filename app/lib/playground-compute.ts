@@ -181,10 +181,164 @@ export function quantizationEffect(params: Record<string, number>): BarChartData
   }
 }
 
+/**
+ * Canary deployment risk: total requests exposed to the canary model.
+ */
+export function canaryDeploymentRisk(params: Record<string, number>): GaugeData {
+  const canaryPercent = params.canaryPercent ?? 5
+  const durationHours = params.durationHours ?? 24
+  const requestsPerHour = params.requestsPerHour ?? 100 // in thousands
+
+  const exposedRequestsK = (canaryPercent / 100) * requestsPerHour * durationHours
+
+  return {
+    value: Math.round(exposedRequestsK),
+    min: 0,
+    max: Math.round(requestsPerHour * durationHours),
+    label: 'Requests exposed to canary (K)',
+    unit: 'K requests',
+  }
+}
+
+/**
+ * Grid vs random search: values per dimension with a fixed trial budget.
+ */
+export function gridVsRandomSearch(params: Record<string, number>): BarChartData {
+  const dimensions = params.dimensions ?? 3
+  const budget = params.budget ?? 100
+
+  const gridValuesPerDim = Math.floor(Math.pow(budget, 1 / dimensions))
+  const gridTotal = Math.pow(gridValuesPerDim, dimensions)
+  const randomCoverage = budget // random search uses all trials
+
+  return {
+    labels: ['Grid: vals/dim', 'Grid: total', 'Random: trials', 'Random: unique dims'],
+    values: [gridValuesPerDim, Math.min(gridTotal, budget), randomCoverage, budget],
+    xlabel: 'Search Strategy',
+    ylabel: 'Count',
+  }
+}
+
+/**
+ * Labeling cost calculator: random vs active learning.
+ */
+export function labelingCostCalculator(params: Record<string, number>): BarChartData {
+  const datasetSize = params.datasetSize ?? 100000
+  const costPerLabel = params.costPerLabel ?? 0.50
+  const activeLearningRatio = params.activeLearningRatio ?? 4
+
+  const randomCost = datasetSize * costPerLabel
+  const activeCost = (datasetSize / activeLearningRatio) * costPerLabel
+  const savings = randomCost - activeCost
+
+  return {
+    labels: ['Random ($)', 'Active ($)', 'Savings ($)', 'Labels needed'],
+    values: [
+      Math.round(randomCost),
+      Math.round(activeCost),
+      Math.round(savings),
+      Math.round(datasetSize / activeLearningRatio),
+    ],
+    xlabel: 'Strategy',
+    ylabel: 'Value',
+  }
+}
+
+/**
+ * MCU memory budget: flash and SRAM usage.
+ */
+export function mcuMemoryBudget(params: Record<string, number>): GaugeData {
+  const modelParams = params.modelParams ?? 50 // in thousands
+  const bitsPerWeight = params.bitsPerWeight ?? 8
+  const flashKB = params.flashKB ?? 1024
+
+  const modelSizeKB = (modelParams * 1000 * bitsPerWeight) / 8 / 1024
+  const flashUsagePct = (modelSizeKB / flashKB) * 100
+
+  return {
+    value: Math.round(flashUsagePct * 10) / 10,
+    min: 0,
+    max: 100,
+    label: `Model: ${Math.round(modelSizeKB)} KB / ${flashKB} KB flash`,
+    unit: '% flash used',
+  }
+}
+
+/**
+ * Optimization pipeline: combined speedup from multiple techniques.
+ */
+export function optimizationPipeline(params: Record<string, number>): GaugeData {
+  const distill = params.distillSpeedup ?? 1.5
+  const prune = params.pruneSpeedup ?? 1.3
+  const quant = params.quantSpeedup ?? 2.0
+  const fusion = params.fusionSpeedup ?? 1.5
+
+  // Apply a 15% discount for interaction effects
+  const theoretical = distill * prune * quant * fusion
+  const practical = theoretical * 0.85
+
+  return {
+    value: Math.round(practical * 10) / 10,
+    min: 1,
+    max: 50,
+    label: `Theoretical: ${theoretical.toFixed(1)}x, Practical: ${practical.toFixed(1)}x`,
+    unit: 'x speedup',
+  }
+}
+
+/**
+ * Compound scaling explorer for EfficientNet.
+ */
+export function compoundScaling(params: Record<string, number>): LineChartData {
+  const alpha = params.alpha ?? 1.2
+  const beta = params.beta ?? 1.1
+
+  const x: number[] = []
+  const y: number[] = []
+
+  for (let phi = 0; phi <= 7; phi++) {
+    x.push(phi)
+    const depth = Math.pow(alpha, phi)
+    const width = Math.pow(beta, phi)
+    const flopsMultiplier = depth * width * width // alpha * beta^2 * gamma^2 ≈ 2^phi
+    y.push(Math.round(flopsMultiplier * 10) / 10)
+  }
+
+  return { x, y, xlabel: 'Compound Coefficient (φ)', ylabel: 'FLOPs Multiplier' }
+}
+
+/**
+ * Communication overhead calculator for distributed training.
+ */
+export function communicationOverhead(params: Record<string, number>): GaugeData {
+  const paramsB = params.paramsB ?? 7
+  const bandwidthGbps = params.bandwidthGbps ?? 100
+  const compression = params.compression ?? 1
+
+  // FP32: 4 bytes per param, convert to bits for bandwidth calculation
+  const dataBits = (paramsB * 1e9 * 4 * 8) / compression
+  const timeSeconds = dataBits / (bandwidthGbps * 1e9)
+
+  return {
+    value: Math.round(timeSeconds * 100) / 100,
+    min: 0,
+    max: Math.max(10, Math.round(timeSeconds * 2)),
+    label: `${(paramsB * 4 / compression).toFixed(1)} GB gradient data over ${bandwidthGbps} Gbps`,
+    unit: 'seconds',
+  }
+}
+
 /** Registry of compute functions by name */
 export const computeRegistry: Record<string, (params: Record<string, number>) => ChartData> = {
   learningRateLoss,
   batchSizeTradeoff,
   pruningEffect,
   quantizationEffect,
+  canaryDeploymentRisk,
+  gridVsRandomSearch,
+  labelingCostCalculator,
+  mcuMemoryBudget,
+  optimizationPipeline,
+  compoundScaling,
+  communicationOverhead,
 }

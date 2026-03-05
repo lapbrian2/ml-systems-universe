@@ -64,6 +64,8 @@ function optionClass(index: number) {
       <button
         v-if="hint && !answered"
         class="inline-flex items-center gap-1.5 text-[12px] text-white/40 hover:text-amber-400/80 mb-3 transition-colors duration-200"
+        :aria-expanded="showHint"
+        aria-label="Toggle hint"
         @click="showHint = !showHint"
       >
         <HelpCircle class="w-3.5 h-3.5" />
@@ -87,6 +89,7 @@ function optionClass(index: number) {
           :key="idx"
           role="radio"
           :aria-checked="selectedIndex === idx"
+          :aria-label="`Option ${String.fromCharCode(65 + idx)}: ${option}`"
           class="flex items-center gap-2.5 text-left rounded-md border px-3 py-2 text-[13px] leading-snug transition-all duration-200"
           :class="optionClass(idx)"
           :disabled="answered"
