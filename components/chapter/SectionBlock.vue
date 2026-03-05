@@ -52,12 +52,10 @@ const hasRichBlocks = computed(() => props.blocks && props.blocks.length > 0)
 <template>
   <section :id="id" ref="sectionRef" class="relative">
     <!-- Section divider (skip first section) -->
-    <div
+    <SectionDivider
       v-if="index > 0"
-      class="my-10 h-px"
-      :style="{
-        background: `linear-gradient(90deg, transparent, ${partColor ?? '#14b8a6'}30 50%, transparent)`,
-      }"
+      :part-color="partColor ?? '#14b8a6'"
+      :progress="(index + 1) / 10"
     />
 
     <!-- Numbered heading with active indicator -->

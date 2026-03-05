@@ -34,6 +34,9 @@ nuxtApp.hook('page:finish', () => { isLoading.value = false })
 
     <NuxtPage />
     <CommandPalette />
+    <ClientOnly>
+      <GrainOverlay />
+    </ClientOnly>
   </div>
 </template>
 
