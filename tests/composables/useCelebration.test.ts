@@ -32,4 +32,22 @@ describe('useCelebration', () => {
     const { celebrateQuizPassed } = useCelebration()
     await expect(celebrateQuizPassed(100)).resolves.toBeUndefined()
   })
+
+  it('celebrateStreak does not throw', async () => {
+    const { useCelebration } = await import('~/composables/useCelebration')
+    const { celebrateStreak } = useCelebration()
+    await expect(celebrateStreak(7)).resolves.toBeUndefined()
+  })
+
+  it('celebratePartComplete does not throw', async () => {
+    const { useCelebration } = await import('~/composables/useCelebration')
+    const { celebratePartComplete } = useCelebration()
+    await expect(celebratePartComplete()).resolves.toBeUndefined()
+  })
+
+  it('celebrateQuizPassed handles low score', async () => {
+    const { useCelebration } = await import('~/composables/useCelebration')
+    const { celebrateQuizPassed } = useCelebration()
+    await expect(celebrateQuizPassed(30)).resolves.toBeUndefined()
+  })
 })

@@ -52,4 +52,23 @@ describe('useGestures', () => {
 
     expect(gestures.reset).toBeTypeOf('function')
   })
+
+  it('handles null element ref without errors', async () => {
+    const elementRef = ref(null)
+
+    const { useGestures } = await import('~/composables/useGestures')
+    expect(() => useGestures(elementRef)).not.toThrow()
+  })
+
+  it('returns isDragging as a reactive ref', async () => {
+    const el = document.createElement('div')
+    const elementRef = ref(el)
+
+    const { useGestures } = await import('~/composables/useGestures')
+    const gestures = useGestures(elementRef)
+
+    expect(gestures.isDragging.value).toBe(false)
+    gestures.isDragging.value = true
+    expect(gestures.isDragging.value).toBe(true)
+  })
 })

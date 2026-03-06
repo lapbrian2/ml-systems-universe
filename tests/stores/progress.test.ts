@@ -175,4 +175,69 @@ describe('useProgressStore', () => {
       expect(store.badges).toEqual([])
     })
   })
+
+  describe('completionist badge', () => {
+    function completeChapter(chapterId: string) {
+      store.markChapterRead(chapterId)
+      store.markExerciseComplete(chapterId)
+      store.submitQuizResult(chapterId, 80, true)
+    }
+
+    it('does not unlock completionist with partial completion', () => {
+      completeChapter('ch01')
+      completeChapter('ch02')
+      completeChapter('ch03')
+      expect(store.badges).not.toContain('completionist')
+    })
+
+    it('unlocks completionist when all 21 chapters are completed', () => {
+      const chapterIds = Array.from({ length: 21 }, (_, i) =>
+        `ch${String(i + 1).padStart(2, '0')}`,
+      )
+      for (const id of chapterIds) {
+        completeChapter(id)
+      }
+      expect(store.badges).toContain('completionist')
+      expect(store.badges).toContain('first_chapter')
+    })
+  })
+
+  describe('getChapterState edge cases', () => {
+    it('returns "available" for unknown chapter not in CHAPTERS', () => {
+      expect(store.getChapterState('nonexistent')).toBe('available')
+    })
+
+    it('returns "in-progress" when only quiz attempted but not passed', () => {
+      store.submitQuizResult('ch01', 40, false)
+      expect(store.getChapterState('ch01')).toBe('in-progress')
+    })
+
+    it('returns "in-progress" when only exercise done', () => {
+      store.markExerciseComplete('ch01')
+      expect(store.getChapterState('ch01')).toBe('in-progress')
+    })
+  })
+
+  describe('getOverallCompletion edge cases', () => {
+    it('computes correct percentage for partial completion', () => {
+      store.markChapterRead('ch01')
+      store.markExerciseComplete('ch01')
+      store.submitQuizResult('ch01', 80, true)
+      expect(store.getOverallCompletion).toBe(Math.round((1 / 21) * 100))
+    })
+  })
+
+  describe('ensureProgress', () => {
+    it('creates progress entry if missing', () => {
+      store.ensureProgress('ch05')
+      expect(store.chapters.ch05).toBeDefined()
+      expect(store.chapters.ch05.phases.read).toBe(false)
+    })
+
+    it('does not overwrite existing progress', () => {
+      store.markChapterRead('ch05')
+      store.ensureProgress('ch05')
+      expect(store.chapters.ch05.phases.read).toBe(true)
+    })
+  })
 })

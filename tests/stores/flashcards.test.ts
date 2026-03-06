@@ -122,5 +122,60 @@ describe('useFlashcardStore', () => {
       store.cards['ch01::A'].repetition = 5
       expect(store.getMasteredCount).toBe(1)
     })
+
+    it('getCardCount returns 0 for empty store', () => {
+      expect(store.getCardCount).toBe(0)
+    })
+  })
+
+  describe('streak tracking', () => {
+    it('starts streak at 1 on first review', () => {
+      store.addCard('ch01', 'A', 'def')
+      store.reviewCard('ch01::A', 5)
+      expect(store.streak).toBe(1)
+    })
+
+    it('maintains streak on same day reviews', () => {
+      store.addCard('ch01', 'A', 'def')
+      store.addCard('ch01', 'B', 'def')
+      store.reviewCard('ch01::A', 5)
+      store.reviewCard('ch01::B', 5)
+      // Same day, streak stays at 1
+      expect(store.streak).toBe(1)
+    })
+
+    it('sets lastReviewDate on review', () => {
+      store.addCard('ch01', 'A', 'def')
+      store.reviewCard('ch01::A', 5)
+      expect(store.lastReviewDate).toBeTruthy()
+      // Should be today's date in YYYY-MM-DD format
+      expect(store.lastReviewDate).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+    })
+
+    it('sets lastReviewedAt timestamp on card', () => {
+      store.addCard('ch01', 'A', 'def')
+      store.reviewCard('ch01::A', 5)
+      expect(store.cards['ch01::A'].lastReviewedAt).toBeTruthy()
+    })
+  })
+
+  describe('SM-2 algorithm', () => {
+    it('ease factor never drops below 1.3', () => {
+      store.addCard('ch01', 'A', 'def')
+      for (let i = 0; i < 10; i++) {
+        store.reviewCard('ch01::A', 0)
+      }
+      expect(store.cards['ch01::A'].easeFactor).toBeGreaterThanOrEqual(1.3)
+    })
+
+    it('perfect reviews increase interval progressively', () => {
+      store.addCard('ch01', 'A', 'def')
+      store.reviewCard('ch01::A', 5) // interval = 1
+      expect(store.cards['ch01::A'].interval).toBe(1)
+      store.reviewCard('ch01::A', 5) // interval = 6
+      expect(store.cards['ch01::A'].interval).toBe(6)
+      store.reviewCard('ch01::A', 5) // interval = round(6 * EF)
+      expect(store.cards['ch01::A'].interval).toBeGreaterThan(6)
+    })
   })
 })

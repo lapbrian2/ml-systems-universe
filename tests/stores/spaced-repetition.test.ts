@@ -158,5 +158,61 @@ describe('useSpacedRepetitionStore', () => {
       store.setDailyTarget(100)
       expect(store.dailyTarget).toBe(50)
     })
+
+    it('clamps negative values to 1', () => {
+      store.setDailyTarget(-5)
+      expect(store.dailyTarget).toBe(1)
+    })
+  })
+
+  describe('getDueCountForChapter', () => {
+    it('returns count of due cards for a specific chapter', () => {
+      store.addQuizCard('ch01', 'q1')
+      store.addQuizCard('ch01', 'q2')
+      store.addQuizCard('ch02', 'q1')
+      expect(store.getDueCountForChapter('ch01')).toBe(2)
+      expect(store.getDueCountForChapter('ch02')).toBe(1)
+    })
+
+    it('returns 0 for chapter with no cards', () => {
+      expect(store.getDueCountForChapter('ch99')).toBe(0)
+    })
+  })
+
+  describe('SM-2 algorithm edge cases', () => {
+    it('clamps quality to 0-5 range', () => {
+      store.addQuizCard('ch01', 'q1')
+      // Quality > 5 should be clamped to 5
+      store.recordReview('quiz:ch01:q1', 10)
+      expect(store.cards['quiz:ch01:q1'].repetitions).toBe(1)
+    })
+
+    it('ease factor never drops below 1.3', () => {
+      store.addQuizCard('ch01', 'q1')
+      // Multiple failures should not drop ease factor below 1.3
+      for (let i = 0; i < 10; i++) {
+        store.recordReview('quiz:ch01:q1', 0)
+      }
+      expect(store.cards['quiz:ch01:q1'].easeFactor).toBeGreaterThanOrEqual(1.3)
+    })
+
+    it('mastered cards have 5+ repetitions', () => {
+      store.addQuizCard('ch01', 'q1')
+      for (let i = 0; i < 5; i++) {
+        store.recordReview('quiz:ch01:q1', 5)
+      }
+      expect(store.cards['quiz:ch01:q1'].repetitions).toBe(5)
+      expect(store.getStats.mastered).toBe(1)
+    })
+  })
+
+  describe('mixed card types', () => {
+    it('quiz and flashcard cards coexist', () => {
+      store.addQuizCard('ch01', 'q1')
+      store.addFlashcard('ch01', 0)
+      expect(Object.keys(store.cards)).toHaveLength(2)
+      expect(store.cards['quiz:ch01:q1'].type).toBe('quiz')
+      expect(store.cards['flashcard:ch01:0'].type).toBe('flashcard')
+    })
   })
 })
