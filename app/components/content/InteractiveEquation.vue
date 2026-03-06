@@ -68,7 +68,7 @@ function safeEval(expr: string, vars: Record<string, number>): number | null {
     while (peek() === '*' || peek() === '/') {
       const op = consume()
       const right = parseUnary()
-      left = op === '*' ? left * right : left / right
+      left = op === '*' ? left * right : (right === 0 ? NaN : left / right)
     }
     return left
   }
@@ -151,18 +151,19 @@ async function renderEquation(latex: string) {
   }
 }
 
+// GSAP animated result display
+const displayResult = ref(0)
+let gsapTween: ReturnType<typeof import('gsap')['default']['to']> | null = null
+let isMounted = true
+
 onMounted(() => {
   renderEquation(substitutedLatex.value)
 })
 
 watch(substitutedLatex, (newLatex) => {
+  if (!isMounted) return
   renderEquation(newLatex)
 })
-
-// GSAP animated result display
-const displayResult = ref(0)
-let gsapTween: ReturnType<typeof import('gsap')['default']['to']> | null = null
-let isMounted = true
 
 watch(computedResult, async (newVal) => {
   if (newVal === null || !import.meta.client) return

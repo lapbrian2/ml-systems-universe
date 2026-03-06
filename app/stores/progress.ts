@@ -69,7 +69,7 @@ export const useProgressStore = defineStore('progress', {
 
     markSectionRead(chapterId: string, sectionIndex: number) {
       this.ensureProgress(chapterId)
-      const p = this.chapters[chapterId]
+      const p = this.chapters[chapterId]!
       if (!p.sectionsRead.includes(sectionIndex)) {
         p.sectionsRead.push(sectionIndex)
       }
@@ -77,19 +77,19 @@ export const useProgressStore = defineStore('progress', {
 
     markChapterRead(chapterId: string) {
       this.ensureProgress(chapterId)
-      this.chapters[chapterId].phases.read = true
-      this.chapters[chapterId].phases.readAt = new Date().toISOString()
+      this.chapters[chapterId]!.phases.read = true
+      this.chapters[chapterId]!.phases.readAt = new Date().toISOString()
     },
 
     markExerciseComplete(chapterId: string) {
       this.ensureProgress(chapterId)
-      this.chapters[chapterId].phases.exercise = true
-      this.chapters[chapterId].phases.exerciseAt = new Date().toISOString()
+      this.chapters[chapterId]!.phases.exercise = true
+      this.chapters[chapterId]!.phases.exerciseAt = new Date().toISOString()
     },
 
     submitQuizResult(chapterId: string, score: number, passed: boolean) {
       this.ensureProgress(chapterId)
-      const quiz = this.chapters[chapterId].phases.quiz
+      const quiz = this.chapters[chapterId]!.phases.quiz
       quiz.attempts++
       quiz.lastAttemptAt = new Date().toISOString()
       if (score > quiz.bestScore) {
@@ -104,7 +104,7 @@ export const useProgressStore = defineStore('progress', {
 
       // Badge: first chapter complete
       if (passed) {
-        const p = this.chapters[chapterId]
+        const p = this.chapters[chapterId]!
         if (p.phases.read && p.phases.exercise) {
           const completedCount = Object.values(this.chapters)
             .filter(ch => ch.phases.read && ch.phases.exercise && ch.phases.quiz.passed).length
@@ -118,8 +118,8 @@ export const useProgressStore = defineStore('progress', {
 
     addTimeSpent(chapterId: string, seconds: number) {
       this.ensureProgress(chapterId)
-      this.chapters[chapterId].timeSpentSeconds += seconds
-      this.chapters[chapterId].lastVisitedAt = new Date().toISOString()
+      this.chapters[chapterId]!.timeSpentSeconds += seconds
+      this.chapters[chapterId]!.lastVisitedAt = new Date().toISOString()
     },
 
     unlockBadge(badgeId: string) {

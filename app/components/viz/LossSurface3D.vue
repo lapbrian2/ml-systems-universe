@@ -26,6 +26,7 @@ const exerciseEmitted = ref(false)
 const isUserInteracting = ref(false)
 let autoRotateTimer: ReturnType<typeof setTimeout> | null = null
 let pathTimeline: gsap.core.Tween | null = null
+let pathAnimTimeout: ReturnType<typeof setTimeout> | null = null
 const activeTweens: gsap.core.Tween[] = []
 
 /* ── Three.js objects (shallowRef prevents deep reactivity overhead) ── */
@@ -360,8 +361,6 @@ onMounted(() => {
   // Delay path animation slightly so the scene renders first
   pathAnimTimeout = setTimeout(animatePaths, 800)
 })
-
-let pathAnimTimeout: ReturnType<typeof setTimeout> | null = null
 
 onUnmounted(() => {
   if (pathAnimTimeout) clearTimeout(pathAnimTimeout)

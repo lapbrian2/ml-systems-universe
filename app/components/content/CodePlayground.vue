@@ -18,6 +18,7 @@ const showOutput = ref(false)
 const loadError = ref<string | null>(null)
 const loadProgress = ref('')
 let copyTimeout: ReturnType<typeof setTimeout> | null = null
+let componentMounted = true
 
 // Global Pyodide cache (shared across all CodePlayground instances)
 let pyodidePromise: Promise<unknown> | null = null
@@ -152,6 +153,7 @@ async function runCode() {
 
   try {
     const pyodide = await getPyodideWithRetry() as Record<string, unknown>
+    if (!componentMounted) return
     isLoading.value = false
     loadError.value = null
 
@@ -275,7 +277,9 @@ function copyCode() {
     copied.value = true
     if (copyTimeout) clearTimeout(copyTimeout)
     copyTimeout = setTimeout(() => { copied.value = false }, 2000)
-  }).catch(() => {})
+  }).catch(() => {
+    // Clipboard API can fail in insecure contexts or when denied — ignore gracefully
+  })
 }
 
 function handleTab(e: KeyboardEvent) {
@@ -304,6 +308,7 @@ const lineCount = computed(() => editableCode.value.split('\n').length)
 const accentColor = computed(() => props.partColor || '#a855f7')
 
 onBeforeUnmount(() => {
+  componentMounted = false
   if (copyTimeout) clearTimeout(copyTimeout)
 })
 </script>

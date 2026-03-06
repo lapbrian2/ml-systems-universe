@@ -12,7 +12,7 @@ export const CHAPTERS: ChapterMeta[] = [
     description:
       'Sets the stage for ML systems engineering. Explores why systems thinking matters for building reliable, scalable machine learning solutions.',
     estimatedMinutes: 25,
-    prerequisites: CHAPTER_DEPENDENCIES.ch01,
+    prerequisites: CHAPTER_DEPENDENCIES.ch01 ?? [],
     topics: ['systems thinking', 'ML lifecycle', 'embedded ML', 'TinyML', 'course overview'],
     vizType: 'ml-pipeline-flow',
     url: 'https://mlsysbook.ai/contents/introduction/introduction.html',
@@ -26,7 +26,7 @@ export const CHAPTERS: ChapterMeta[] = [
     description:
       'Provides an end-to-end overview of the ML stack. Covers the full pipeline from data to deployment, including components, trade-offs, and system-level concerns.',
     estimatedMinutes: 35,
-    prerequisites: CHAPTER_DEPENDENCIES.ch02,
+    prerequisites: CHAPTER_DEPENDENCIES.ch02 ?? [],
     topics: ['ML pipeline', 'system components', 'trade-offs', 'end-to-end stack', 'latency vs throughput'],
     vizType: 'system-architecture',
     url: 'https://mlsysbook.ai/contents/ml_systems/ml_systems.html',
@@ -40,7 +40,7 @@ export const CHAPTERS: ChapterMeta[] = [
     description:
       'Covers deep learning fundamentals from a systems perspective. Introduces neural networks, backpropagation, activation functions, and loss functions.',
     estimatedMinutes: 40,
-    prerequisites: CHAPTER_DEPENDENCIES.ch03,
+    prerequisites: CHAPTER_DEPENDENCIES.ch03 ?? [],
     topics: ['neural networks', 'backpropagation', 'activation functions', 'loss functions', 'gradient descent'],
     vizType: 'neural-network-playground',
     url: 'https://mlsysbook.ai/contents/dl_primer/dl_primer.html',
@@ -54,7 +54,7 @@ export const CHAPTERS: ChapterMeta[] = [
     description:
       'Surveys major DNN architecture families including CNNs, RNNs, Transformers, and Neural Architecture Search. Examines each from a systems design perspective.',
     estimatedMinutes: 45,
-    prerequisites: CHAPTER_DEPENDENCIES.ch04,
+    prerequisites: CHAPTER_DEPENDENCIES.ch04 ?? [],
     topics: ['CNNs', 'RNNs', 'Transformers', 'NAS', 'attention mechanism', 'architecture design'],
     vizType: 'architecture-comparison',
     url: 'https://mlsysbook.ai/contents/dnn_architectures/dnn_architectures.html',
@@ -70,7 +70,7 @@ export const CHAPTERS: ChapterMeta[] = [
     description:
       'Covers the ML development lifecycle and methodology. Introduces experiment tracking, reproducibility, and systematic approaches to model development.',
     estimatedMinutes: 30,
-    prerequisites: CHAPTER_DEPENDENCIES.ch05,
+    prerequisites: CHAPTER_DEPENDENCIES.ch05 ?? [],
     topics: ['development lifecycle', 'experiment tracking', 'reproducibility', 'methodology', 'MLOps workflow'],
     vizType: 'workflow-designer',
     url: 'https://mlsysbook.ai/contents/workflow/workflow.html',
@@ -84,7 +84,7 @@ export const CHAPTERS: ChapterMeta[] = [
     description:
       'Explores data pipelines, labeling strategies, versioning, augmentation techniques, and data quality management for ML systems.',
     estimatedMinutes: 35,
-    prerequisites: CHAPTER_DEPENDENCIES.ch06,
+    prerequisites: CHAPTER_DEPENDENCIES.ch06 ?? [],
     topics: ['data pipelines', 'labeling', 'data versioning', 'augmentation', 'data quality'],
     vizType: 'data-pipeline-simulator',
     url: 'https://mlsysbook.ai/contents/data_engineering/data_engineering.html',
@@ -98,7 +98,7 @@ export const CHAPTERS: ChapterMeta[] = [
     description:
       'Compares major ML frameworks including TensorFlow, PyTorch, and JAX. Analyzes the framework ecosystem, trade-offs, and systems-level implications.',
     estimatedMinutes: 30,
-    prerequisites: CHAPTER_DEPENDENCIES.ch07,
+    prerequisites: CHAPTER_DEPENDENCIES.ch07 ?? [],
     topics: ['TensorFlow', 'PyTorch', 'JAX', 'framework comparison', 'computational graphs'],
     vizType: 'framework-comparison',
     url: 'https://mlsysbook.ai/contents/frameworks/frameworks.html',
@@ -112,7 +112,7 @@ export const CHAPTERS: ChapterMeta[] = [
     description:
       'Covers distributed training strategies, mixed precision training, gradient management, and the systems challenges of training at scale.',
     estimatedMinutes: 40,
-    prerequisites: CHAPTER_DEPENDENCIES.ch08,
+    prerequisites: CHAPTER_DEPENDENCIES.ch08 ?? [],
     topics: ['distributed training', 'mixed precision', 'gradient management', 'data parallelism', 'model parallelism'],
     vizType: 'loss-surface-3d',
     url: 'https://mlsysbook.ai/contents/training/training.html',
@@ -128,7 +128,7 @@ export const CHAPTERS: ChapterMeta[] = [
     description:
       'Introduces computational efficiency principles for ML. Covers techniques for doing more with less, including efficient model design and resource-aware approaches.',
     estimatedMinutes: 35,
-    prerequisites: CHAPTER_DEPENDENCIES.ch09,
+    prerequisites: CHAPTER_DEPENDENCIES.ch09 ?? [],
     topics: ['computational efficiency', 'model compression', 'resource constraints', 'efficient design', 'FLOPs analysis'],
     vizType: 'efficiency-frontier',
     url: 'https://mlsysbook.ai/contents/efficient_ai/efficient_ai.html',
@@ -142,7 +142,7 @@ export const CHAPTERS: ChapterMeta[] = [
     description:
       'Deep dive into quantization, pruning, knowledge distillation, and operator fusion. Practical techniques for shrinking models without sacrificing accuracy.',
     estimatedMinutes: 40,
-    prerequisites: CHAPTER_DEPENDENCIES.ch10,
+    prerequisites: CHAPTER_DEPENDENCIES.ch10 ?? [],
     topics: ['quantization', 'pruning', 'knowledge distillation', 'operator fusion', 'model compression'],
     vizType: 'quantization-pruning',
     url: 'https://mlsysbook.ai/contents/optimizations/optimizations.html',
@@ -156,7 +156,7 @@ export const CHAPTERS: ChapterMeta[] = [
     description:
       'Examines hardware accelerators including GPUs, TPUs, and FPGAs. Covers hardware-aware optimization and the co-design of models and silicon.',
     estimatedMinutes: 35,
-    prerequisites: CHAPTER_DEPENDENCIES.ch11,
+    prerequisites: CHAPTER_DEPENDENCIES.ch11 ?? [],
     topics: ['GPU', 'TPU', 'FPGA', 'hardware-aware optimization', 'accelerator design'],
     vizType: 'roofline-explorer',
     url: 'https://mlsysbook.ai/contents/hw_acceleration/hw_acceleration.html',
@@ -170,7 +170,7 @@ export const CHAPTERS: ChapterMeta[] = [
     description:
       'Covers ML benchmarking with MLPerf, profiling tools, roofline analysis, and honest performance measurement methodology.',
     estimatedMinutes: 30,
-    prerequisites: CHAPTER_DEPENDENCIES.ch12,
+    prerequisites: CHAPTER_DEPENDENCIES.ch12 ?? [],
     topics: ['MLPerf', 'profiling', 'roofline model', 'performance measurement', 'benchmarking methodology'],
     vizType: 'mlperf-dashboard',
     url: 'https://mlsysbook.ai/contents/benchmarking/benchmarking.html',
@@ -186,7 +186,7 @@ export const CHAPTERS: ChapterMeta[] = [
     description:
       'Introduces MLOps practices including CI/CD for ML, experiment tracking, model monitoring, and drift detection in production systems.',
     estimatedMinutes: 35,
-    prerequisites: CHAPTER_DEPENDENCIES.ch13,
+    prerequisites: CHAPTER_DEPENDENCIES.ch13 ?? [],
     topics: ['CI/CD for ML', 'experiment tracking', 'model monitoring', 'drift detection', 'MLOps'],
     vizType: 'cicd-pipeline',
     url: 'https://mlsysbook.ai/contents/ops/ops.html',
@@ -200,7 +200,7 @@ export const CHAPTERS: ChapterMeta[] = [
     description:
       'Covers deploying ML on microcontrollers and edge devices. Introduces TFLite Micro, extreme optimization, and the constraints of resource-limited environments.',
     estimatedMinutes: 40,
-    prerequisites: CHAPTER_DEPENDENCIES.ch14,
+    prerequisites: CHAPTER_DEPENDENCIES.ch14 ?? [],
     topics: ['MCUs', 'TFLite Micro', 'edge deployment', 'on-device inference', 'extreme optimization'],
     vizType: 'device-resource-allocator',
     url: 'https://mlsysbook.ai/contents/ondevice_learning/ondevice_learning.html',
@@ -214,7 +214,7 @@ export const CHAPTERS: ChapterMeta[] = [
     description:
       'Examines adversarial attacks, defenses, federated learning, and differential privacy. Addresses the security and privacy challenges of deployed ML systems.',
     estimatedMinutes: 35,
-    prerequisites: CHAPTER_DEPENDENCIES.ch15,
+    prerequisites: CHAPTER_DEPENDENCIES.ch15 ?? [],
     topics: ['adversarial attacks', 'federated learning', 'differential privacy', 'model security', 'data privacy'],
     vizType: 'adversarial-playground',
     url: 'https://mlsysbook.ai/contents/privacy_security/privacy_security.html',
@@ -228,7 +228,7 @@ export const CHAPTERS: ChapterMeta[] = [
     description:
       'Focuses on building reliable ML systems with proper error handling, graceful degradation, and robustness to distribution shift and adversarial conditions.',
     estimatedMinutes: 30,
-    prerequisites: CHAPTER_DEPENDENCIES.ch16,
+    prerequisites: CHAPTER_DEPENDENCIES.ch16 ?? [],
     topics: ['reliability', 'error handling', 'graceful degradation', 'robustness', 'distribution shift'],
     vizType: 'noise-injection',
     url: 'https://mlsysbook.ai/contents/robust_ai/robust_ai.html',
@@ -244,7 +244,7 @@ export const CHAPTERS: ChapterMeta[] = [
     description:
       'Covers fairness, explainability, bias auditing, and AI governance. Addresses how to build ML systems that are ethical, transparent, and accountable.',
     estimatedMinutes: 35,
-    prerequisites: CHAPTER_DEPENDENCIES.ch17,
+    prerequisites: CHAPTER_DEPENDENCIES.ch17 ?? [],
     topics: ['fairness', 'explainability', 'bias auditing', 'AI governance', 'accountability'],
     vizType: 'bias-calculator',
     url: 'https://mlsysbook.ai/contents/responsible_ai/responsible_ai.html',
@@ -258,7 +258,7 @@ export const CHAPTERS: ChapterMeta[] = [
     description:
       'Explores the environmental impact of ML systems. Covers carbon footprint estimation, energy efficiency, and strategies for green AI.',
     estimatedMinutes: 25,
-    prerequisites: CHAPTER_DEPENDENCIES.ch18,
+    prerequisites: CHAPTER_DEPENDENCIES.ch18 ?? [],
     topics: ['carbon footprint', 'energy efficiency', 'green AI', 'sustainability', 'environmental impact'],
     vizType: 'carbon-calculator',
     url: 'https://mlsysbook.ai/contents/sustainable_ai/sustainable_ai.html',
@@ -272,7 +272,7 @@ export const CHAPTERS: ChapterMeta[] = [
     description:
       'Showcases beneficial applications of ML systems for social impact. Explores healthcare, climate, education, and humanitarian use cases.',
     estimatedMinutes: 25,
-    prerequisites: CHAPTER_DEPENDENCIES.ch19,
+    prerequisites: CHAPTER_DEPENDENCIES.ch19 ?? [],
     topics: ['social impact', 'healthcare AI', 'climate AI', 'beneficial applications', 'humanitarian AI'],
     vizType: 'impact-explorer',
     url: 'https://mlsysbook.ai/contents/ai_for_good/ai_for_good.html',
@@ -288,7 +288,7 @@ export const CHAPTERS: ChapterMeta[] = [
     description:
       'Surveys emerging trends and frontier models. Explores generative AI, foundation models, and the evolving landscape of advanced ML systems.',
     estimatedMinutes: 30,
-    prerequisites: CHAPTER_DEPENDENCIES.ch20,
+    prerequisites: CHAPTER_DEPENDENCIES.ch20 ?? [],
     topics: ['frontier models', 'generative AI', 'foundation models', 'emerging trends', 'future directions'],
     vizType: 'timeline-mapper',
     url: 'https://mlsysbook.ai/contents/agi_systems/agi_systems.html',
@@ -302,7 +302,7 @@ export const CHAPTERS: ChapterMeta[] = [
     description:
       'Synthesizes the key themes and takeaways from the entire course. Provides a roadmap for continued learning and contribution to the field.',
     estimatedMinutes: 20,
-    prerequisites: CHAPTER_DEPENDENCIES.ch21,
+    prerequisites: CHAPTER_DEPENDENCIES.ch21 ?? [],
     topics: ['synthesis', 'key takeaways', 'future learning', 'career paths', 'community'],
     vizType: 'knowledge-map',
     url: 'https://mlsysbook.ai/contents/conclusion/conclusion.html',

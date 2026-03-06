@@ -2,13 +2,13 @@ import { defineStore } from 'pinia'
 import type { FlashcardState, ReviewQuality } from '~/types/flashcard'
 
 function today(): string {
-  return new Date().toISOString().split('T')[0]
+  return new Date().toISOString().split('T')[0]!
 }
 
 function addDays(date: string, days: number): string {
   const d = new Date(date)
   d.setDate(d.getDate() + days)
-  return d.toISOString().split('T')[0]
+  return d.toISOString().split('T')[0]!
 }
 
 /**

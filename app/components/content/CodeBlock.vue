@@ -17,7 +17,9 @@ function copyCode() {
     copied.value = true
     if (copyTimeout) clearTimeout(copyTimeout)
     copyTimeout = setTimeout(() => { copied.value = false }, 2000)
-  }).catch(() => {})
+  }).catch(() => {
+    // Clipboard API can fail in insecure contexts or when denied — ignore gracefully
+  })
 }
 
 onUnmounted(() => {
