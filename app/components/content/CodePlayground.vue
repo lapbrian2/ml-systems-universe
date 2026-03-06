@@ -15,61 +15,107 @@ const isRunning = ref(false)
 const hasRun = ref(false)
 const copied = ref(false)
 const showOutput = ref(false)
+const loadError = ref<string | null>(null)
+const loadProgress = ref('')
 let copyTimeout: ReturnType<typeof setTimeout> | null = null
 
 // Global Pyodide cache (shared across all CodePlayground instances)
 let pyodidePromise: Promise<unknown> | null = null
+let loadAttempts = 0
+const MAX_LOAD_ATTEMPTS = 2
 
 function getPyodide(): Promise<unknown> {
   if (pyodidePromise) return pyodidePromise
+
+  loadProgress.value = 'Loading Python runtime...'
+  loadError.value = null
 
   pyodidePromise = new Promise((resolve, reject) => {
     const win = window as unknown as Record<string, unknown>
 
     // Check if already loaded
     if (win.loadPyodide) {
+      loadProgress.value = 'Initializing Python...'
       ;(win.loadPyodide as () => Promise<unknown>)()
-        .then(resolve)
-        .catch(reject)
+        .then((pyodide) => {
+          loadProgress.value = ''
+          resolve(pyodide)
+        })
+        .catch((err) => {
+          pyodidePromise = null
+          loadProgress.value = ''
+          reject(err)
+        })
       return
     }
 
     // Check if the Pyodide script is already in the DOM (prevents accumulation)
     const existingScript = document.querySelector('script[src*="pyodide"]')
     if (existingScript) {
+      const initPyodide = () => {
+        if (!win.loadPyodide) {
+          pyodidePromise = null
+          reject(new Error('Pyodide script loaded but loadPyodide not available'))
+          return
+        }
+        loadProgress.value = 'Initializing Python...'
+        ;(win.loadPyodide as () => Promise<unknown>)()
+          .then((pyodide) => { loadProgress.value = ''; resolve(pyodide) })
+          .catch((err) => { pyodidePromise = null; loadProgress.value = ''; reject(err) })
+      }
+
       // Script exists but loadPyodide isn't ready yet; wait for it
-      existingScript.addEventListener('load', () => {
-        ;(win.loadPyodide as () => Promise<unknown>)()
-          .then(resolve)
-          .catch(reject)
-      })
-      // If the script already finished loading, the load event won't fire again
       if ((existingScript as HTMLScriptElement).dataset.loaded) {
-        ;(win.loadPyodide as () => Promise<unknown>)()
-          .then(resolve)
-          .catch(reject)
+        initPyodide()
+      } else {
+        existingScript.addEventListener('load', initPyodide)
+        existingScript.addEventListener('error', () => {
+          pyodidePromise = null
+          loadProgress.value = ''
+          reject(new Error('Failed to load Pyodide script'))
+        })
       }
       return
     }
 
+    loadProgress.value = 'Downloading Python runtime (~15 MB)...'
     const script = document.createElement('script')
     script.src = 'https://cdn.jsdelivr.net/pyodide/v0.27.1/full/pyodide.js'
     script.integrity = 'sha256-6wvt8h4MiiNneB+ZGz3GvXRP6IBZmfM4s2j1okjMgRc='
     script.crossOrigin = 'anonymous'
     script.onload = () => {
       script.dataset.loaded = 'true'
+      loadProgress.value = 'Initializing Python...'
       ;(win.loadPyodide as () => Promise<unknown>)()
-        .then(resolve)
-        .catch(reject)
+        .then((pyodide) => { loadProgress.value = ''; resolve(pyodide) })
+        .catch((err) => { pyodidePromise = null; loadProgress.value = ''; reject(err) })
     }
     script.onerror = () => {
       pyodidePromise = null
-      reject(new Error('Failed to load Pyodide from CDN'))
+      loadProgress.value = ''
+      // Remove the failed script element so retry can re-add it
+      script.remove()
+      reject(new Error('Failed to load Pyodide from CDN. Check your network connection.'))
     }
     document.head.appendChild(script)
   })
 
   return pyodidePromise
+}
+
+async function getPyodideWithRetry(): Promise<unknown> {
+  try {
+    return await getPyodide()
+  } catch (err) {
+    loadAttempts++
+    if (loadAttempts < MAX_LOAD_ATTEMPTS) {
+      loadProgress.value = `Retrying... (attempt ${loadAttempts + 1}/${MAX_LOAD_ATTEMPTS})`
+      // Brief delay before retry
+      await new Promise(r => setTimeout(r, 1000))
+      return getPyodide()
+    }
+    throw err
+  }
 }
 
 // Syntax highlighting (reuse from CodeBlock patterns)
@@ -105,8 +151,9 @@ async function runCode() {
   hasRun.value = true
 
   try {
-    const pyodide = await getPyodide() as Record<string, unknown>
+    const pyodide = await getPyodideWithRetry() as Record<string, unknown>
     isLoading.value = false
+    loadError.value = null
 
     // Collect stdout/stderr via Pyodide's built-in capture
     const outputLines: string[] = []
@@ -200,8 +247,16 @@ async function runCode() {
     output.value = finalOutput || '(No output — add print() statements to see results)'
   } catch (err: unknown) {
     isLoading.value = false
+    loadProgress.value = ''
     const message = err instanceof Error ? err.message : String(err)
-    output.value = message
+
+    // Distinguish between load errors and runtime errors
+    if (message.includes('Failed to load Pyodide') || message.includes('network')) {
+      loadError.value = message
+      output.value = `❌ ${message}\n\nTip: Check your internet connection and try again. Pyodide requires downloading ~15 MB on first run.`
+    } else {
+      output.value = message
+    }
   } finally {
     isRunning.value = false
   }
@@ -301,7 +356,7 @@ onBeforeUnmount(() => {
               <Loader2 v-if="isLoading" class="w-3.5 h-3.5 animate-spin" />
               <Square v-else-if="isRunning" class="w-3 h-3" />
               <Play v-else class="w-3.5 h-3.5" />
-              <span>{{ isLoading ? 'Loading...' : isRunning ? 'Running' : 'Run' }}</span>
+              <span>{{ isLoading ? (loadProgress || 'Loading...') : isRunning ? 'Running' : loadError ? 'Retry' : 'Run' }}</span>
             </button>
           </div>
         </div>
@@ -349,8 +404,12 @@ onBeforeUnmount(() => {
           </button>
 
           <div v-if="showOutput" class="playground__output">
-            <Loader2 v-if="isRunning && !output" class="w-4 h-4 animate-spin text-white/30 mx-auto" />
-            <pre v-else class="playground__output-text" :class="{ 'playground__output-text--error': output.includes('Traceback') || (output.startsWith('Error:') && !output.includes('📋')) }">{{ output }}</pre>
+            <div v-if="isLoading && loadProgress" class="playground__loading-status">
+              <Loader2 class="w-4 h-4 animate-spin" />
+              <span>{{ loadProgress }}</span>
+            </div>
+            <Loader2 v-else-if="isRunning && !output" class="w-4 h-4 animate-spin text-white/30 mx-auto" />
+            <pre v-else class="playground__output-text" :class="{ 'playground__output-text--error': output.includes('Traceback') || output.includes('❌') || (output.startsWith('Error:') && !output.includes('📋')) }">{{ output }}</pre>
           </div>
         </div>
       </div>
@@ -594,5 +653,16 @@ onBeforeUnmount(() => {
 }
 .playground__output-text--error {
   color: rgba(248, 113, 113, 0.9);
+}
+
+/* ── Loading status ── */
+.playground__loading-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 4px 0;
 }
 </style>

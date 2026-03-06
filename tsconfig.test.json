@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "jsx": "preserve",
+    "paths": {
+      "~/*": ["./app/*"],
+      "#imports": ["./tests/mocks/nuxt-imports.ts"]
+    },
+    "types": ["vitest/globals"]
+  },
+  "include": ["tests/**/*.ts", "app/**/*.ts"]
+}

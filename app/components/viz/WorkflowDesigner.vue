@@ -127,7 +127,86 @@ const tooltip = ref<TooltipState>({
   stage: null,
 })
 
+/* ── Drag & Drop Reorder ── */
+const dragSourceIndex = ref<number | null>(null)
+const dragOverIndex = ref<number | null>(null)
+const userOrder = ref<WorkflowStage[]>([...stages])
+const isReorderMode = ref(false)
+const orderCorrect = ref(false)
+
+function shuffleStages() {
+  isReorderMode.value = true
+  orderCorrect.value = false
+  // Fisher-Yates shuffle
+  const arr = [...stages]
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[arr[i], arr[j]] = [arr[j], arr[i]]
+  }
+  userOrder.value = arr
+}
+
+function checkOrder() {
+  const correct = userOrder.value.every((s, i) => s.id === stages[i].id)
+  orderCorrect.value = correct
+  if (correct && !exerciseEmitted.value) {
+    exerciseEmitted.value = true
+    emit('exerciseComplete')
+  }
+  return correct
+}
+
+function resetOrder() {
+  userOrder.value = [...stages]
+  isReorderMode.value = false
+  orderCorrect.value = false
+}
+
+function onDragStart(index: number) {
+  dragSourceIndex.value = index
+}
+
+function onDragOver(e: DragEvent, index: number) {
+  e.preventDefault()
+  dragOverIndex.value = index
+}
+
+function onDragLeave() {
+  dragOverIndex.value = null
+}
+
+function onDrop(index: number) {
+  if (dragSourceIndex.value === null || dragSourceIndex.value === index) {
+    dragSourceIndex.value = null
+    dragOverIndex.value = null
+    return
+  }
+  const arr = [...userOrder.value]
+  const [moved] = arr.splice(dragSourceIndex.value, 1)
+  arr.splice(index, 0, moved)
+  userOrder.value = arr
+  dragSourceIndex.value = null
+  dragOverIndex.value = null
+  checkOrder()
+}
+
+function onDragEnd() {
+  dragSourceIndex.value = null
+  dragOverIndex.value = null
+}
+
+/* ── Keyboard reorder (accessible alternative to drag) ── */
+function moveStage(index: number, direction: -1 | 1) {
+  const newIndex = index + direction
+  if (newIndex < 0 || newIndex >= userOrder.value.length) return
+  const arr = [...userOrder.value]
+  ;[arr[index], arr[newIndex]] = [arr[newIndex], arr[index]]
+  userOrder.value = arr
+  checkOrder()
+}
+
 function handleStageClick(stage: WorkflowStage, event: MouseEvent) {
+  if (isReorderMode.value) return // Don't show tooltip in reorder mode
   selectedStage.value = selectedStage.value === stage.id ? null : stage.id
   clickedStages.value = new Set([...clickedStages.value, stage.id])
 
@@ -163,13 +242,20 @@ function isSelected(id: string): boolean {
 }
 
 function stageOpacity(id: string): number {
+  if (isReorderMode.value) return 1
   if (isSelected(id)) return 1
   if (highlightedIds.value.size === 0) return 0.7
   return isHighlighted(id) ? 1 : 0.25
 }
 
+/* ── Active stages for rendering ── */
+const activeStages = computed(() => isReorderMode.value ? userOrder.value : stages)
+
 /* ── Progress ── */
-const explorationProgress = computed(() => Math.min(clickedStages.value.size, 3))
+const explorationProgress = computed(() => {
+  if (orderCorrect.value) return 3
+  return Math.min(clickedStages.value.size, 3)
+})
 
 /* ── Layout: 2 rows of 4 ── */
 function stageX(index: number): number {
@@ -197,14 +283,32 @@ watch(
       <span class="wf-designer__badge">Interactive</span>
       <h3 class="wf-designer__title">Model Lifecycle Workflow</h3>
       <p class="wf-designer__subtitle">
-        Click stages to explore details
+        {{ isReorderMode ? 'Drag stages into the correct order' : 'Click stages to explore details' }}
         <span
           class="wf-designer__progress"
-          :class="{ 'wf-designer__progress--complete': explorationProgress >= 3 }"
+          :class="{
+            'wf-designer__progress--complete': explorationProgress >= 3 || orderCorrect,
+          }"
         >
-          {{ explorationProgress }}/3
+          {{ orderCorrect ? '✓' : `${explorationProgress}/3` }}
         </span>
       </p>
+      <div class="wf-designer__actions">
+        <button
+          v-if="!isReorderMode"
+          class="wf-designer__action-btn"
+          @click="shuffleStages"
+        >
+          Reorder Challenge
+        </button>
+        <button
+          v-else
+          class="wf-designer__action-btn"
+          @click="resetOrder"
+        >
+          Reset
+        </button>
+      </div>
     </div>
 
     <!-- SVG — Horizontal (desktop) -->
@@ -305,7 +409,7 @@ watch(
 
         <!-- Stage cards -->
         <g
-          v-for="(stage, i) in stages"
+          v-for="(stage, i) in activeStages"
           :key="stage.id"
           class="wf-designer__stage"
           :class="{
@@ -449,7 +553,7 @@ watch(
 
         <!-- Vertical stage cards -->
         <g
-          v-for="(stage, i) in stages"
+          v-for="(stage, i) in activeStages"
           :key="`v-${stage.id}`"
           class="wf-designer__stage"
           :class="{
@@ -477,8 +581,53 @@ watch(
       </svg>
     </div>
 
+    <!-- Drag/Drop Reorder List (shown in reorder mode) -->
+    <div v-if="isReorderMode" class="wf-designer__reorder">
+      <p v-if="orderCorrect" class="wf-designer__reorder-success">
+        Correct! You've placed all stages in the right order.
+      </p>
+      <div class="wf-designer__reorder-list">
+        <div
+          v-for="(stage, i) in userOrder"
+          :key="stage.id"
+          class="wf-designer__reorder-item"
+          :class="{
+            'wf-designer__reorder-item--correct': stage.id === stages[i].id,
+            'wf-designer__reorder-item--wrong': stage.id !== stages[i].id,
+            'wf-designer__reorder-item--drag-over': dragOverIndex === i,
+          }"
+          :style="{ '--stage-color': stage.color }"
+          draggable="true"
+          @dragstart="onDragStart(i)"
+          @dragover="onDragOver($event, i)"
+          @dragleave="onDragLeave"
+          @drop="onDrop(i)"
+          @dragend="onDragEnd"
+        >
+          <span class="wf-designer__reorder-grip">⋮⋮</span>
+          <span
+            class="wf-designer__reorder-dot"
+            :style="{ background: stage.color }"
+          />
+          <span class="wf-designer__reorder-label">{{ stage.label }}</span>
+          <div class="wf-designer__reorder-arrows">
+            <button
+              :disabled="i === 0"
+              aria-label="Move up"
+              @click="moveStage(i, -1)"
+            >↑</button>
+            <button
+              :disabled="i === userOrder.length - 1"
+              aria-label="Move down"
+              @click="moveStage(i, 1)"
+            >↓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Context label -->
-    <div class="wf-designer__context">
+    <div v-if="!isReorderMode" class="wf-designer__context">
       <span v-if="activeSection === 0" class="wf-designer__context-text">
         Every ML project starts with problem framing and data
       </span>
@@ -845,6 +994,136 @@ watch(
 @keyframes wfContextIn {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 0.7; transform: translateY(0); }
+}
+
+/* ── Action buttons ── */
+.wf-designer__actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.wf-designer__action-btn {
+  appearance: none;
+  border: 1px solid rgba(20, 184, 166, 0.3);
+  background: rgba(20, 184, 166, 0.08);
+  color: var(--viz-primary);
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.wf-designer__action-btn:hover {
+  background: rgba(20, 184, 166, 0.15);
+  border-color: rgba(20, 184, 166, 0.5);
+}
+
+/* ── Reorder list ── */
+.wf-designer__reorder {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 4px;
+}
+
+.wf-designer__reorder-success {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #22c55e;
+}
+
+.wf-designer__reorder-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wf-designer__reorder-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: grab;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.wf-designer__reorder-item:active {
+  cursor: grabbing;
+}
+
+.wf-designer__reorder-item--correct {
+  border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.05);
+}
+
+.wf-designer__reorder-item--wrong {
+  border-color: rgba(248, 113, 113, 0.2);
+}
+
+.wf-designer__reorder-item--drag-over {
+  border-color: var(--viz-primary);
+  background: rgba(20, 184, 166, 0.08);
+}
+
+.wf-designer__reorder-grip {
+  color: rgba(255, 255, 255, 0.15);
+  font-size: 12px;
+  letter-spacing: -2px;
+  flex-shrink: 0;
+}
+
+.wf-designer__reorder-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.wf-designer__reorder-label {
+  flex: 1;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--viz-text);
+}
+
+.wf-designer__reorder-arrows {
+  display: flex;
+  gap: 2px;
+}
+
+.wf-designer__reorder-arrows button {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--viz-text-muted);
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  font-size: 11px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: all 0.15s ease;
+}
+
+.wf-designer__reorder-arrows button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--viz-text);
+}
+
+.wf-designer__reorder-arrows button:disabled {
+  opacity: 0.2;
+  cursor: default;
 }
 
 /* ── Responsive ── */
