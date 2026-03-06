@@ -149,7 +149,7 @@ function getOptionClass(optionIndex: number): string {
   <div class="mt-12">
     <div class="section-divider mb-10" />
 
-    <div class="glass-panel rounded-xl overflow-hidden">
+    <div class="glass-panel rounded-xl overflow-hidden" role="region" aria-label="Chapter quiz">
       <!-- Header -->
       <div
         class="px-6 py-5 flex items-center gap-3"
@@ -212,7 +212,7 @@ function getOptionClass(optionIndex: number): string {
           <div class="flex items-center gap-4 py-5">
             <!-- SVG progress ring -->
             <div class="relative shrink-0">
-              <svg width="44" height="44" class="-rotate-90">
+              <svg width="44" height="44" class="-rotate-90" role="img" :aria-label="`Question ${currentIndex + 1} of ${totalQuestions}`">
                 <circle
                   cx="22" cy="22" :r="ringRadius"
                   fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="3"
@@ -274,12 +274,14 @@ function getOptionClass(optionIndex: number): string {
             </p>
 
             <!-- Options -->
-            <div class="space-y-2">
+            <div class="space-y-2" role="radiogroup" :aria-label="`Answers for question ${currentIndex + 1}`">
               <button
                 v-for="(option, oIdx) in currentQuestion.options"
                 :key="oIdx"
                 :class="getOptionClass(oIdx)"
                 :disabled="revealed"
+                role="radio"
+                :aria-checked="selectedAnswer === oIdx"
                 :aria-label="`Option ${String.fromCharCode(65 + oIdx)}: ${option}`"
                 @click="selectOption(oIdx)"
               >
@@ -316,6 +318,7 @@ function getOptionClass(optionIndex: number): string {
                 v-if="revealed"
                 class="rounded-xl p-5 text-sm leading-relaxed"
                 :class="isCorrect ? 'bg-accent-green/[0.06] border border-accent-green/10' : 'bg-accent-red/[0.06] border border-accent-red/10'"
+                role="alert"
               >
                 <div class="flex items-center gap-2 mb-2 font-semibold text-xs uppercase tracking-wider">
                   <CheckCircle2 v-if="isCorrect" class="w-4 h-4 text-accent-green" />
@@ -360,10 +363,10 @@ function getOptionClass(optionIndex: number): string {
 
         <!-- Results -->
         <template v-else>
-          <div class="py-8 text-center space-y-5">
+          <div class="py-8 text-center space-y-5" role="status" aria-label="Quiz results">
             <!-- Score ring -->
-            <div class="relative inline-block">
-              <svg width="120" height="120" class="-rotate-90">
+            <div class="relative inline-block" role="img" :aria-label="`Score: ${scorePercentage}%`">
+              <svg width="120" height="120" class="-rotate-90" role="img" :aria-label="`Final score: ${scorePercentage} percent`">
                 <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6" />
                 <circle
                   cx="60" cy="60" r="50"

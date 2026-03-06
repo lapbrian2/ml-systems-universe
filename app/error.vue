@@ -11,6 +11,10 @@ const props = defineProps<{
 
 const is404 = computed(() => props.error.statusCode === 404)
 
+useHead({
+  title: computed(() => is404.value ? 'Page Not Found | ML Systems Universe' : 'Error | ML Systems Universe'),
+})
+
 function handleError() {
   clearError({ redirect: '/' })
 }
@@ -34,13 +38,18 @@ function handleError() {
         {{ is404 ? 'Page Not Found' : 'Something Went Wrong' }}
       </h1>
 
-      <p class="text-sm text-white/50 leading-relaxed mb-8">
+      <p class="text-sm text-white/50 leading-relaxed mb-4">
         {{
           is404
             ? 'The chapter or page you are looking for does not exist. It may have been moved or removed.'
             : 'An unexpected error occurred. Please try again.'
         }}
       </p>
+
+      <p v-if="error.message && !is404" class="text-xs text-white/30 font-mono mb-8 max-w-sm mx-auto break-words">
+        {{ error.message }}
+      </p>
+      <p v-else class="mb-8" />
 
       <button
         class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium text-white bg-white/[0.06] border border-white/10 hover:bg-white/[0.1] transition-colors duration-200"

@@ -105,8 +105,13 @@ useSeoMeta({
   ),
   description: computed(() => chapter.value?.description ?? ''),
   ogDescription: computed(() => chapter.value?.description ?? ''),
-  ogImage: '/og-default.png',
+  ogImage: computed(() =>
+    chapter.value
+      ? `/og-chapters/ch${String(chapter.value.number).padStart(2, '0')}.png`
+      : '/og-default.png'
+  ),
   ogUrl: computed(() => `https://mlsystemsuniverse.com/chapter/${slug.value}`),
+  ogType: 'article',
   twitterCard: 'summary_large_image',
 })
 
@@ -388,9 +393,22 @@ const vizComponent = computed(() => {
 
 <template>
   <div id="main-content" class="min-h-screen bg-cosmic-bg">
+    <!-- Skip to content link for keyboard users -->
+    <a
+      href="#chapter-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-1/2 focus:-translate-x-1/2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-cosmic-bg focus:text-white focus:border focus:border-white/20 focus:rounded-lg focus:text-sm"
+    >
+      Skip to chapter content
+    </a>
+
     <!-- Fixed progress bar -->
     <div
       class="chapter-progress-bar"
+      role="progressbar"
+      :aria-valuenow="Math.round(progressWidth)"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      :aria-label="`Reading progress: ${Math.round(progressWidth)}%`"
       :style="{
         transform: `scaleX(${progressWidth / 100})`,
         backgroundColor: partColor,
@@ -421,6 +439,7 @@ const vizComponent = computed(() => {
           flex items-center justify-center
           overflow-hidden
         "
+        aria-label="Interactive visualization"
         style="touch-action: manipulation"
         :style="{
           background: `linear-gradient(135deg, #0a0e1a 0%, ${partColor}06 50%, #0a0e1a 100%)`,
@@ -533,8 +552,9 @@ const vizComponent = computed(() => {
       <main
         ref="contentColumn"
         class="w-full lg:w-1/2 px-6 lg:px-10 xl:px-14 py-10 lg:py-16"
+        aria-label="Chapter content"
       >
-        <div class="max-w-[600px] mx-auto lg:mx-0">
+        <div id="chapter-content" class="max-w-[600px] mx-auto lg:mx-0">
           <!-- Chapter header -->
           <ChapterHeader
             v-if="chapter && part"

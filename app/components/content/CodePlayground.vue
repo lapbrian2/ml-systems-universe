@@ -409,11 +409,21 @@ onBeforeUnmount(() => {
           </button>
 
           <div v-if="showOutput" class="playground__output">
-            <div v-if="isLoading && loadProgress" class="playground__loading-status">
+            <div v-if="isLoading && loadProgress" class="playground__loading-status" role="status" aria-live="polite">
               <Loader2 class="w-4 h-4 animate-spin" />
               <span>{{ loadProgress }}</span>
             </div>
-            <Loader2 v-else-if="isRunning && !output" class="w-4 h-4 animate-spin text-white/30 mx-auto" />
+            <Loader2 v-else-if="isRunning && !output" class="w-4 h-4 animate-spin text-white/30 mx-auto" aria-label="Running code" />
+            <div v-else-if="loadError" class="playground__load-error" role="alert">
+              <pre class="playground__output-text playground__output-text--error">{{ output }}</pre>
+              <button
+                class="playground__retry-btn"
+                @click="runCode()"
+              >
+                <RotateCcw class="w-3 h-3" />
+                Retry
+              </button>
+            </div>
             <pre v-else class="playground__output-text" :class="{ 'playground__output-text--error': output.includes('Traceback') || output.includes('❌') || (output.startsWith('Error:') && !output.includes('📋')) }">{{ output }}</pre>
           </div>
         </div>
@@ -658,6 +668,33 @@ onBeforeUnmount(() => {
 }
 .playground__output-text--error {
   color: rgba(248, 113, 113, 0.9);
+}
+
+/* ── Load error + retry ── */
+.playground__load-error {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.playground__retry-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  padding: 5px 14px;
+  border-radius: 6px;
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  background: rgba(248, 113, 113, 0.08);
+  color: rgba(248, 113, 113, 0.9);
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.playground__retry-btn:hover {
+  background: rgba(248, 113, 113, 0.15);
+  border-color: rgba(248, 113, 113, 0.5);
 }
 
 /* ── Loading status ── */

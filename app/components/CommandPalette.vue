@@ -350,6 +350,10 @@ onMounted(() => {
                 placeholder="Search chapters, sections, glossary..."
                 autocomplete="off"
                 spellcheck="false"
+                role="combobox"
+                aria-expanded="true"
+                aria-controls="cp-results-list"
+                :aria-activedescendant="flatResults.length > 0 ? `cp-item-${selectedIndex}` : undefined"
                 @keydown.down.prevent="onArrowDown"
                 @keydown.up.prevent="onArrowUp"
                 @keydown.enter.prevent="onEnter"
@@ -360,7 +364,7 @@ onMounted(() => {
             </div>
 
             <!-- Results -->
-            <div ref="resultsRef" class="cp-results">
+            <div ref="resultsRef" id="cp-results-list" class="cp-results" role="listbox">
               <!-- Empty state: no query -->
               <div v-if="!query.trim()" class="cp-empty">
                 <BookOpen :size="28" :stroke-width="1.5" class="cp-empty-icon" />
@@ -384,9 +388,12 @@ onMounted(() => {
                   <button
                     v-for="item in group.items"
                     :key="item.id"
+                    :id="`cp-item-${getFlatIndex(item)}`"
                     :data-index="getFlatIndex(item)"
                     class="cp-result"
                     :class="{ 'cp-result--active': getFlatIndex(item) === selectedIndex }"
+                    role="option"
+                    :aria-selected="getFlatIndex(item) === selectedIndex"
                     @click="navigate(item)"
                     @mouseenter="selectedIndex = getFlatIndex(item)"
                   >

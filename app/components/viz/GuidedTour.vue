@@ -302,14 +302,23 @@ function handleScroll() {
   }
 }
 
+function handleKeydown(e: KeyboardEvent) {
+  if (!isActive.value) return
+  if (e.key === 'Escape') { e.preventDefault(); skipTour() }
+  else if (e.key === 'ArrowRight' || e.key === 'Enter') { e.preventDefault(); nextStep() }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); prevStep() }
+}
+
 onMounted(() => {
   window.addEventListener('scroll', handleScroll, { passive: true })
   window.addEventListener('resize', handleScroll, { passive: true })
+  window.addEventListener('keydown', handleKeydown)
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
   window.removeEventListener('resize', handleScroll)
+  window.removeEventListener('keydown', handleKeydown)
 })
 </script>
 
@@ -404,6 +413,9 @@ onUnmounted(() => {
         ref="instructionEl"
         class="guided-tour__panel"
         :style="{ '--tour-color': accentColor }"
+        role="dialog"
+        aria-label="Guided tour"
+        aria-modal="false"
       >
         <!-- Header -->
         <div class="guided-tour__panel-header">
@@ -440,7 +452,7 @@ onUnmounted(() => {
         <h4 class="guided-tour__title">{{ step.title }}</h4>
 
         <!-- Instruction -->
-        <p class="guided-tour__instruction">{{ step.instruction }}</p>
+        <p class="guided-tour__instruction" aria-live="polite">{{ step.instruction }}</p>
 
         <!-- Hint (shown after delay) -->
         <Transition
