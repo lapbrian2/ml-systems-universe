@@ -22,6 +22,10 @@ interface GeneratePayload {
   steps?: number
   guidance_scale?: number
   seed?: number
+  extrude_3d?: boolean
+  point_cloud_resolution?: number
+  point_cloud_density?: number
+  depth_scale?: number
 }
 
 export default defineEventHandler(async (event) => {
@@ -61,6 +65,10 @@ export default defineEventHandler(async (event) => {
     steps: clamp(body.steps ?? 30, 1, 100),
     guidance_scale: clamp(body.guidance_scale ?? 7.5, 1.0, 20.0),
     seed: body.seed ?? undefined,
+    extrude_3d: body.extrude_3d ?? false,
+    point_cloud_resolution: clamp(body.point_cloud_resolution ?? 256, 64, 512),
+    point_cloud_density: clamp(body.point_cloud_density ?? 0.8, 0.1, 1.0),
+    depth_scale: clamp(body.depth_scale ?? 2.0, 0.5, 5.0),
   }
 
   // Proxy to the GPU server
