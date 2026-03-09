@@ -9,7 +9,9 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint app/",
-    "lint:fix": "eslint app/ --fix"
+    "lint:fix": "eslint app/ --fix",
+    "kiosk": "NITRO_PRESET=node-server nuxt build && node .output/server/index.mjs",
+    "kiosk:dev": "NITRO_PRESET=node-server nuxt dev --host 0.0.0.0"
   },
   "dependencies": {
     "@nuxtjs/sitemap": "^7.6.0",
