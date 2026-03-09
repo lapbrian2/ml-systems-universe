@@ -98,7 +98,7 @@ export function useInstallationConfig() {
 
     // Display
     if (params.has('mode')) {
-      settings.display.mode = params.get('mode') as any
+      settings.display.mode = params.get('mode') as InstallationSettings['display']['mode']
     }
     if (params.has('blend')) {
       settings.display.projectorBlend = parseInt(params.get('blend')!, 10)
@@ -106,10 +106,10 @@ export function useInstallationConfig() {
 
     // Input
     if (params.has('input')) {
-      settings.input.source = params.get('input') as any
+      settings.input.source = params.get('input') as InstallationSettings['input']['source']
     }
     if (params.has('camera')) {
-      settings.input.cameraDevice = params.get('camera') as any
+      settings.input.cameraDevice = params.get('camera') as InstallationSettings['input']['cameraDevice']
     }
     if (params.has('depth-server')) {
       settings.input.depthServerUrl = params.get('depth-server')!
@@ -117,7 +117,7 @@ export function useInstallationConfig() {
 
     // Generation
     if (params.has('backend')) {
-      settings.generation.backend = params.get('backend') as any
+      settings.generation.backend = params.get('backend') as InstallationSettings['generation']['backend']
     }
     if (params.has('comfy-url')) {
       settings.generation.localComfyUrl = params.get('comfy-url')!

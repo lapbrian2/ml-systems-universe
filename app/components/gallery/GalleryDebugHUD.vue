@@ -17,7 +17,7 @@ const animations = useGalleryAnimations()
 const input = useInputManager()
 const cloudInference = useGalleryInference()
 const localGen = useLocalGeneration()
-const { settings, toUrl } = useInstallationConfig()
+const { settings } = useInstallationConfig()
 </script>
 
 <template>

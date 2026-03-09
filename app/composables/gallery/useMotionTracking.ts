@@ -9,6 +9,29 @@
  * the processed coordinates, never the camera feed.
  */
 
+interface MediaPipeLandmark {
+  x: number
+  y: number
+  z: number
+}
+
+interface MediaPipeResults {
+  multiHandLandmarks?: MediaPipeLandmark[][]
+  multiHandedness?: Array<{ label: string }>
+}
+
+interface MediaPipeWindow {
+  Hands: new (config: { locateFile: (file: string) => string }) => {
+    setOptions: (opts: Record<string, unknown>) => void
+    onResults: (cb: (r: MediaPipeResults) => void) => void
+    send: (input: { image: HTMLVideoElement }) => Promise<void>
+  }
+  Camera: new (el: HTMLVideoElement, config: { onFrame: () => Promise<void>; width: number; height: number }) => {
+    start: () => Promise<void>
+    stop: () => void
+  }
+}
+
 export interface HandLandmark {
   x: number // 0–1 normalized
   y: number // 0–1 normalized
@@ -23,6 +46,21 @@ export interface TrackingState {
   gesture: string | null // 'open' | 'fist' | 'point' | 'pinch'
 }
 
+function loadScript(src: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector(`script[src="${src}"]`)) {
+      resolve()
+      return
+    }
+    const script = document.createElement('script')
+    script.src = src
+    script.crossOrigin = 'anonymous'
+    script.onload = () => resolve()
+    script.onerror = () => reject(new Error(`Failed to load: ${src}`))
+    document.head.appendChild(script)
+  })
+}
+
 export function useMotionTracking() {
   const tracking = reactive<TrackingState>({
     isActive: false,
@@ -33,9 +71,9 @@ export function useMotionTracking() {
   })
 
   let videoEl: HTMLVideoElement | null = null
-  let hands: any = null
-  let camera: any = null
-  let animationId: number | null = null
+  let hands: { setOptions: (opts: Record<string, unknown>) => void; onResults: (cb: (r: MediaPipeResults) => void) => void; send: (input: { image: HTMLVideoElement }) => Promise<void> } | null = null
+  let camera: { start: () => Promise<void>; stop: () => void } | null = null
+  const animationId: number | null = null
 
   /**
    * Initialize webcam and MediaPipe Hands.
@@ -44,9 +82,14 @@ export function useMotionTracking() {
   async function init(): Promise<void> {
     if (typeof window === 'undefined') return
 
-    // Dynamically import MediaPipe (loaded from CDN at runtime)
-    const { Hands } = await import('@mediapipe/hands')
-    const { Camera } = await import('@mediapipe/camera_utils')
+    // Load MediaPipe from CDN at runtime (not bundled)
+    await loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js')
+    await loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js')
+
+    const mp = window as unknown as MediaPipeWindow
+    if (!mp.Hands || !mp.Camera) {
+      throw new Error('MediaPipe failed to load from CDN')
+    }
 
     // Create hidden video element for the webcam feed
     videoEl = document.createElement('video')
@@ -54,7 +97,7 @@ export function useMotionTracking() {
     videoEl.style.display = 'none'
     document.body.appendChild(videoEl)
 
-    hands = new Hands({
+    hands = new mp.Hands({
       locateFile: (file: string) =>
         `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
     })
@@ -68,7 +111,7 @@ export function useMotionTracking() {
 
     hands.onResults(onResults)
 
-    camera = new Camera(videoEl, {
+    camera = new mp.Camera(videoEl, {
       onFrame: async () => {
         if (videoEl) await hands.send({ image: videoEl })
       },
@@ -80,7 +123,7 @@ export function useMotionTracking() {
     tracking.isActive = true
   }
 
-  function onResults(results: any): void {
+  function onResults(results: MediaPipeResults): void {
     if (!results.multiHandLandmarks || results.multiHandLandmarks.length === 0) {
       tracking.handsDetected = 0
       tracking.primaryHand = null

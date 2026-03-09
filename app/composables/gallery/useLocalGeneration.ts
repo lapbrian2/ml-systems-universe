@@ -17,7 +17,7 @@
 import type { InferenceResult } from '~/composables/gallery/useGalleryInference'
 
 export interface ComfyWorkflow {
-  prompt: Record<string, any>  // ComfyUI workflow JSON
+  prompt: Record<string, unknown>  // ComfyUI workflow JSON
   client_id: string
 }
 
@@ -93,10 +93,10 @@ export function useLocalGeneration() {
     steps?: number
     cfg?: number
     seed?: number
-  }): Record<string, any> {
+  }): Record<string, unknown> {
     const seed = params.seed ?? Math.floor(Math.random() * 2 ** 32)
 
-    const workflow: Record<string, any> = {
+    const workflow: Record<string, Record<string, unknown>> = {
       // KSampler
       '3': {
         class_type: 'KSampler',
@@ -289,9 +289,10 @@ export function useLocalGeneration() {
 
       if (entry?.outputs) {
         // Find the SaveImage output
-        for (const nodeOutput of Object.values(entry.outputs) as any[]) {
-          if (nodeOutput?.images?.[0]) {
-            const img = nodeOutput.images[0]
+        for (const nodeOutput of Object.values(entry.outputs) as Record<string, unknown>[]) {
+          const images = nodeOutput?.images as Array<Record<string, string>> | undefined
+          if (images?.[0]) {
+            const img = images[0]
             // Fetch the actual image
             const imgRes = await fetch(
               `${baseUrl}/view?filename=${img.filename}&subfolder=${img.subfolder ?? ''}&type=${img.type ?? 'output'}`,

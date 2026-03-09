@@ -85,7 +85,7 @@ onUnmounted(() => {
 async function requestWakeLock() {
   try {
     if ('wakeLock' in navigator) {
-      await (navigator as any).wakeLock.request('screen')
+      await (navigator as unknown as { wakeLock: { request: (type: string) => Promise<unknown> } }).wakeLock.request('screen')
     }
   }
   catch {

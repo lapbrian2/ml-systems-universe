@@ -170,7 +170,7 @@ async function triggerGeneration() {
   const snapshot = spatial.captureSnapshot(ctx.scene, ctx.camera)
   const inputs = spatial.toGenerationInputs(snapshot, settings.generation.defaultPromptPrefix)
 
-  let result: any = null
+  let result: Record<string, unknown> | null = null
 
   if (settings.generation.backend === 'local' && localGen.isConnected.value) {
     // Local ComfyUI path
@@ -208,7 +208,7 @@ async function triggerGeneration() {
         inputManager.input.handPosition
           ? { coordinates: inputManager.input.handPosition, gesture: inputManager.input.gesture ?? undefined }
           : undefined,
-        { ...inputs.parameters, extrude_3d: settings.generation.autoExtrude3d } as any,
+        { ...inputs.parameters, extrude_3d: settings.generation.autoExtrude3d } as Record<string, unknown>,
       )
     }
   }

@@ -86,7 +86,7 @@ export function useForceFields() {
    * Apply force field uniforms to a shader material.
    * Call this each frame in the render loop.
    */
-  function applyToMaterial(material: THREE.ShaderMaterial, delta: number) {
+  function applyToMaterial(material: THREE.ShaderMaterial, _delta: number) {
     // Calculate global disturbance from active fields
     const targetDisturbance = fields.some(f => f.active) ? 1.0 : 0.0
     smoothDisturbance.value += (targetDisturbance - smoothDisturbance.value) * SMOOTH_FACTOR
