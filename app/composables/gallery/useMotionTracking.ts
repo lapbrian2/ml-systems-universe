@@ -25,6 +25,7 @@ interface MediaPipeWindow {
     setOptions: (opts: Record<string, unknown>) => void
     onResults: (cb: (r: MediaPipeResults) => void) => void
     send: (input: { image: HTMLVideoElement }) => Promise<void>
+    close: () => void
   }
   Camera: new (el: HTMLVideoElement, config: { onFrame: () => Promise<void>; width: number; height: number }) => {
     start: () => Promise<void>
@@ -71,7 +72,7 @@ export function useMotionTracking() {
   })
 
   let videoEl: HTMLVideoElement | null = null
-  let hands: { setOptions: (opts: Record<string, unknown>) => void; onResults: (cb: (r: MediaPipeResults) => void) => void; send: (input: { image: HTMLVideoElement }) => Promise<void> } | null = null
+  let hands: { setOptions: (opts: Record<string, unknown>) => void; onResults: (cb: (r: MediaPipeResults) => void) => void; send: (input: { image: HTMLVideoElement }) => Promise<void>; close: () => void } | null = null
   let camera: { start: () => Promise<void>; stop: () => void } | null = null
   const animationId: number | null = null
 
@@ -102,18 +103,18 @@ export function useMotionTracking() {
         `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
     })
 
-    hands.setOptions({
+    hands!.setOptions({
       maxNumHands: 2,
       modelComplexity: 1,
       minDetectionConfidence: 0.7,
       minTrackingConfidence: 0.5,
     })
 
-    hands.onResults(onResults)
+    hands!.onResults(onResults)
 
     camera = new mp.Camera(videoEl, {
       onFrame: async () => {
-        if (videoEl) await hands.send({ image: videoEl })
+        if (videoEl && hands) await hands.send({ image: videoEl })
       },
       width: 640,
       height: 480,
@@ -133,15 +134,15 @@ export function useMotionTracking() {
     }
 
     tracking.handsDetected = results.multiHandLandmarks.length
-    const landmarks: HandLandmark[] = results.multiHandLandmarks[0]
-    tracking.primaryHand = landmarks[9] // Middle finger MCP — center of palm
+    const landmarks: HandLandmark[] = results.multiHandLandmarks[0]!
+    tracking.primaryHand = landmarks[9]! // Middle finger MCP — center of palm
 
     // Compute palm center from wrist + finger MCPs
-    const wrist = landmarks[0]
-    const indexMcp = landmarks[5]
-    const middleMcp = landmarks[9]
-    const ringMcp = landmarks[13]
-    const pinkyMcp = landmarks[17]
+    const wrist = landmarks[0]!
+    const indexMcp = landmarks[5]!
+    const middleMcp = landmarks[9]!
+    const ringMcp = landmarks[13]!
+    const pinkyMcp = landmarks[17]!
 
     tracking.palmCenter = {
       x: (wrist.x + indexMcp.x + middleMcp.x + ringMcp.x + pinkyMcp.x) / 5,
@@ -169,25 +170,25 @@ export function useMotionTracking() {
   }
 
   function detectGesture(landmarks: HandLandmark[]): string {
-    const tips = [landmarks[8], landmarks[12], landmarks[16], landmarks[20]]
-    const mcps = [landmarks[5], landmarks[9], landmarks[13], landmarks[17]]
+    const tips = [landmarks[8]!, landmarks[12]!, landmarks[16]!, landmarks[20]!]
+    const mcps = [landmarks[5]!, landmarks[9]!, landmarks[13]!, landmarks[17]!]
 
     // Count extended fingers (tip above MCP in Y)
     let extended = 0
     for (let i = 0; i < 4; i++) {
-      if (tips[i].y < mcps[i].y) extended++
+      if (tips[i]!.y < mcps[i]!.y) extended++
     }
 
     // Check thumb separately
-    const thumbExtended = landmarks[4].x < landmarks[3].x
+    const thumbExtended = landmarks[4]!.x < landmarks[3]!.x
 
     if (extended === 0 && !thumbExtended) return 'fist'
-    if (extended === 1 && tips[0].y < mcps[0].y) return 'point'
+    if (extended === 1 && tips[0]!.y < mcps[0]!.y) return 'point'
     if (extended >= 3 && thumbExtended) return 'open'
 
     // Pinch: thumb tip close to index tip
-    const dx = landmarks[4].x - landmarks[8].x
-    const dy = landmarks[4].y - landmarks[8].y
+    const dx = landmarks[4]!.x - landmarks[8]!.x
+    const dy = landmarks[4]!.y - landmarks[8]!.y
     if (Math.sqrt(dx * dx + dy * dy) < 0.05) return 'pinch'
 
     return 'open'

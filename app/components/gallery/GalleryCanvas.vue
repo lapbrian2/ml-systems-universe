@@ -23,8 +23,17 @@ import { useLocalGeneration } from '~/composables/gallery/useLocalGeneration'
 import { useSpatialPipeline } from '~/composables/gallery/useSpatialPipeline'
 import { useInstallationConfig } from '~/composables/gallery/useInstallationConfig'
 
+import type { InferenceResult } from '~/composables/gallery/useGalleryInference'
+
 import fluidVertexShader from '~/assets/shaders/fluid-particles.vert?raw'
 import fluidFragmentShader from '~/assets/shaders/fluid-particles.frag?raw'
+
+interface GenerationResult extends InferenceResult {
+  volume?: {
+    point_cloud: string
+    point_count: number
+  }
+}
 
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 
@@ -125,12 +134,12 @@ function loadVolumetricArt(data: string, count: number, threeScene: THREE.Scene)
   for (let i = 0; i < count; i++) {
     const src = i * 6
     const dst = i * 3
-    positions[dst] = buffer[src]
-    positions[dst + 1] = buffer[src + 1]
-    positions[dst + 2] = buffer[src + 2]
-    colors[dst] = buffer[src + 3]
-    colors[dst + 1] = buffer[src + 4]
-    colors[dst + 2] = buffer[src + 5]
+    positions[dst] = buffer[src]!
+    positions[dst + 1] = buffer[src + 1]!
+    positions[dst + 2] = buffer[src + 2]!
+    colors[dst] = buffer[src + 3]!
+    colors[dst + 1] = buffer[src + 4]!
+    colors[dst + 2] = buffer[src + 5]!
     restoreSpeeds[i] = 0.02 + Math.random() * 0.08
   }
 
@@ -170,7 +179,7 @@ async function triggerGeneration() {
   const snapshot = spatial.captureSnapshot(ctx.scene, ctx.camera)
   const inputs = spatial.toGenerationInputs(snapshot, settings.generation.defaultPromptPrefix)
 
-  let result: Record<string, unknown> | null = null
+  let result: GenerationResult | null = null
 
   if (settings.generation.backend === 'local' && localGen.isConnected.value) {
     // Local ComfyUI path
@@ -199,7 +208,7 @@ async function triggerGeneration() {
         }),
         signal: AbortSignal.timeout(180_000),
       })
-      if (response.ok) result = await response.json()
+      if (response.ok) result = await response.json() as GenerationResult
     }
     catch {
       // Fallback to basic endpoint
@@ -307,14 +316,14 @@ onMounted(async () => {
 
     // Apply force fields to ambient particles
     if (fluidMaterial) {
-      fluidMaterial.uniforms.uTime.value = elapsed
+      fluidMaterial.uniforms.uTime!.value = elapsed
       forceFields.applyToMaterial(fluidMaterial, delta)
     }
 
     // Apply force fields to volumetric art (if present)
     if (artVolumeMesh) {
       const artMat = artVolumeMesh.material as THREE.ShaderMaterial
-      artMat.uniforms.uTime.value = elapsed
+      artMat.uniforms.uTime!.value = elapsed
       forceFields.applyToMaterial(artMat, delta)
     }
 

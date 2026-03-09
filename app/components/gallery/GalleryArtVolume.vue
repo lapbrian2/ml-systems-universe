@@ -62,13 +62,13 @@ function loadPointCloud(data: string, count: number): THREE.Points {
     const src = i * 6
     const dst = i * 3
 
-    positions[dst] = buffer[src]         // x
-    positions[dst + 1] = buffer[src + 1] // y
-    positions[dst + 2] = buffer[src + 2] // z
+    positions[dst] = buffer[src]!         // x
+    positions[dst + 1] = buffer[src + 1]! // y
+    positions[dst + 2] = buffer[src + 2]! // z
 
-    colors[dst] = buffer[src + 3]     // r
-    colors[dst + 1] = buffer[src + 4] // g
-    colors[dst + 2] = buffer[src + 5] // b
+    colors[dst] = buffer[src + 3]!     // r
+    colors[dst + 1] = buffer[src + 4]! // g
+    colors[dst + 2] = buffer[src + 5]! // b
 
     // Random restore speed per particle (organic feel)
     restoreSpeeds[i] = 0.02 + Math.random() * 0.08
@@ -109,7 +109,7 @@ function update(delta: number, elapsed: number) {
   if (!shaderMaterial) return
 
   // Update time uniform
-  shaderMaterial.uniforms.uTime.value = elapsed
+  shaderMaterial.uniforms.uTime!.value = elapsed
 
   // Map hand tracking to force fields
   if (motion.tracking.palmCenter) {

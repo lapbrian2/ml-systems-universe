@@ -127,6 +127,7 @@ export function useDepthCamera() {
     if (!frame || frame.hands.length === 0) return null
 
     const hand = frame.hands[0]
+    if (!hand) return null
     return {
       position: hand.position,
       gesture: hand.gesture,

@@ -96,7 +96,8 @@ export function useLocalGeneration() {
   }): Record<string, unknown> {
     const seed = params.seed ?? Math.floor(Math.random() * 2 ** 32)
 
-    const workflow: Record<string, Record<string, unknown>> = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const workflow: Record<string, { class_type: string; inputs: Record<string, any> }> = {
       // KSampler
       '3': {
         class_type: 'KSampler',
@@ -176,9 +177,9 @@ export function useLocalGeneration() {
         },
       }
       // Rewire sampler and CLIP to use LoRA output
-      workflow['3'].inputs.model = ['10', 0]
-      workflow['6'].inputs.clip = ['10', 1]
-      workflow['7'].inputs.clip = ['10', 1]
+      workflow['3']!.inputs.model = ['10', 0]
+      workflow['6']!.inputs.clip = ['10', 1]
+      workflow['7']!.inputs.clip = ['10', 1]
     }
 
     // Add ControlNet depth if provided
@@ -204,7 +205,7 @@ export function useLocalGeneration() {
           strength: 0.75,
         },
       }
-      workflow['3'].inputs.positive = ['13', 0]
+      workflow['3']!.inputs.positive = ['13', 0]
     }
 
     return workflow

@@ -92,20 +92,20 @@ export function useForceFields() {
     smoothDisturbance.value += (targetDisturbance - smoothDisturbance.value) * SMOOTH_FACTOR
     disturbance.value = smoothDisturbance.value
 
-    material.uniforms.uDisturbance.value = smoothDisturbance.value
+    material.uniforms.uDisturbance!.value = smoothDisturbance.value
 
     // Field 0
     if (fields[0]) {
-      material.uniforms.uForcePosition0.value.copy(fields[0].position)
-      material.uniforms.uForceStrength0.value = fields[0].active ? fields[0].strength : 0
-      material.uniforms.uForceRadius0.value = fields[0].radius
+      material.uniforms.uForcePosition0!.value.copy(fields[0].position)
+      material.uniforms.uForceStrength0!.value = fields[0].active ? fields[0].strength : 0
+      material.uniforms.uForceRadius0!.value = fields[0].radius
     }
 
     // Field 1
     if (fields[1]) {
-      material.uniforms.uForcePosition1.value.copy(fields[1].position)
-      material.uniforms.uForceStrength1Pad.value.x = fields[1].active ? fields[1].strength : 0
-      material.uniforms.uForceStrength1Pad.value.y = fields[1].radius
+      material.uniforms.uForcePosition1!.value.copy(fields[1].position)
+      material.uniforms.uForceStrength1Pad!.value.x = fields[1].active ? fields[1].strength : 0
+      material.uniforms.uForceStrength1Pad!.value.y = fields[1].radius
     }
   }
 

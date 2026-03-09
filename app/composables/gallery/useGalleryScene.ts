@@ -71,7 +71,7 @@ export function useGalleryScene() {
     composer.addPass(bloomPass)
 
     const fxaaPass = new ShaderPass(FXAAShader)
-    fxaaPass.uniforms['resolution'].value.set(
+    fxaaPass.uniforms['resolution']!.value.set(
       1 / window.innerWidth,
       1 / window.innerHeight,
     )
@@ -103,6 +103,7 @@ export function useGalleryScene() {
 
     function loop() {
       animationId = requestAnimationFrame(loop)
+      if (!ctx) return
       const delta = ctx.clock.getDelta()
       const elapsed = ctx.clock.getElapsedTime()
 
@@ -169,7 +170,7 @@ export function useGalleryScene() {
   }
 
   return {
-    context: readonly(context),
+    context,
     isReady: readonly(isReady),
     fps: readonly(fps),
     init,

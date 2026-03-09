@@ -354,8 +354,8 @@ export function useSpatialPipeline() {
       }
     })
 
-    depthMaterial.uniforms.uNear.value = camera.near
-    depthMaterial.uniforms.uFar.value = camera.far
+    depthMaterial.uniforms.uNear!.value = camera.near
+    depthMaterial.uniforms.uFar!.value = camera.far
 
     depthRenderer.render(scene, camera)
     const dataUrl = depthRenderer.domElement.toDataURL('image/png')
