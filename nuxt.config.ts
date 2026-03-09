@@ -109,12 +109,12 @@ export default defineNuxtConfig({
     routeRules: {
       '/**': {
         headers: {
-          'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://cdn.jsdelivr.net https://va.vercel-scripts.com https://vitals.vercel-insights.com; worker-src 'self' blob: https://cdn.jsdelivr.net; frame-ancestors 'none'",
+          'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://cdn.jsdelivr.net https://va.vercel-scripts.com https://vitals.vercel-insights.com; worker-src 'self' blob: https://cdn.jsdelivr.net; media-src 'self' blob: mediastream:; frame-ancestors 'none'",
           'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
           'X-Frame-Options': 'DENY',
           'X-Content-Type-Options': 'nosniff',
           'Referrer-Policy': 'strict-origin-when-cross-origin',
-          'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+          'Permissions-Policy': 'camera=(self), microphone=(), geolocation=()',
         },
       },
       '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
