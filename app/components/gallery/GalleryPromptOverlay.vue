@@ -1,30 +1,37 @@
 <script setup lang="ts">
 /**
  * Prompt overlay — subtle instruction text for museum visitors.
- * Shows contextual guidance based on the current gallery state.
- * Fades in/out with state changes.
+ * Shows contextual guidance based on gallery state and input source.
  */
 
 import { useGalleryAnimations } from '~/composables/gallery/useGalleryAnimations'
-import { useMotionTracking } from '~/composables/gallery/useMotionTracking'
+import { useInputManager } from '~/composables/gallery/useInputManager'
 import { useGalleryInference } from '~/composables/gallery/useGalleryInference'
+import { useLocalGeneration } from '~/composables/gallery/useLocalGeneration'
+import { useInstallationConfig } from '~/composables/gallery/useInstallationConfig'
 
 const animations = useGalleryAnimations()
-const motion = useMotionTracking()
-const inference = useGalleryInference()
+const input = useInputManager()
+const cloudInference = useGalleryInference()
+const localGen = useLocalGeneration()
+const { settings } = useInstallationConfig()
 
 const message = computed(() => {
   switch (animations.state.value) {
     case 'loading':
       return ''
     case 'idle':
-      return motion.tracking.isActive
-        ? 'Raise your hand to begin'
-        : 'Step closer to interact'
+      if (input.input.source === 'hardware') {
+        return input.input.bodyPresent ? 'Raise your hand' : 'Step closer'
+      }
+      return input.input.handPosition ? 'Pinch to create' : 'Raise your hand to begin'
     case 'tracking':
       return 'Pinch to create'
     case 'generating':
-      return 'Generating...'
+      if (settings.generation.backend === 'local' && localGen.isGenerating.value) {
+        return `Creating... ${(localGen.progress.value * 100).toFixed(0)}%`
+      }
+      return 'Creating...'
     case 'reveal':
       return ''
     case 'cooldown':
@@ -35,7 +42,7 @@ const message = computed(() => {
 })
 
 const showStats = computed(() => {
-  return animations.state.value === 'reveal' && inference.lastResult.value
+  return animations.state.value === 'reveal' && cloudInference.lastResult.value
 })
 </script>
 
@@ -49,7 +56,10 @@ const showStats = computed(() => {
   <Transition name="fade">
     <div v-if="showStats" class="stats-overlay">
       <p class="stats-text">
-        Generated in {{ inference.lastResult.value?.elapsed_seconds }}s
+        Generated in {{ cloudInference.lastResult.value?.elapsed_seconds }}s
+        <span v-if="input.input.source !== 'mouse'" class="stats-source">
+          via {{ settings.generation.backend === 'local' ? 'local GPU' : 'cloud' }}
+        </span>
       </p>
     </div>
   </Transition>
@@ -87,6 +97,10 @@ const showStats = computed(() => {
   color: rgba(255, 255, 255, 0.25);
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.75rem;
+}
+
+.stats-source {
+  color: rgba(255, 255, 255, 0.15);
 }
 
 .fade-enter-active,
