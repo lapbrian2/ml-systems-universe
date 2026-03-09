@@ -13,6 +13,7 @@ import { useGalleryScene } from '~/composables/gallery/useGalleryScene'
 import { useGalleryAnimations } from '~/composables/gallery/useGalleryAnimations'
 import { useMotionTracking } from '~/composables/gallery/useMotionTracking'
 import { useGalleryInference } from '~/composables/gallery/useGalleryInference'
+import { useSpatialPipeline } from '~/composables/gallery/useSpatialPipeline'
 
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 
@@ -20,6 +21,7 @@ const scene = useGalleryScene()
 const animations = useGalleryAnimations()
 const motion = useMotionTracking()
 const inference = useGalleryInference()
+const spatial = useSpatialPipeline()
 
 // Scene objects
 let particles: THREE.Points | null = null
@@ -94,26 +96,50 @@ watch(
 )
 
 async function triggerGeneration() {
-  if (!particles || !artPlane) return
+  if (!particles || !artPlane || !scene.context.value) return
 
-  const palm = motion.tracking.palmCenter
-  const spatialData = palm
-    ? { coordinates: motion.toWorldCoordinates(palm), gesture: motion.tracking.gesture ?? undefined }
-    : undefined
+  const ctx = scene.context.value
 
   // Play anticipation animation
   const genTimeline = animations.playGenerating(particles)
 
-  // Fire request to GPU
-  const result = await inference.generate(
-    'ethereal generative art, museum installation, luminous particles',
-    spatialData,
-  )
+  // Capture the 3D scene state and translate to generation inputs
+  const snapshot = spatial.captureSnapshot(ctx.scene, ctx.camera)
+  const inputs = spatial.toGenerationInputs(snapshot, 'mystyle')
+
+  // Fire spatially-conditioned request to GPU via the conditioned bridge
+  let result: any = null
+  try {
+    const response = await fetch('/api/generate-conditioned', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        structured_prompt: inputs.structuredPrompt,
+        negative_prompt: inputs.negativePrompt,
+        control_images: inputs.controlImages,
+        parameters: inputs.parameters,
+      }),
+    })
+    if (response.ok) {
+      result = await response.json()
+    }
+  }
+  catch {
+    // Fallback to basic generation if conditioned pipeline unavailable
+    const palm = motion.tracking.palmCenter
+    const spatialData = palm
+      ? { coordinates: motion.toWorldCoordinates(palm), gesture: motion.tracking.gesture ?? undefined }
+      : undefined
+    result = await inference.generate(
+      'ethereal generative art, museum installation, luminous particles',
+      spatialData,
+    )
+  }
 
   // Wait for animation to finish if GPU was faster
   await genTimeline.then?.()
 
-  if (result && artPlane) {
+  if (result?.image && artPlane) {
     // Load texture from the result
     const img = await inference.resultToTexture(result)
     const texture = new THREE.Texture(img)
@@ -122,11 +148,11 @@ async function triggerGeneration() {
     ;(artPlane.material as THREE.MeshBasicMaterial).needsUpdate = true
 
     // Play reveal
-    animations.playReveal(artPlane, particles, scene.context.value!.camera)
+    animations.playReveal(artPlane, particles, ctx.camera)
   }
   else {
     // GPU failed — gracefully return to idle
-    animations.playIdle(particles, scene.context.value!.camera)
+    animations.playIdle(particles, ctx.camera)
   }
 }
 
@@ -134,6 +160,9 @@ onMounted(async () => {
   if (!canvasRef.value) return
 
   const ctx = scene.init(canvasRef.value)
+
+  // Initialize spatial pipeline offscreen renderers
+  spatial.initOffscreenRenderers()
 
   // Build the scene
   particles = createParticleField(ctx.scene)
@@ -178,6 +207,7 @@ onUnmounted(() => {
   animations.killAll()
   motion.dispose()
   inference.cancel()
+  spatial.dispose()
   scene.dispose()
 })
 </script>
