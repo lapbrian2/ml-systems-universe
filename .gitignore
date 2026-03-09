@@ -25,3 +25,9 @@ logs
 .next/
 .output/
 .vercel/
+
+# GPU backend — model weights (large binary files)
+gpu-backend/models/*
+!gpu-backend/models/.gitkeep
+__pycache__/
+*.pyc

@@ -2,6 +2,12 @@ export default defineNuxtConfig({
   compatibilityDate: '2026-03-05',
   devtools: { enabled: process.env.NODE_ENV === 'development' },
 
+  runtimeConfig: {
+    // Server-only (never exposed to the browser)
+    gpuInferenceUrl: process.env.GPU_INFERENCE_URL || '',
+    gpuApiSecret: process.env.GPU_API_SECRET || '',
+  },
+
   site: {
     url: 'https://mlsystemsuniverse.com',
   },
