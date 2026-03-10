@@ -22,11 +22,13 @@ export interface DepthFrame {
   timestamp: number
 }
 
+import type { Gesture } from '~/composables/gallery/useMotionTracking'
+
 export interface DepthHand {
   id: number
   position: { x: number; y: number; z: number }  // Meters from camera
   fingers: { x: number; y: number; z: number }[]  // 5 fingertips
-  gesture: 'open' | 'fist' | 'pinch' | 'point' | null
+  gesture: Gesture | null
   confidence: number
 }
 
@@ -122,7 +124,7 @@ export function useDepthCamera() {
    * the same coordinate system as useMotionTracking.
    * This ensures GalleryCanvas doesn't care which input source is active.
    */
-  function getPrimaryHand(): { position: { x: number; y: number; z: number }; gesture: string | null } | null {
+  function getPrimaryHand(): { position: { x: number; y: number; z: number }; gesture: Gesture | null } | null {
     const frame = currentFrame.value
     if (!frame || frame.hands.length === 0) return null
 

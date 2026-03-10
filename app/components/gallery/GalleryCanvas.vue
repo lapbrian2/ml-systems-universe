@@ -22,6 +22,7 @@ import { useGalleryInference } from '~/composables/gallery/useGalleryInference'
 import { useLocalGeneration } from '~/composables/gallery/useLocalGeneration'
 import { useSpatialPipeline } from '~/composables/gallery/useSpatialPipeline'
 import { useInstallationConfig } from '~/composables/gallery/useInstallationConfig'
+import { createPointCloudMesh } from '~/composables/gallery/usePointCloud'
 
 import type { InferenceResult } from '~/composables/gallery/useGalleryInference'
 
@@ -121,46 +122,8 @@ function createArtPlane(threeScene: THREE.Scene): THREE.Mesh {
 }
 
 function loadVolumetricArt(data: string, count: number, threeScene: THREE.Scene): THREE.Points {
-  // Decode base64 → interleaved Float32Array
-  const binary = atob(data)
-  const bytes = new Uint8Array(binary.length)
-  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i)
-  const buffer = new Float32Array(bytes.buffer)
-
-  const positions = new Float32Array(count * 3)
-  const colors = new Float32Array(count * 3)
-  const restoreSpeeds = new Float32Array(count)
-
-  for (let i = 0; i < count; i++) {
-    const src = i * 6
-    const dst = i * 3
-    positions[dst] = buffer[src]!
-    positions[dst + 1] = buffer[src + 1]!
-    positions[dst + 2] = buffer[src + 2]!
-    colors[dst] = buffer[src + 3]!
-    colors[dst + 1] = buffer[src + 4]!
-    colors[dst + 2] = buffer[src + 5]!
-    restoreSpeeds[i] = 0.02 + Math.random() * 0.08
-  }
-
-  const geometry = new THREE.BufferGeometry()
-  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
-  geometry.setAttribute('aRestoreSpeed', new THREE.BufferAttribute(restoreSpeeds, 1))
-  geometry.setAttribute('aVelocity', new THREE.BufferAttribute(new Float32Array(count * 3), 3))
-
   const uniforms = forceFields.createUniforms()
-  const material = new THREE.ShaderMaterial({
-    vertexShader: fluidVertexShader,
-    fragmentShader: fluidFragmentShader,
-    uniforms,
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
-    vertexColors: true,
-  })
-
-  const points = new THREE.Points(geometry, material)
+  const points = createPointCloudMesh(data, count, fluidVertexShader, fluidFragmentShader, uniforms)
   points.position.set(0, 1.6, 0)
   threeScene.add(points)
   return points

@@ -14,6 +14,7 @@
  */
 
 import * as THREE from 'three'
+import type { Gesture } from '~/composables/gallery/useMotionTracking'
 
 export interface ForceField {
   position: THREE.Vector3
@@ -39,7 +40,7 @@ export function useForceFields() {
    */
   function updateFromTracking(
     palmCenter: { x: number; y: number; z: number } | null,
-    gesture: string | null,
+    gesture: Gesture | null,
     handIndex: number = 0,
   ) {
     const field = fields[handIndex]

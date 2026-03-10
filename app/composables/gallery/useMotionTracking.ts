@@ -39,12 +39,14 @@ export interface HandLandmark {
   z: number // depth estimate
 }
 
+export type Gesture = 'open' | 'fist' | 'point' | 'pinch'
+
 export interface TrackingState {
   isActive: boolean
   handsDetected: number
   primaryHand: HandLandmark | null
   palmCenter: { x: number; y: number; z: number } | null
-  gesture: string | null // 'open' | 'fist' | 'point' | 'pinch'
+  gesture: Gesture | null
 }
 
 function loadScript(src: string): Promise<void> {
@@ -74,7 +76,6 @@ export function useMotionTracking() {
   let videoEl: HTMLVideoElement | null = null
   let hands: { setOptions: (opts: Record<string, unknown>) => void; onResults: (cb: (r: MediaPipeResults) => void) => void; send: (input: { image: HTMLVideoElement }) => Promise<void>; close: () => void } | null = null
   let camera: { start: () => Promise<void>; stop: () => void } | null = null
-  const animationId: number | null = null
 
   /**
    * Initialize webcam and MediaPipe Hands.
@@ -83,9 +84,11 @@ export function useMotionTracking() {
   async function init(): Promise<void> {
     if (typeof window === 'undefined') return
 
-    // Load MediaPipe from CDN at runtime (not bundled)
-    await loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js')
-    await loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js')
+    // Load MediaPipe from CDN at runtime (not bundled) — parallel fetch
+    await Promise.all([
+      loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js'),
+      loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js'),
+    ])
 
     const mp = window as unknown as MediaPipeWindow
     if (!mp.Hands || !mp.Camera) {
@@ -169,7 +172,7 @@ export function useMotionTracking() {
     }
   }
 
-  function detectGesture(landmarks: HandLandmark[]): string {
+  function detectGesture(landmarks: HandLandmark[]): Gesture {
     const tips = [landmarks[8]!, landmarks[12]!, landmarks[16]!, landmarks[20]!]
     const mcps = [landmarks[5]!, landmarks[9]!, landmarks[13]!, landmarks[17]!]
 
@@ -196,19 +199,38 @@ export function useMotionTracking() {
 
   function dispose() {
     tracking.isActive = false
-    if (animationId) cancelAnimationFrame(animationId)
     camera?.stop()
     hands?.close()
     if (videoEl) {
+      // Stop webcam hardware (turns off camera LED)
+      const stream = videoEl.srcObject as MediaStream | null
+      stream?.getTracks().forEach(t => t.stop())
       videoEl.srcObject = null
       videoEl.remove()
     }
+  }
+
+  /**
+   * Inject mouse/touch input as if it were hand tracking.
+   * Used by GalleryInteractionLayer for fallback input.
+   * Only fields present in the update object are written.
+   */
+  function injectMouseInput(update: {
+    palmCenter?: { x: number; y: number; z: number } | null
+    gesture?: Gesture | null
+    handsDetected?: number
+  }) {
+    if (tracking.isActive) return // Don't override real tracking
+    if (update.palmCenter !== undefined) tracking.palmCenter = update.palmCenter
+    if (update.gesture !== undefined) tracking.gesture = update.gesture
+    if (update.handsDetected !== undefined) tracking.handsDetected = update.handsDetected
   }
 
   return {
     tracking: readonly(tracking),
     init,
     toWorldCoordinates,
+    injectMouseInput,
     dispose,
   }
 }

@@ -16,10 +16,11 @@
 
 import { useDepthCamera, type InputSource } from '~/composables/gallery/useDepthCamera'
 import { useMotionTracking } from '~/composables/gallery/useMotionTracking'
+import type { Gesture } from '~/composables/gallery/useMotionTracking'
 
 export interface UnifiedInput {
   handPosition: { x: number; y: number; z: number } | null
-  gesture: string | null
+  gesture: Gesture | null
   bodyPresent: boolean
   bodyDistance: number
   confidence: number
