@@ -6,7 +6,7 @@ import { useProgressStore } from '~/stores/progress'
 import {
   BookOpen, Clock, CheckCircle2, ArrowRight,
   GraduationCap, Layers, FlaskConical, Cpu, Brain,
-  BarChart3, Zap, Globe, BookMarked,
+  BarChart3, Zap, Globe, BookMarked, Dna,
 } from 'lucide-vue-next'
 import { useCourseJsonLd } from '~/composables/useJsonLd'
 
@@ -223,6 +223,13 @@ const partDescriptions: Record<string, string> = {
             >
               <BookMarked class="w-3 h-3" />
               <span>Review Cards</span>
+            </NuxtLink>
+            <NuxtLink
+              to="/style-dna"
+              class="inline-flex items-center gap-1.5 text-xs text-primary/60 hover:text-primary transition-colors"
+            >
+              <Dna class="w-3 h-3" />
+              <span>Style DNA</span>
             </NuxtLink>
             <ShareProgress />
           </div>

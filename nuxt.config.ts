@@ -19,6 +19,7 @@ export default defineNuxtConfig({
     urls: [
       '/',
       '/review',
+      '/style-dna',
       '/chapter/introduction',
       '/chapter/ml-systems',
       '/chapter/dl-primer',
